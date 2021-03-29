@@ -1,0 +1,11 @@
+tools:
+
+  toolsDirectory: ".tools"
+
+  node:
+    toolName: "node"
+    downloadUris:
+      - targetOs: "MACOS"
+        downloadUri: "https://nodejs.org/dist/v14.15.3/node-v14.15.3-darwin-x64.tar.gz"
+      - targetOs: "LINUX"
+        downloadUri: "https://nodejs.org/dist/v14.15.3/node-v14.15.3-linux-x64.tar.xz"

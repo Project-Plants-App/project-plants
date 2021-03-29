@@ -1,0 +1,5 @@
+.tools
+.project-env
+node_modules
+.idea
+.expo
