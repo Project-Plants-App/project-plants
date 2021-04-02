@@ -19,6 +19,7 @@ import PlantRepository from "../../../../../repositories/PlantRepository";
 import {PreferredLocation} from "../../../../../model/PreferredLocation";
 import {WaterDemand} from "../../../../../model/WaterDemand";
 import {PreferredPhLevel} from "../../../../../model/PreferredPhLevel";
+import i18n, {translatePreferredLocation, translatePreferredPhLevel, translateWaterDemand} from "../../../../../i18n";
 
 export default () => {
 
@@ -65,36 +66,36 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title={`Edit Plant ${plant.id !== undefined ? plant.id : 'NEW'}`}
+            <TopNavigation title={plant.id === undefined ? i18n.t('NEW') : plant.name}
                            alignment="center"
                            accessoryLeft={CancelAction}
                            accessoryRight={SaveAction}/>
             <Divider/>
             <Layout style={{flex: 1}}>
-                <Input label="Name" style={styles.input} value={name} onChangeText={setName}/>
-                <Select label="Wasserbedarf" style={styles.input}
+                <Input label={i18n.t('NAME')} style={styles.input} value={name} onChangeText={setName}/>
+                <Select label={i18n.t('WATER_DEMAND')} style={styles.input}
                         selectedIndex={waterDemand}
-                        value={() => <Text>{WaterDemand[waterDemand.row]}</Text>}
+                        value={() => <Text>{translateWaterDemand(waterDemand.row)}</Text>}
                         onSelect={index => setWaterDemand(index as IndexPath)}>
-                    <SelectItem title="Gering"/>
-                    <SelectItem title="Mittel"/>
-                    <SelectItem title="Hoch"/>
+                    <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_LOW)}/>
+                    <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_MEDIUM)}/>
+                    <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_HIGH)}/>
                 </Select>
-                <Select label="Standort" style={styles.input}
+                <Select label={i18n.t('PREFERRED_LOCATION')} style={styles.input}
                         selectedIndex={preferredLocation}
-                        value={() => <Text>{PreferredLocation[preferredLocation.row]}</Text>}
+                        value={() => <Text>{translatePreferredLocation(preferredLocation.row)}</Text>}
                         onSelect={index => setPreferredLocation(index as IndexPath)}>
-                    <SelectItem title="Schatten"/>
-                    <SelectItem title="Halbschatten"/>
-                    <SelectItem title="Sonne"/>
+                    <SelectItem title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_SHADOW)}/>
+                    <SelectItem title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_HALF_SHADOWS)}/>
+                    <SelectItem title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_SUNNY)}/>
                 </Select>
-                <Select label="Gewünschter PH-Wert" style={styles.input}
+                <Select label={i18n.t('PREFERRED_PH_LEVEL')} style={styles.input}
                         selectedIndex={preferredPhLevel}
-                        value={() => <Text>{PreferredPhLevel[preferredPhLevel.row]}</Text>}
+                        value={() => <Text>{translatePreferredPhLevel(preferredPhLevel.row)}</Text>}
                         onSelect={index => setPreferredPhLevel(index as IndexPath)}>
-                    <SelectItem title="Egal"/>
-                    <SelectItem title="Tief"/>
-                    <SelectItem title="Hoch"/>
+                    <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_NO_MATTER)}/>
+                    <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_LOW)}/>
+                    <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_HIGH)}/>
                 </Select>
             </Layout>
             <Divider/>

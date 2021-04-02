@@ -5,6 +5,7 @@ import PlantsTab from "./tabs/plants/PlantsTab";
 import {BottomNavigation, BottomNavigationTab, Icon} from "@ui-kitten/components";
 import {PlantsTabRoute} from "./tabs/plants/PlantsTabRoute";
 import {SettingsTabRoute} from "./tabs/settings/SettingsTabRoute";
+import i18n from "../../i18n";
 
 const {Navigator, Screen} = createBottomTabNavigator();
 
@@ -22,8 +23,8 @@ export default () => {
         <BottomNavigation
             selectedIndex={state.index}
             onSelect={index => navigation.navigate(state.routeNames[index])}>
-            <BottomNavigationTab title="Plants" icon={PlantsIcon}/>
-            <BottomNavigationTab title="Settings" icon={SettingsIcon}/>
+            <BottomNavigationTab title={i18n.t('PLANTS')} icon={PlantsIcon}/>
+            <BottomNavigationTab title={i18n.t('SETTINGS')} icon={SettingsIcon}/>
         </BottomNavigation>
     );
 

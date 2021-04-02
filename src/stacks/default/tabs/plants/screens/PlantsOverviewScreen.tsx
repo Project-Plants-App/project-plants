@@ -17,9 +17,7 @@ import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from ".
 import {Plant} from "../../../../../model/Plant";
 import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
 import PlantRepository from "../../../../../repositories/PlantRepository";
-import {WaterDemand} from "../../../../../model/WaterDemand";
-import {PreferredPhLevel} from "../../../../../model/PreferredPhLevel";
-import {PreferredLocation} from "../../../../../model/PreferredLocation";
+import i18n, {translatePreferredLocation, translatePreferredPhLevel, translateWaterDemand} from "../../../../../i18n";
 
 export default () => {
 
@@ -55,21 +53,22 @@ export default () => {
     const renderItem = ({item}: ListRenderItemInfo<Plant>) => {
         const plantAttributes = [
             {
-                label: "Wasserbedarf",
-                value: WaterDemand[item.waterDemand]
+                label: i18n.t('WATER_DEMAND'),
+                value: translateWaterDemand(item.waterDemand)
             },
             {
-                label: "Standort",
-                value: PreferredLocation[item.preferredLocation]
+                label: i18n.t('PREFERRED_LOCATION'),
+                value: translatePreferredLocation(item.preferredLocation)
             },
             {
-                label: "Gewünschter PH-Wert",
-                value: PreferredPhLevel[item.preferredPhLevel]
+                label: i18n.t('PREFERRED_PH_LEVEL'),
+                value: translatePreferredPhLevel(item.preferredPhLevel)
             }
         ];
 
         const renderPlantAttributes = (entry: ListRenderItemInfo<any>) => (
             <ListItem
+                style={styles.plantAttributeListItem}
                 title={entry.item.value}
                 description={entry.item.label}
                 disabled={true}
@@ -102,9 +101,8 @@ export default () => {
 
         return (
             <Card style={styles.card} header={CardHeader} footer={CardFooter} disabled={true}>
-                <List
-                    data={plantAttributes}
-                    renderItem={renderPlantAttributes}
+                <List data={plantAttributes}
+                      renderItem={renderPlantAttributes}
                 />
             </Card>
         )
@@ -120,7 +118,7 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title="All Plants" alignment="center" accessoryRight={CreateAction}/>
+            <TopNavigation title={i18n.t('ALL_PLANTS')} alignment="center" accessoryRight={CreateAction}/>
             <Divider/>
             <Layout style={styles.layout}>
                 <List data={plants} renderItem={renderItem} style={styles.list}/>
@@ -137,8 +135,10 @@ const styles = StyleSheet.create({
     },
     list: {
         flex: 1,
-        paddingTop:15
-
+        paddingTop: 15
+    },
+    plantAttributeListItem: {
+        paddingHorizontal: 0
     },
     card: {
         margin: 15,

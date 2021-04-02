@@ -1,5 +1,5 @@
 export enum PreferredPhLevel {
-    NO_MATTER,
-    LOW,
-    HIGH
+    PREFERRED_PH_LEVEL_NO_MATTER,
+    PREFERRED_PH_LEVEL_LOW,
+    PREFERRED_PH_LEVEL_HIGH
 }
