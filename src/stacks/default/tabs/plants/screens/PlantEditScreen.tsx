@@ -1,4 +1,6 @@
 import {
+    Avatar,
+    Button,
     Divider,
     Icon,
     IndexPath,
@@ -11,7 +13,7 @@ import {
     TopNavigationAction
 } from "@ui-kitten/components";
 import React, {useState} from "react";
-import {StyleSheet} from "react-native";
+import {StyleSheet, View} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
 import {Plant} from "../../../../../model/Plant";
@@ -20,6 +22,13 @@ import {PreferredLocation} from "../../../../../model/PreferredLocation";
 import {WaterDemand} from "../../../../../model/WaterDemand";
 import {PreferredPhLevel} from "../../../../../model/PreferredPhLevel";
 import i18n, {translatePreferredLocation, translatePreferredPhLevel, translateWaterDemand} from "../../../../../i18n";
+import * as ImagePicker from 'expo-image-picker';
+import {ImagePickerOptions, ImagePickerResult, MediaTypeOptions} from 'expo-image-picker';
+
+const IMAGE_PICKER_OPTIONS: ImagePickerOptions = {
+    mediaTypes: MediaTypeOptions.Images,
+    base64: true
+};
 
 export default () => {
 
@@ -28,10 +37,41 @@ export default () => {
 
     const [plant] = useState(route.params.plant || {} as Plant)
 
+    const [avatar, setAvatar] = useState(plant.avatar)
     const [name, setName] = useState(plant.name || '')
     const [waterDemand, setWaterDemand] = useState(new IndexPath(plant.waterDemand || 0))
     const [preferredLocation, setPreferredLocation] = useState(new IndexPath(plant.preferredLocation || 0))
     const [preferredPhLevel, setPreferredPhLevel] = useState(new IndexPath(plant.preferredPhLevel || 0))
+
+    const handleImagePickerResult = (result: ImagePickerResult) => {
+        if (!result.cancelled) {
+            const indexOfLastDot = result.uri.lastIndexOf(".");
+            if (indexOfLastDot === -1) {
+                return;
+            }
+
+            const extension = result.uri.substring(indexOfLastDot + 1);
+            setAvatar(`data:image/${extension};base64,${result.base64}`);
+        }
+    }
+
+    const chooseAvatarFromMediaLibrary = async () => {
+        let response = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!response.granted) {
+            return;
+        }
+
+        handleImagePickerResult(await ImagePicker.launchImageLibraryAsync(IMAGE_PICKER_OPTIONS));
+    };
+
+    const createAvatarWithCamera = async () => {
+        let response = await ImagePicker.requestCameraPermissionsAsync();
+        if (!response.granted) {
+            return;
+        }
+
+        handleImagePickerResult(await ImagePicker.launchCameraAsync(IMAGE_PICKER_OPTIONS));
+    };
 
     const cancel = () => {
         navigation.goBack();
@@ -39,6 +79,7 @@ export default () => {
 
     const save = async () => {
         plant.name = name;
+        plant.avatar = avatar;
         plant.waterDemand = waterDemand.row;
         plant.preferredLocation = preferredLocation.row;
         plant.preferredPhLevel = preferredPhLevel.row;
@@ -47,6 +88,14 @@ export default () => {
 
         navigation.goBack();
     }
+
+    const CameraIcon = (props: any) => (
+        <Icon {...props} name="camera-outline"/>
+    );
+
+    const MediaLibraryIcon = (props: any) => (
+        <Icon {...props} name="image-outline"/>
+    );
 
     const CancelIcon = (props: any) => (
         <Icon {...props} name="close-outline"/>
@@ -71,7 +120,13 @@ export default () => {
                            accessoryLeft={CancelAction}
                            accessoryRight={SaveAction}/>
             <Divider/>
-            <Layout style={{flex: 1}}>
+            <Layout style={styles.layout}>
+                <View style={styles.avatarContainer}>
+                    <Avatar size="giant"
+                            source={avatar ? {uri: avatar} : require('../../../../../../assets/icon.png')}/>
+                    <Button accessoryLeft={CameraIcon} appearance="ghost" onPress={createAvatarWithCamera}/>
+                    <Button accessoryLeft={MediaLibraryIcon} appearance="ghost" onPress={chooseAvatarFromMediaLibrary}/>
+                </View>
                 <Input label={i18n.t('NAME')} style={styles.input} value={name} onChangeText={setName}/>
                 <Select label={i18n.t('WATER_DEMAND')} style={styles.input}
                         selectedIndex={waterDemand}
@@ -106,8 +161,15 @@ export default () => {
 
 
 const styles = StyleSheet.create({
+    layout: {
+        flex: 1,
+        padding: 15
+    },
+    avatarContainer: {
+        flexDirection: "row"
+    },
     input: {
-        margin: 15,
+        marginTop: 15,
         marginBottom: 0
     }
 });

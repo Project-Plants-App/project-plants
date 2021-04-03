@@ -11,7 +11,8 @@ const MIGRATIONS = [
          preferred_location integer,
          preferred_ph_Level integer,
          water_demand       integer
-     );  `
+     );  `,
+    `alter table plants add avatar blob;`
 ];
 
 class GrowBuddyDatabaseService {

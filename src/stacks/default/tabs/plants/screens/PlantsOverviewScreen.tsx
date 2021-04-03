@@ -1,5 +1,6 @@
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {
+    Avatar,
     Button,
     Card,
     Divider,
@@ -84,8 +85,9 @@ export default () => {
         );
 
         const CardHeader = (props: any) => (
-            <View {...props}>
-                <Text category='s1'>{item.name}</Text>
+            <View {...props} style={[props.style, styles.cardHeader]}>
+                <Avatar source={item.avatar ? {uri: item.avatar} : require('../../../../../../assets/icon.png')} size="giant"/>
+                <Text category='s1' style={styles.cardHeaderTitle}>{item.name}</Text>
             </View>
         );
 
@@ -146,6 +148,13 @@ const styles = StyleSheet.create({
     },
     deleteButton: {
         marginRight: 15
+    },
+    cardHeader: {
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    cardHeaderTitle: {
+        marginLeft: 10
     },
     cardFooter: {
         flexDirection: "row",

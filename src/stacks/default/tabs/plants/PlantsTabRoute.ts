@@ -5,14 +5,14 @@ import {Plant} from "../../../../model/Plant";
 export enum PlantsTabRoute {
     PLANTS = "plants",
     PLANTS_OVERVIEW = "plants-overview",
-    PLANTS_EDIT = "plants-edit",
+    PLANTS_EDIT = "plants-edit"
 }
 
 export type PlantsStackRouteParams = {
     "plants-overview": undefined;
     "plants-edit": {
         plant?: Plant
-    };
+    }
 }
 
 export type PlantsStackRouteProp<RouteName extends keyof PlantsStackRouteParams> = RouteProp<PlantsStackRouteParams, RouteName>;

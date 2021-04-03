@@ -2,19 +2,21 @@ import {Plant} from "../model/Plant";
 import DatabaseHelper from "../services/database/DatabaseHelper";
 import GrowBuddyDatabaseService from "../services/database/GrowBuddyDatabaseService";
 
-const PLANT_INSERT_STATEMENT = `insert into plants (id, name, preferred_location, preferred_ph_Level, water_demand)
-                                values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?)`
+const PLANT_INSERT_STATEMENT = `insert into plants (id, name, avatar, preferred_location, preferred_ph_Level,
+                                                    water_demand)
+                                values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?, ?)`
 
 
-const PLANT_SELECT_STATEMENT = `select id, name, preferred_location, preferred_ph_Level, water_demand
+const PLANT_SELECT_STATEMENT = `select id, name, avatar, preferred_location, preferred_ph_Level, water_demand
                                 from plants
                                 where id = ?`
 
-const PLANT_SELECT_ALL_STATEMENT = `select id, name, preferred_location, preferred_ph_Level, water_demand
+const PLANT_SELECT_ALL_STATEMENT = `select id, name, avatar, preferred_location, preferred_ph_Level, water_demand
                                     from plants`
 
 const PLANT_UPDATE_STATEMENT = `update plants
                                 set name               = ?,
+                                    avatar             = ?,
                                     preferred_location = ?,
                                     preferred_ph_Level = ?,
                                     water_demand       = ?
@@ -31,6 +33,7 @@ class PlantRepository {
 
         const args = [
             plant.name,
+            plant.avatar,
             plant.preferredLocation,
             plant.preferredPhLevel,
             plant.waterDemand
@@ -70,10 +73,11 @@ class PlantRepository {
         });
     }
 
-    private convertRowToPlant(row:any) {
+    private convertRowToPlant(row: any) {
         return {
-            id:row.id,
+            id: row.id,
             name: row.name,
+            avatar: row.avatar,
             preferredLocation: row.preferred_location,
             preferredPhLevel: row.preferred_ph_Level,
             waterDemand: row.water_demand
