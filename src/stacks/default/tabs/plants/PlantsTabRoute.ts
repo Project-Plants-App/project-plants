@@ -5,11 +5,15 @@ import {Plant} from "../../../../model/Plant";
 export enum PlantsTabRoute {
     PLANTS = "plants",
     PLANTS_OVERVIEW = "plants-overview",
+    PLANTS_DETAIL = "plants-detail",
     PLANTS_EDIT = "plants-edit"
 }
 
 export type PlantsStackRouteParams = {
     "plants-overview": undefined;
+    "plants-detail": {
+        plant: Plant
+    }
     "plants-edit": {
         plant?: Plant
     }

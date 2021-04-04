@@ -38,6 +38,7 @@ export default () => {
                 <List
                     data={settings}
                     renderItem={renderItem}
+                    ItemSeparatorComponent={Divider}
                 />
             </Layout>
             <Divider/>

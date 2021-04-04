@@ -1,6 +1,6 @@
 import {
-    Avatar,
     Button,
+    Card,
     Divider,
     Icon,
     IndexPath,
@@ -24,6 +24,7 @@ import {PreferredPhLevel} from "../../../../../model/PreferredPhLevel";
 import i18n, {translatePreferredLocation, translatePreferredPhLevel, translateWaterDemand} from "../../../../../i18n";
 import * as ImagePicker from 'expo-image-picker';
 import {ImagePickerOptions, ImagePickerResult, MediaTypeOptions} from 'expo-image-picker';
+import PlantAvatar from "../../../../../common/components/PlantAvatar";
 
 const IMAGE_PICKER_OPTIONS: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images,
@@ -120,38 +121,47 @@ export default () => {
                            accessoryLeft={CancelAction}
                            accessoryRight={SaveAction}/>
             <Divider/>
-            <Layout style={styles.layout}>
-                <View style={styles.avatarContainer}>
-                    <Avatar size="giant"
-                            source={avatar ? {uri: avatar} : require('../../../../../../assets/icon.png')}/>
-                    <Button accessoryLeft={CameraIcon} appearance="ghost" onPress={createAvatarWithCamera}/>
-                    <Button accessoryLeft={MediaLibraryIcon} appearance="ghost" onPress={chooseAvatarFromMediaLibrary}/>
-                </View>
-                <Input label={i18n.t('NAME')} style={styles.input} value={name} onChangeText={setName}/>
-                <Select label={i18n.t('WATER_DEMAND')} style={styles.input}
-                        selectedIndex={waterDemand}
-                        value={() => <Text>{translateWaterDemand(waterDemand.row)}</Text>}
-                        onSelect={index => setWaterDemand(index as IndexPath)}>
-                    <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_LOW)}/>
-                    <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_MEDIUM)}/>
-                    <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_HIGH)}/>
-                </Select>
-                <Select label={i18n.t('PREFERRED_LOCATION')} style={styles.input}
-                        selectedIndex={preferredLocation}
-                        value={() => <Text>{translatePreferredLocation(preferredLocation.row)}</Text>}
-                        onSelect={index => setPreferredLocation(index as IndexPath)}>
-                    <SelectItem title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_SHADOW)}/>
-                    <SelectItem title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_HALF_SHADOWS)}/>
-                    <SelectItem title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_SUNNY)}/>
-                </Select>
-                <Select label={i18n.t('PREFERRED_PH_LEVEL')} style={styles.input}
-                        selectedIndex={preferredPhLevel}
-                        value={() => <Text>{translatePreferredPhLevel(preferredPhLevel.row)}</Text>}
-                        onSelect={index => setPreferredPhLevel(index as IndexPath)}>
-                    <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_NO_MATTER)}/>
-                    <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_LOW)}/>
-                    <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_HIGH)}/>
-                </Select>
+            <Layout style={styles.layout} level="2">
+                <Card style={styles.card}>
+                    <PlantAvatar avatar={avatar} size="giant" style={styles.avatar}/>
+                    <View style={styles.avatarInputs}>
+                        <Button accessoryLeft={CameraIcon}
+                                appearance="outline"
+                                onPress={createAvatarWithCamera}
+                                style={styles.leftAvatarInput}/>
+                        <Button accessoryLeft={MediaLibraryIcon}
+                                appearance="outline"
+                                onPress={chooseAvatarFromMediaLibrary}/>
+                    </View>
+                    <Input label={i18n.t('NAME')} style={styles.input} value={name} onChangeText={setName}/>
+                </Card>
+                <Card style={styles.card}>
+                    <Select label={i18n.t('WATER_DEMAND')}
+                            selectedIndex={waterDemand}
+                            value={() => <Text>{translateWaterDemand(waterDemand.row)}</Text>}
+                            onSelect={index => setWaterDemand(index as IndexPath)}>
+                        <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_LOW)}/>
+                        <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_MEDIUM)}/>
+                        <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_HIGH)}/>
+                    </Select>
+                    <Select label={i18n.t('PREFERRED_LOCATION')} style={styles.input}
+                            selectedIndex={preferredLocation}
+                            value={() => <Text>{translatePreferredLocation(preferredLocation.row)}</Text>}
+                            onSelect={index => setPreferredLocation(index as IndexPath)}>
+                        <SelectItem title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_SHADOW)}/>
+                        <SelectItem
+                            title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_HALF_SHADOWS)}/>
+                        <SelectItem title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_SUNNY)}/>
+                    </Select>
+                    <Select label={i18n.t('PREFERRED_PH_LEVEL')} style={styles.input}
+                            selectedIndex={preferredPhLevel}
+                            value={() => <Text>{translatePreferredPhLevel(preferredPhLevel.row)}</Text>}
+                            onSelect={index => setPreferredPhLevel(index as IndexPath)}>
+                        <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_NO_MATTER)}/>
+                        <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_LOW)}/>
+                        <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_HIGH)}/>
+                    </Select>
+                </Card>
             </Layout>
             <Divider/>
         </React.Fragment>
@@ -163,13 +173,24 @@ export default () => {
 const styles = StyleSheet.create({
     layout: {
         flex: 1,
-        padding: 15
+        paddingTop: 15
     },
-    avatarContainer: {
-        flexDirection: "row"
+    avatar: {
+        alignSelf: "center",
+        marginBottom: 15,
+    },
+    avatarInputs: {
+        flexDirection: "row",
+        justifyContent: "center"
+    },
+    leftAvatarInput: {
+        marginRight: 15
     },
     input: {
-        marginTop: 15,
-        marginBottom: 0
+        marginTop: 15
+    },
+    card: {
+        margin: 15,
+        marginTop: 0
     }
 });
