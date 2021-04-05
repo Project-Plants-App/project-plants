@@ -13,7 +13,7 @@ import {
     TopNavigationAction
 } from "@ui-kitten/components";
 import React, {useState} from "react";
-import {StyleSheet, View} from "react-native";
+import {KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
 import {Plant} from "../../../../../model/Plant";
@@ -25,6 +25,8 @@ import i18n, {translatePreferredLocation, translatePreferredPhLevel, translateWa
 import * as ImagePicker from 'expo-image-picker';
 import {ImagePickerOptions, ImagePickerResult, MediaTypeOptions} from 'expo-image-picker';
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
+import ImageDataUriHelper from "../../../../../common/ImageDataUriHelper";
+import IndexPathHelper from "../../../../../common/IndexPathHelper";
 
 const IMAGE_PICKER_OPTIONS: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images,
@@ -38,21 +40,15 @@ export default () => {
 
     const [plant] = useState(route.params.plant || {} as Plant)
 
-    const [avatar, setAvatar] = useState(plant.avatar)
+    const [avatar, setAvatar] = useState<undefined | string>(plant.avatar)
     const [name, setName] = useState(plant.name || '')
-    const [waterDemand, setWaterDemand] = useState(new IndexPath(plant.waterDemand || 0))
-    const [preferredLocation, setPreferredLocation] = useState(new IndexPath(plant.preferredLocation || 0))
-    const [preferredPhLevel, setPreferredPhLevel] = useState(new IndexPath(plant.preferredPhLevel || 0))
+    const [waterDemand, setWaterDemand] = useState(IndexPathHelper.createIndexPath(plant.waterDemand, WaterDemand.WATER_DEMAND_UNDEFINED))
+    const [preferredLocation, setPreferredLocation] = useState(IndexPathHelper.createIndexPath(plant.preferredLocation, PreferredLocation.PREFERRED_LOCATION_UNDEFINED))
+    const [preferredPhLevel, setPreferredPhLevel] = useState(IndexPathHelper.createIndexPath(plant.preferredPhLevel, PreferredPhLevel.PREFERRED_PH_LEVEL_UNDEFINED))
 
     const handleImagePickerResult = (result: ImagePickerResult) => {
         if (!result.cancelled) {
-            const indexOfLastDot = result.uri.lastIndexOf(".");
-            if (indexOfLastDot === -1) {
-                return;
-            }
-
-            const extension = result.uri.substring(indexOfLastDot + 1);
-            setAvatar(`data:image/${extension};base64,${result.base64}`);
+            setAvatar(ImageDataUriHelper.toImageDataUri(result.uri, result.base64!))
         }
     }
 
@@ -81,9 +77,9 @@ export default () => {
     const save = async () => {
         plant.name = name;
         plant.avatar = avatar;
-        plant.waterDemand = waterDemand.row;
-        plant.preferredLocation = preferredLocation.row;
-        plant.preferredPhLevel = preferredPhLevel.row;
+        plant.waterDemand = waterDemand?.row;
+        plant.preferredLocation = preferredLocation?.row;
+        plant.preferredPhLevel = preferredPhLevel?.row;
 
         await PlantRepository.insertOrUpdatePlant(plant);
 
@@ -122,46 +118,55 @@ export default () => {
                            accessoryRight={SaveAction}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
-                <Card style={styles.card}>
-                    <PlantAvatar avatar={avatar} size="giant" style={styles.avatar}/>
-                    <View style={styles.avatarInputs}>
-                        <Button accessoryLeft={CameraIcon}
-                                appearance="outline"
-                                onPress={createAvatarWithCamera}
-                                style={styles.leftAvatarInput}/>
-                        <Button accessoryLeft={MediaLibraryIcon}
-                                appearance="outline"
-                                onPress={chooseAvatarFromMediaLibrary}/>
-                    </View>
-                    <Input label={i18n.t('NAME')} style={styles.input} value={name} onChangeText={setName}/>
-                </Card>
-                <Card style={styles.card}>
-                    <Select label={i18n.t('WATER_DEMAND')}
-                            selectedIndex={waterDemand}
-                            value={() => <Text>{translateWaterDemand(waterDemand.row)}</Text>}
-                            onSelect={index => setWaterDemand(index as IndexPath)}>
-                        <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_LOW)}/>
-                        <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_MEDIUM)}/>
-                        <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_HIGH)}/>
-                    </Select>
-                    <Select label={i18n.t('PREFERRED_LOCATION')} style={styles.input}
-                            selectedIndex={preferredLocation}
-                            value={() => <Text>{translatePreferredLocation(preferredLocation.row)}</Text>}
-                            onSelect={index => setPreferredLocation(index as IndexPath)}>
-                        <SelectItem title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_SHADOW)}/>
-                        <SelectItem
-                            title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_HALF_SHADOWS)}/>
-                        <SelectItem title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_SUNNY)}/>
-                    </Select>
-                    <Select label={i18n.t('PREFERRED_PH_LEVEL')} style={styles.input}
-                            selectedIndex={preferredPhLevel}
-                            value={() => <Text>{translatePreferredPhLevel(preferredPhLevel.row)}</Text>}
-                            onSelect={index => setPreferredPhLevel(index as IndexPath)}>
-                        <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_NO_MATTER)}/>
-                        <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_LOW)}/>
-                        <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_HIGH)}/>
-                    </Select>
-                </Card>
+                <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === "ios" ? "padding" : "height"}
+                                      keyboardVerticalOffset={100}>
+                    <ScrollView>
+                        <Card style={styles.card} status="basic" disabled={true}>
+                            <PlantAvatar avatar={avatar} size="giant" style={styles.avatar}/>
+                            <View style={styles.avatarInputs}>
+                                <Button accessoryLeft={CameraIcon}
+                                        appearance="outline"
+                                        onPress={createAvatarWithCamera}
+                                        style={styles.leftAvatarInput}/>
+                                <Button accessoryLeft={MediaLibraryIcon}
+                                        appearance="outline"
+                                        onPress={chooseAvatarFromMediaLibrary}/>
+                            </View>
+                            <Input label={i18n.t('NAME')} style={styles.input} value={name} onChangeText={setName}/>
+                        </Card>
+                        <Card style={styles.card} status="basic" disabled={true}>
+                            <Select label={i18n.t('WATER_DEMAND')}
+                                    selectedIndex={waterDemand}
+                                    value={() => <Text>{translateWaterDemand(waterDemand.row)}</Text>}
+                                    onSelect={index => setWaterDemand(index as IndexPath)}>
+                                <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_LOW)}/>
+                                <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_MEDIUM)}/>
+                                <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_HIGH)}/>
+                            </Select>
+                            <Select label={i18n.t('PREFERRED_LOCATION')} style={styles.input}
+                                    selectedIndex={preferredLocation}
+                                    value={() => <Text>{translatePreferredLocation(preferredLocation.row)}</Text>}
+                                    onSelect={index => setPreferredLocation(index as IndexPath)}>
+                                <SelectItem
+                                    title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_SHADOW)}/>
+                                <SelectItem
+                                    title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_HALF_SHADOWS)}/>
+                                <SelectItem
+                                    title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_SUNNY)}/>
+                            </Select>
+                            <Select label={i18n.t('PREFERRED_PH_LEVEL')} style={styles.input}
+                                    selectedIndex={preferredPhLevel}
+                                    value={() => <Text>{translatePreferredPhLevel(preferredPhLevel.row)}</Text>}
+                                    onSelect={index => setPreferredPhLevel(index as IndexPath)}>
+                                <SelectItem
+                                    title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_NO_MATTER)}/>
+                                <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_LOW)}/>
+                                <SelectItem
+                                    title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_HIGH)}/>
+                            </Select>
+                        </Card>
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </Layout>
             <Divider/>
         </React.Fragment>

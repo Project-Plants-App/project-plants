@@ -10,7 +10,7 @@ import {
     TopNavigationAction
 } from "@ui-kitten/components";
 import React, {useState} from "react";
-import {ListRenderItemInfo, StyleSheet} from "react-native";
+import {ListRenderItemInfo, StyleSheet, View} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
 import {Plant} from "../../../../../model/Plant";
@@ -68,9 +68,14 @@ export default () => {
             title={entry.item.value}
             description={entry.item.label}
             disabled={true}
-
         />
     );
+
+    const CardHeader = (props: any) => (
+        <View {...props}>
+            <Text category="s1">Allgemeine Informationen</Text>
+        </View>
+    )
 
     return (
         <React.Fragment>
@@ -80,12 +85,13 @@ export default () => {
                            accessoryRight={EditAction}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
-                <Card style={[styles.card, styles.headerCard]}>
+                <Card style={styles.card} status="basic" disabled={true}>
                     <PlantAvatar avatar={plant.avatar} size="giant" style={styles.avatar}/>
-                    <Text category='s1'>{plant.name}</Text>
+                    <Text category='s1' style={styles.headerTitle}>{plant.name}</Text>
                 </Card>
-                <Card style={styles.card}>
-                    <List data={plantAttributes} renderItem={renderPlantAttributes} ItemSeparatorComponent={Divider}/>
+                <Card style={styles.card} header={CardHeader} status="basic" disabled={true}>
+                    <List data={plantAttributes} renderItem={renderPlantAttributes}
+                          ItemSeparatorComponent={Divider}/>
                 </Card>
             </Layout>
             <Divider/>
@@ -103,8 +109,8 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         marginBottom: 15,
     },
-    headerCard: {
-        alignItems: "center"
+    headerTitle: {
+        textAlign: "center"
     },
     card: {
         margin: 15,

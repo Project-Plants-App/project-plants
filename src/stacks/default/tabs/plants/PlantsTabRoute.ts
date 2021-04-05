@@ -6,7 +6,8 @@ export enum PlantsTabRoute {
     PLANTS = "plants",
     PLANTS_OVERVIEW = "plants-overview",
     PLANTS_DETAIL = "plants-detail",
-    PLANTS_EDIT = "plants-edit"
+    PLANTS_EDIT = "plants-edit",
+    PLANTS_BALDUR_PREFILL = "plants-baldur-prefill"
 }
 
 export type PlantsStackRouteParams = {
@@ -16,7 +17,8 @@ export type PlantsStackRouteParams = {
     }
     "plants-edit": {
         plant?: Plant
-    }
+    },
+    "plants-baldur-prefill": {}
 }
 
 export type PlantsStackRouteProp<RouteName extends keyof PlantsStackRouteParams> = RouteProp<PlantsStackRouteParams, RouteName>;

@@ -6,8 +6,8 @@ import {NavigationContainer} from "@react-navigation/native";
 import GrowBuddyDatabaseService from "./src/services/database/GrowBuddyDatabaseService";
 import AppLoading from "expo-app-loading";
 import {AppearanceProvider, useColorScheme} from "react-native-appearance";
-import {SafeAreaView, StatusBar} from "react-native";
 import DefaultStack from "./src/stacks/default/DefaultStack";
+import {SafeAreaView, StatusBar} from "react-native";
 
 export default () => {
     return (

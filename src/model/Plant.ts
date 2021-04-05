@@ -5,7 +5,7 @@ import {PreferredLocation} from "./PreferredLocation";
 export interface Plant {
 
     id?: number;
-    avatar: string;
+    avatar?: string;
     name: string,
     waterDemand: WaterDemand;
     preferredLocation: PreferredLocation;
