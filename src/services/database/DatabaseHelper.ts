@@ -16,14 +16,9 @@ class DatabaseHelper {
     executeSingleStatement(database: Database, statement: string, args?: any[]): Promise<SQLResultSet> {
         return new Promise<SQLResultSet>((resolve, reject) => {
             database.transaction((tx) => {
-                console.debug(`execute statement '${statement}'`)
-
                 tx.executeSql(statement, args, (tx, result) => {
-                    console.debug(`successfully executed statement '${statement}'`)
-
                     resolve(result);
                 }, (tx, error) => {
-                    console.debug(`failed to execute statement '${statement}' because '${error.message}'`)
                     reject(error.message);
 
                     // return true to stop on error

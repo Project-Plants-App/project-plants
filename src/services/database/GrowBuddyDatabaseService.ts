@@ -1,28 +1,43 @@
 import * as SQLite from "expo-sqlite";
+import {WebSQLDatabase} from "expo-sqlite";
 import DatabaseMigrationService from "./migration/DatabaseMigrationService";
+import * as FileSystem from "expo-file-system";
 
-const DATABASE = SQLite.openDatabase("grow-buddy-1.db")
+const DATABASE_NAME = "grow-buddy.db";
 
 const MIGRATIONS = [
     `create table plants
      (
          id                 integer primary key not null,
          name               varchar(255),
+         avatar             blob,
          preferred_location integer,
-         preferred_ph_Level integer,
-         water_demand       integer
-     );  `,
-    `alter table plants add avatar blob;`
+         water_demand       integer,
+         winter_proof       integer,
+         baldur_article_id  varchar(255)
+     );`,
 ];
 
 class GrowBuddyDatabaseService {
 
+    private database?: WebSQLDatabase;
+
     async migrateDatabase() {
-        await DatabaseMigrationService.migrateDatabase(DATABASE, MIGRATIONS);
+        await DatabaseMigrationService.migrateDatabase(this.database!, MIGRATIONS);
     }
 
     async getDatabase() {
-        return DATABASE;
+        return this.database!;
+    }
+
+    async resetDatabase() {
+        await FileSystem.deleteAsync(`${FileSystem.documentDirectory}/SQLite/${DATABASE_NAME}`);
+        await this.openDatabase();
+    }
+
+    async openDatabase() {
+        this.database = SQLite.openDatabase(DATABASE_NAME);
+        await this.migrateDatabase();
     }
 
 }

@@ -25,7 +25,7 @@ const App = () => {
     const [initialized, setInitialized] = useState(false);
 
     const initialize = async () => {
-        await GrowBuddyDatabaseService.migrateDatabase();
+        await GrowBuddyDatabaseService.openDatabase();
     }
 
     if (!initialized) {

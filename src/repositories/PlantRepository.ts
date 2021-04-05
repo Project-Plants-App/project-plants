@@ -2,24 +2,42 @@ import {Plant} from "../model/Plant";
 import DatabaseHelper from "../services/database/DatabaseHelper";
 import GrowBuddyDatabaseService from "../services/database/GrowBuddyDatabaseService";
 
-const PLANT_INSERT_STATEMENT = `insert into plants (id, name, avatar, preferred_location, preferred_ph_Level,
-                                                    water_demand)
-                                values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?, ?)`
+const PLANT_INSERT_STATEMENT = `insert into plants (id,
+                                                    name,
+                                                    avatar,
+                                                    preferred_location,
+                                                    water_demand,
+                                                    winter_proof,
+                                                    baldur_article_id)
+                                values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?, ?, ?)`
 
 
-const PLANT_SELECT_STATEMENT = `select id, name, avatar, preferred_location, preferred_ph_Level, water_demand
+const PLANT_SELECT_STATEMENT = `select id,
+                                       name,
+                                       avatar,
+                                       preferred_location,
+                                       water_demand,
+                                       winter_proof,
+                                       baldur_article_id
                                 from plants
                                 where id = ?`
 
-const PLANT_SELECT_ALL_STATEMENT = `select id, name, avatar, preferred_location, preferred_ph_Level, water_demand
+const PLANT_SELECT_ALL_STATEMENT = `select id,
+                                           name,
+                                           avatar,
+                                           preferred_location,
+                                           water_demand,
+                                           winter_proof,
+                                           baldur_article_id
                                     from plants`
 
 const PLANT_UPDATE_STATEMENT = `update plants
                                 set name               = ?,
                                     avatar             = ?,
                                     preferred_location = ?,
-                                    preferred_ph_Level = ?,
-                                    water_demand       = ?
+                                    water_demand       = ?,
+                                    winter_proof       = ?,
+                                    baldur_article_id  = ?
                                 where id = ?`
 
 const PLANT_DELETE_STATEMENT = `delete
@@ -35,13 +53,13 @@ class PlantRepository {
             plant.name,
             plant.avatar,
             plant.preferredLocation,
-            plant.preferredPhLevel,
-            plant.waterDemand
+            plant.waterDemand,
+            plant.winterProof,
+            plant.baldurArticleId
         ];
 
         if (plant.id === undefined) {
             return DatabaseHelper.executeSingleStatement(database, PLANT_INSERT_STATEMENT, args).then((resultSet) => {
-                console.debug(`received id ${resultSet.insertId} after inserting plant`)
                 plant.id = resultSet.insertId;
 
                 return resultSet;
@@ -79,8 +97,9 @@ class PlantRepository {
             name: row.name,
             avatar: row.avatar,
             preferredLocation: row.preferred_location,
-            preferredPhLevel: row.preferred_ph_Level,
-            waterDemand: row.water_demand
+            waterDemand: row.water_demand,
+            winterProof: row.winter_proof,
+            baldurArticleId: row.baldur_article_id
         } as Plant
     }
 

@@ -1,6 +1,6 @@
-import {PreferredPhLevel} from "./PreferredPhLevel";
 import {WaterDemand} from "./WaterDemand";
 import {PreferredLocation} from "./PreferredLocation";
+import {WinterProof} from "./WinterProof";
 
 export interface Plant {
 
@@ -9,6 +9,7 @@ export interface Plant {
     name: string,
     waterDemand: WaterDemand;
     preferredLocation: PreferredLocation;
-    preferredPhLevel: PreferredPhLevel;
+    winterProof: WinterProof;
+    baldurArticleId: string;
 
 }

@@ -14,19 +14,19 @@ import {
 } from "@ui-kitten/components";
 import React, {useState} from "react";
 import {KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View} from "react-native";
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
 import {Plant} from "../../../../../model/Plant";
 import PlantRepository from "../../../../../repositories/PlantRepository";
 import {PreferredLocation} from "../../../../../model/PreferredLocation";
 import {WaterDemand} from "../../../../../model/WaterDemand";
-import {PreferredPhLevel} from "../../../../../model/PreferredPhLevel";
-import i18n, {translatePreferredLocation, translatePreferredPhLevel, translateWaterDemand} from "../../../../../i18n";
+import i18n, {translateEnumValue} from "../../../../../i18n";
 import * as ImagePicker from 'expo-image-picker';
 import {ImagePickerOptions, ImagePickerResult, MediaTypeOptions} from 'expo-image-picker';
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
 import ImageDataUriHelper from "../../../../../common/ImageDataUriHelper";
 import IndexPathHelper from "../../../../../common/IndexPathHelper";
+import {WinterProof} from "../../../../../model/WinterProof";
 
 const IMAGE_PICKER_OPTIONS: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images,
@@ -44,7 +44,7 @@ export default () => {
     const [name, setName] = useState(plant.name || '')
     const [waterDemand, setWaterDemand] = useState(IndexPathHelper.createIndexPath(plant.waterDemand, WaterDemand.WATER_DEMAND_UNDEFINED))
     const [preferredLocation, setPreferredLocation] = useState(IndexPathHelper.createIndexPath(plant.preferredLocation, PreferredLocation.PREFERRED_LOCATION_UNDEFINED))
-    const [preferredPhLevel, setPreferredPhLevel] = useState(IndexPathHelper.createIndexPath(plant.preferredPhLevel, PreferredPhLevel.PREFERRED_PH_LEVEL_UNDEFINED))
+    const [winterProof, setWinterProof] = useState(IndexPathHelper.createIndexPath(plant.winterProof, WinterProof.WINTER_PROOF_UNDEFINED))
 
     const handleImagePickerResult = (result: ImagePickerResult) => {
         if (!result.cancelled) {
@@ -71,19 +71,19 @@ export default () => {
     };
 
     const cancel = () => {
-        navigation.goBack();
+        navigation.dispatch(StackActions.popToTop());
     }
 
     const save = async () => {
         plant.name = name;
         plant.avatar = avatar;
-        plant.waterDemand = waterDemand?.row;
-        plant.preferredLocation = preferredLocation?.row;
-        plant.preferredPhLevel = preferredPhLevel?.row;
+        plant.waterDemand = waterDemand.row;
+        plant.preferredLocation = preferredLocation.row;
+        plant.winterProof = winterProof.row;
 
         await PlantRepository.insertOrUpdatePlant(plant);
 
-        navigation.goBack();
+        navigation.dispatch(StackActions.popToTop());
     }
 
     const CameraIcon = (props: any) => (
@@ -109,6 +109,19 @@ export default () => {
     const SaveAction = () => (
         <TopNavigationAction icon={SaveIcon} onPress={() => save()}/>
     );
+
+    const renderEnumOptions = (enumType: any) => {
+        const options = [];
+        for (const enumValue in enumType) {
+            const enumValueAsNumber = Number(enumValue);
+            if (!isNaN(enumValueAsNumber)) {
+                options.push(<SelectItem title={translateEnumValue(enumValueAsNumber, enumType)}
+                                         key={enumValueAsNumber}/>)
+            }
+        }
+
+        return options;
+    }
 
     return (
         <React.Fragment>
@@ -137,32 +150,23 @@ export default () => {
                         <Card style={styles.card} status="basic" disabled={true}>
                             <Select label={i18n.t('WATER_DEMAND')}
                                     selectedIndex={waterDemand}
-                                    value={() => <Text>{translateWaterDemand(waterDemand.row)}</Text>}
+                                    value={() => <Text>{translateEnumValue(waterDemand.row, WaterDemand)}</Text>}
                                     onSelect={index => setWaterDemand(index as IndexPath)}>
-                                <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_LOW)}/>
-                                <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_MEDIUM)}/>
-                                <SelectItem title={translateWaterDemand(WaterDemand.WATER_DEMAND_HIGH)}/>
+                                {renderEnumOptions(WaterDemand)}
                             </Select>
                             <Select label={i18n.t('PREFERRED_LOCATION')} style={styles.input}
                                     selectedIndex={preferredLocation}
-                                    value={() => <Text>{translatePreferredLocation(preferredLocation.row)}</Text>}
+                                    value={() =>
+                                        <Text>{translateEnumValue(preferredLocation.row, PreferredLocation)}</Text>}
                                     onSelect={index => setPreferredLocation(index as IndexPath)}>
-                                <SelectItem
-                                    title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_SHADOW)}/>
-                                <SelectItem
-                                    title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_HALF_SHADOWS)}/>
-                                <SelectItem
-                                    title={translatePreferredLocation(PreferredLocation.PREFERRED_LOCATION_SUNNY)}/>
+                                {renderEnumOptions(PreferredLocation)}
                             </Select>
-                            <Select label={i18n.t('PREFERRED_PH_LEVEL')} style={styles.input}
-                                    selectedIndex={preferredPhLevel}
-                                    value={() => <Text>{translatePreferredPhLevel(preferredPhLevel.row)}</Text>}
-                                    onSelect={index => setPreferredPhLevel(index as IndexPath)}>
-                                <SelectItem
-                                    title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_NO_MATTER)}/>
-                                <SelectItem title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_LOW)}/>
-                                <SelectItem
-                                    title={translatePreferredPhLevel(PreferredPhLevel.PREFERRED_PH_LEVEL_HIGH)}/>
+                            <Select label={i18n.t('WINTER_PROOF')} style={styles.input}
+                                    selectedIndex={winterProof}
+                                    value={() =>
+                                        <Text>{translateEnumValue(winterProof.row, WinterProof)}</Text>}
+                                    onSelect={index => setWinterProof(index as IndexPath)}>
+                                {renderEnumOptions(WinterProof)}
                             </Select>
                         </Card>
                     </ScrollView>

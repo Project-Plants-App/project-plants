@@ -1,4 +1,5 @@
 import {
+    Button,
     Card,
     Divider,
     Icon,
@@ -10,12 +11,16 @@ import {
     TopNavigationAction
 } from "@ui-kitten/components";
 import React, {useState} from "react";
-import {ListRenderItemInfo, StyleSheet, View} from "react-native";
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {Linking, ListRenderItemInfo, StyleSheet, View} from "react-native";
+import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
 import {Plant} from "../../../../../model/Plant";
-import i18n, {translatePreferredLocation, translatePreferredPhLevel, translateWaterDemand} from "../../../../../i18n";
+import i18n, {translateEnumValue} from "../../../../../i18n";
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
+import {WaterDemand} from "../../../../../model/WaterDemand";
+import {PreferredLocation} from "../../../../../model/PreferredLocation";
+import {WinterProof} from "../../../../../model/WinterProof";
+import BaldurGartenService from "../../../../../services/BaldurGartenService";
 
 export default () => {
 
@@ -25,7 +30,7 @@ export default () => {
     const [plant] = useState(route.params.plant || {} as Plant)
 
     const back = () => {
-        navigation.goBack();
+        navigation.dispatch(StackActions.popToTop());
     }
 
     const edit = async () => {
@@ -48,18 +53,22 @@ export default () => {
         <TopNavigationAction icon={EditIcon} onPress={() => edit()}/>
     );
 
+    const LinkIcon = (props: any) => (
+        <Icon {...props} name="external-link-outline"/>
+    );
+
     const plantAttributes = [
         {
             label: i18n.t('WATER_DEMAND'),
-            value: translateWaterDemand(plant.waterDemand)
+            value: translateEnumValue(plant.waterDemand, WaterDemand)
         },
         {
             label: i18n.t('PREFERRED_LOCATION'),
-            value: translatePreferredLocation(plant.preferredLocation)
+            value: translateEnumValue(plant.preferredLocation, PreferredLocation)
         },
         {
-            label: i18n.t('PREFERRED_PH_LEVEL'),
-            value: translatePreferredPhLevel(plant.preferredPhLevel)
+            label: i18n.t('WINTER_PROOF'),
+            value: translateEnumValue(plant.winterProof, WinterProof)
         }
     ];
 
@@ -92,6 +101,15 @@ export default () => {
                 <Card style={styles.card} header={CardHeader} status="basic" disabled={true}>
                     <List data={plantAttributes} renderItem={renderPlantAttributes}
                           ItemSeparatorComponent={Divider}/>
+
+                    {plant.baldurArticleId &&
+                    <Button accessoryLeft={LinkIcon}
+                            appearance="outline"
+                            style={styles.button}
+                            onPress={() => Linking.openURL(BaldurGartenService.createBaldurDetailLink(plant.baldurArticleId))}>
+                        BALDUR-Garten
+                    </Button>
+                    }
                 </Card>
             </Layout>
             <Divider/>
@@ -115,5 +133,8 @@ const styles = StyleSheet.create({
     card: {
         margin: 15,
         marginTop: 0
+    },
+    button: {
+        marginTop: 15
     }
 });

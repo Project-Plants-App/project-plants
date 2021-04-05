@@ -13,7 +13,7 @@ import {
 import {ListRenderItemInfo, StyleSheet} from "react-native";
 import i18n from "../../../../../i18n";
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
 import BaldurGartenService, {BaldurGartenProductSearchResult} from "../../../../../services/BaldurGartenService";
 
@@ -44,7 +44,7 @@ export default () => {
     }
 
     const cancel = () => {
-        navigation.goBack();
+        navigation.dispatch(StackActions.popToTop());
     }
 
     const CancelIcon = (props: any) => (
