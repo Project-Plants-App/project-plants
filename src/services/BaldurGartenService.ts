@@ -6,6 +6,8 @@ import {WaterDemand} from "../model/WaterDemand";
 import {PreferredLocation} from "../model/PreferredLocation";
 import {WinterProof} from "../model/WinterProof";
 
+const BALDUR_GARTEN_BASE_URL = "https://www.baldur-garten.ch";
+
 const ATTRIBUTE_TYPES_TO_IGNORE = [
     "Pflanze nicht zum Verzehr geeignet!"
 ];
@@ -17,7 +19,7 @@ class BaldurGartenService {
         params.append("query", query);
         params.append("format", "json");
 
-        return fetch(`https://www.baldur-garten.ch/search/suggestProxy.html?${params.toString()}`, {
+        return fetch(`${BALDUR_GARTEN_BASE_URL}/search/suggestProxy.html?${params.toString()}`, {
             headers: {
                 "Accept": "application/json"
             }
@@ -42,12 +44,24 @@ class BaldurGartenService {
     }
 
     async extractPlantDetails(searchResult: BaldurGartenProductSearchResult) {
+        const response = await fetch(this.createBaldurDetailLink(searchResult.id));
+        const rawHtml = await response.text();
+
+        const plantAttributes = this.extractPlantAttributes(rawHtml);
+        const avatar = await this.extractAvatar(searchResult, rawHtml);
+
+        return {
+            name: searchResult.name,
+            baldurArticleId: searchResult.id,
+            avatar,
+            ...plantAttributes
+        } as Plant;
+    }
+
+    private extractPlantAttributes(rawHtml: string) {
         let waterDemand = WaterDemand.WATER_DEMAND_UNDEFINED;
         let preferredLocation = PreferredLocation.PREFERRED_LOCATION_UNDEFINED;
         let winterProof = WinterProof.WINTER_PROOF_UNDEFINED;
-
-        const response = await fetch(this.createBaldurDetailLink(searchResult.id));
-        const rawHtml = await response.text();
 
         const rawAttributeTypes = this.extractValuesOfElementsWithClass(rawHtml, "pds-feature__label")
             .filter(type => ATTRIBUTE_TYPES_TO_IGNORE.indexOf(type) === -1);
@@ -139,27 +153,43 @@ class BaldurGartenService {
                     }
                 }
             }
-        }else {
+        } else {
             console.debug(`type count is not equal to value count (${rawAttributeTypes.length} <> ${rawAttributeValues.length})`)
         }
 
-        const asset = await Asset.fromModule(searchResult.avatarUrl).downloadAsync();
+        return {
+            waterDemand,
+            preferredLocation,
+            winterProof
+        }
+    }
+
+    private async extractAvatar(searchResult: BaldurGartenProductSearchResult, rawHtml: string) {
+        const pattern = new RegExp(`alt="${this.escapeRegex(searchResult.name)}" src="([^"]+)"`, 'g');
+
+        const images = Array.from(rawHtml.matchAll(pattern))
+            .map((match) => {
+                return match[1].trim();
+            });
+
+        if (images.length === 0) {
+            return undefined;
+        }
+
+        const asset = await Asset.fromModule(`${BALDUR_GARTEN_BASE_URL}/${images[0]}`).downloadAsync();
         const avatarAsBase64 = await FileSystem.readAsStringAsync(asset.localUri!, {
             encoding: "base64"
         });
 
-        return {
-            name: searchResult.name,
-            baldurArticleId: searchResult.id,
-            avatar: ImageDataUriHelper.toImageDataUri(asset.localUri!, avatarAsBase64),
-            waterDemand,
-            preferredLocation,
-            winterProof,
-        } as Plant;
+        return ImageDataUriHelper.toImageDataUri(asset.localUri!, avatarAsBase64)
+    }
+
+    private escapeRegex(value: string) {
+        return value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     }
 
     createBaldurDetailLink(articleId: string) {
-        return `https://www.baldur-garten.ch/produkt/${articleId}/detail.html`;
+        return `${BALDUR_GARTEN_BASE_URL}/produkt/${articleId}/detail.html`;
     }
 
     private extractValuesOfElementsWithClass(rawHtml: string, cssClass: string): string[] {

@@ -21,7 +21,6 @@ export default () => {
             }
         }, {
             title: 'Datenbank zurücksetzen',
-            description: 'Datenbank zurücksetzen',
             onPress: async () => {
                 await GrowBuddyDatabaseService.resetDatabase();
             }
