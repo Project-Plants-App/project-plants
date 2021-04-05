@@ -6,6 +6,10 @@ import {WaterDemand} from "../model/WaterDemand";
 import {PreferredLocation} from "../model/PreferredLocation";
 import {WinterProof} from "../model/WinterProof";
 
+const ATTRIBUTE_TYPES_TO_IGNORE = [
+    "Pflanze nicht zum Verzehr geeignet!"
+];
+
 class BaldurGartenService {
 
     searchForProducts(query: string): Promise<BaldurGartenProductSearchResult[]> {
@@ -42,10 +46,12 @@ class BaldurGartenService {
         let preferredLocation = PreferredLocation.PREFERRED_LOCATION_UNDEFINED;
         let winterProof = WinterProof.WINTER_PROOF_UNDEFINED;
 
-        const response = await fetch(this.createBaldurDetailLink(searchResult.id))
+        const response = await fetch(this.createBaldurDetailLink(searchResult.id));
         const rawHtml = await response.text();
 
-        const rawAttributeTypes = this.extractValuesOfElementsWithClass(rawHtml, "pds-feature__label");
+        const rawAttributeTypes = this.extractValuesOfElementsWithClass(rawHtml, "pds-feature__label")
+            .filter(type => ATTRIBUTE_TYPES_TO_IGNORE.indexOf(type) === -1);
+
         const rawAttributeValues = this.extractValuesOfElementsWithClass(rawHtml, "pds-feature__content");
 
         if (rawAttributeTypes.length === rawAttributeValues.length) {
@@ -133,6 +139,8 @@ class BaldurGartenService {
                     }
                 }
             }
+        }else {
+            console.debug(`type count is not equal to value count (${rawAttributeTypes.length} <> ${rawAttributeValues.length})`)
         }
 
         const asset = await Asset.fromModule(searchResult.avatarUrl).downloadAsync();
