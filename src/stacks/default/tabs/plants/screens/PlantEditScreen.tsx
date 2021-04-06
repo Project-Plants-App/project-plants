@@ -71,7 +71,11 @@ export default () => {
     };
 
     const cancel = () => {
-        navigation.dispatch(StackActions.popToTop());
+        if (plant.id !== undefined) {
+            navigation.goBack();
+        } else {
+            navigation.dispatch(StackActions.popToTop());
+        }
     }
 
     const save = async () => {
@@ -82,6 +86,12 @@ export default () => {
         plant.winterProof = winterProof.row;
 
         await PlantRepository.insertOrUpdatePlant(plant);
+
+        navigation.dispatch(StackActions.popToTop());
+    }
+
+    const deletePlant = async () => {
+        await PlantRepository.deletePlant(plant);
 
         navigation.dispatch(StackActions.popToTop());
     }
@@ -131,7 +141,8 @@ export default () => {
                            accessoryRight={SaveAction}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
-                <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === "ios" ? "padding" : "height"}
+                <KeyboardAvoidingView style={{flex: 1}}
+                                      behavior={Platform.OS === "ios" ? "padding" : "height"}
                                       keyboardVerticalOffset={100}>
                     <ScrollView>
                         <Card style={styles.card} status="basic" disabled={true}>
@@ -169,6 +180,11 @@ export default () => {
                                 {renderEnumOptions(WinterProof)}
                             </Select>
                         </Card>
+
+                        {plant.id !== undefined &&
+                        <Button onPress={deletePlant} appearance="outline" status="danger"
+                                style={styles.deleteButton}>Löschen</Button>
+                        }
                     </ScrollView>
                 </KeyboardAvoidingView>
             </Layout>
@@ -201,5 +217,8 @@ const styles = StyleSheet.create({
     card: {
         margin: 15,
         marginTop: 0
+    },
+    deleteButton: {
+        marginHorizontal: 15
     }
 });

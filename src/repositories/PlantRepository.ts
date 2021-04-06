@@ -115,10 +115,10 @@ class PlantRepository {
         return undefined as any as Date;
     }
 
-    async deletePlant(id: number): Promise<void> {
+    async deletePlant(plant: Plant): Promise<void> {
         const database = await GrowBuddyDatabaseService.getDatabase();
 
-        await DatabaseHelper.executeSingleStatement(database, PLANT_DELETE_STATEMENT, [id]);
+        await DatabaseHelper.executeSingleStatement(database, PLANT_DELETE_STATEMENT, [plant.id]);
     }
 
 }
