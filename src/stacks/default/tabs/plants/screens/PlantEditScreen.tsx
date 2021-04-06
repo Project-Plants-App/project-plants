@@ -203,17 +203,19 @@ export default () => {
                             </Select>
                         </Card>
 
+                        {plant.baldurArticleId &&
                         <Button appearance="outline"
-                                style={styles.button}
+                                style={[styles.button, styles.firstButton]}
                                 onPress={loadInfoFromBaldurGarten}>
                             Infos von BALDUR-Garten laden
                         </Button>
+                        }
 
                         {plant.id !== undefined &&
                         <Button onPress={deletePlant}
                                 appearance="outline"
                                 status="danger"
-                                style={[styles.button, styles.lastButton]}>
+                                style={styles.button}>
                             Löschen
                         </Button>
                         }
@@ -253,7 +255,7 @@ const styles = StyleSheet.create({
     button: {
         marginHorizontal: 15
     },
-    lastButton: {
-        marginTop: 15
+    firstButton: {
+        marginBottom: 15
     }
 });
