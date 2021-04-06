@@ -166,7 +166,13 @@ class BaldurGartenService {
 
     private async extractAvatar(searchResult: BaldurGartenProductSearchResult, rawHtml: string) {
         try {
-            const pattern = new RegExp(`alt="${this.escapeRegex(searchResult.name)}" src="([^"]+)"`, 'g');
+            const namePattern = Array.from(searchResult.name.matchAll(/(\w+)/g))
+                .map((match) => {
+                    return match[1].trim();
+                })
+                .join("[^\"]*")
+
+            const pattern = new RegExp(`alt="[^\"]*${namePattern}[^\"]*" src="([^"]+)"`, 'gm');
 
             const images = Array.from(rawHtml.matchAll(pattern))
                 .map((match) => {
@@ -188,10 +194,6 @@ class BaldurGartenService {
 
             return undefined;
         }
-    }
-
-    private escapeRegex(value: string) {
-        return value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     }
 
     createBaldurDetailLink(articleId: string) {
