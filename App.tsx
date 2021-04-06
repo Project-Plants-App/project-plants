@@ -9,6 +9,14 @@ import {AppearanceProvider, useColorScheme} from "react-native-appearance";
 import DefaultStack from "./src/stacks/default/DefaultStack";
 import {SafeAreaView, StatusBar} from "react-native";
 
+import * as Sentry from 'sentry-expo';
+
+Sentry.init({
+    dsn: 'https://87b522a85d234062b39f044f423848af@o566027.ingest.sentry.io/5708282',
+    enableInExpoDevelopment: true,
+    debug: true
+});
+
 export default () => {
     return (
         <AppearanceProvider>
