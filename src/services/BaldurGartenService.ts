@@ -43,19 +43,26 @@ class BaldurGartenService {
         });
     }
 
-    async extractPlantDetails(searchResult: BaldurGartenProductSearchResult) {
-        const response = await fetch(this.createBaldurDetailLink(searchResult.id));
+    async extractPlantDetails(baldurArticleId: string) {
+        const response = await fetch(this.createBaldurDetailLink(baldurArticleId));
         const rawHtml = await response.text();
 
+        const name = this.extractPlantName(rawHtml);
         const plantAttributes = this.extractPlantAttributes(rawHtml);
-        const avatar = await this.extractAvatar(searchResult, rawHtml);
+        const avatar = name ? await this.extractAvatar(name, rawHtml) : undefined;
 
         return {
-            name: searchResult.name,
-            baldurArticleId: searchResult.id,
+            name,
+            baldurArticleId,
             avatar,
             ...plantAttributes
         } as Plant;
+    }
+
+    private extractPlantName(rawHtml: string) {
+        const names = this.extractValuesOfElementsWithClass(rawHtml, "pds-description__headline");
+
+        return names.length === 0 ? undefined : names[0].replaceAll("&#039;", "'");
     }
 
     private extractPlantAttributes(rawHtml: string) {
@@ -164,9 +171,9 @@ class BaldurGartenService {
         }
     }
 
-    private async extractAvatar(searchResult: BaldurGartenProductSearchResult, rawHtml: string) {
+    private async extractAvatar(plantName: string, rawHtml: string) {
         try {
-            const namePattern = Array.from(searchResult.name.matchAll(/(\w+)/g))
+            const namePattern = Array.from(plantName.matchAll(/(\w+)/g))
                 .map((match) => {
                     return match[1].trim();
                 })

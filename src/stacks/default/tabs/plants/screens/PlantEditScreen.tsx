@@ -27,6 +27,8 @@ import PlantAvatar from "../../../../../common/components/PlantAvatar";
 import ImageDataUriHelper from "../../../../../common/ImageDataUriHelper";
 import IndexPathHelper from "../../../../../common/IndexPathHelper";
 import {WinterProof} from "../../../../../model/WinterProof";
+import BaldurGartenService from "../../../../../services/BaldurGartenService";
+import ObjectUtils from "../../../../../common/ObjectUtils";
 
 const IMAGE_PICKER_OPTIONS: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images,
@@ -95,6 +97,26 @@ export default () => {
 
         navigation.dispatch(StackActions.popToTop());
     }
+
+    const loadInfoFromBaldurGarten = async () => {
+        let plantInfos = await BaldurGartenService.extractPlantDetails(plant.baldurArticleId);
+        if (ObjectUtils.isDefined(plantInfos.name)) {
+            setName(plantInfos.name);
+        }
+        if (ObjectUtils.isDefined(plantInfos.avatar)) {
+            setAvatar(plantInfos.avatar);
+        }
+        if (ObjectUtils.isDefined(plantInfos.winterProof)) {
+            setWinterProof(IndexPathHelper.createIndexPath(plantInfos.winterProof));
+        }
+        if (ObjectUtils.isDefined(plantInfos.preferredLocation)) {
+            setPreferredLocation(IndexPathHelper.createIndexPath(plantInfos.preferredLocation));
+        }
+        if (ObjectUtils.isDefined(plantInfos.waterDemand)) {
+            setWaterDemand(IndexPathHelper.createIndexPath(plantInfos.waterDemand));
+        }
+    }
+
 
     const CameraIcon = (props: any) => (
         <Icon {...props} name="camera-outline"/>
@@ -181,9 +203,19 @@ export default () => {
                             </Select>
                         </Card>
 
+                        <Button appearance="outline"
+                                style={styles.button}
+                                onPress={loadInfoFromBaldurGarten}>
+                            Infos von BALDUR-Garten laden
+                        </Button>
+
                         {plant.id !== undefined &&
-                        <Button onPress={deletePlant} appearance="outline" status="danger"
-                                style={styles.deleteButton}>Löschen</Button>
+                        <Button onPress={deletePlant}
+                                appearance="outline"
+                                status="danger"
+                                style={[styles.button, styles.lastButton]}>
+                            Löschen
+                        </Button>
                         }
                     </ScrollView>
                 </KeyboardAvoidingView>
@@ -218,7 +250,10 @@ const styles = StyleSheet.create({
         margin: 15,
         marginTop: 0
     },
-    deleteButton: {
+    button: {
         marginHorizontal: 15
+    },
+    lastButton: {
+        marginTop: 15
     }
 });

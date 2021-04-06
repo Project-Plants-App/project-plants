@@ -34,7 +34,7 @@ export default () => {
     };
 
     const select = async (searchResult: BaldurGartenProductSearchResult) => {
-        const plant = await BaldurGartenService.extractPlantDetails(searchResult);
+        const plant = await BaldurGartenService.extractPlantDetails(searchResult.id);
 
         navigation.navigate({name: PlantsTabRoute.PLANTS_EDIT, params: {plant}});
     }
