@@ -11,5 +11,7 @@ export interface Plant {
     preferredLocation: PreferredLocation;
     winterProof: WinterProof;
     baldurArticleId: string;
+    lastTimeWatered: Date;
+    lastTimeFertilised: Date;
 
 }

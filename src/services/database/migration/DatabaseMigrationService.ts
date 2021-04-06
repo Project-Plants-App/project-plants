@@ -22,10 +22,7 @@ class DatabaseMigrationService {
     async migrateDatabase(database: Database, migrationScripts: string[]): Promise<void> {
         let schemaVersionTableExists = await DatabaseHelper.tableExists("schema_version", database);
         if (!schemaVersionTableExists) {
-            console.debug(`schema version table does not exist`)
             await this.createSchemaVersionTable(database);
-        } else {
-            console.debug(`schema version table does exist`)
         }
 
         for (let version = 0; version < migrationScripts.length; version++) {

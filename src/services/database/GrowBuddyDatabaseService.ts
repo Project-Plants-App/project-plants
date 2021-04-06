@@ -1,7 +1,7 @@
 import * as SQLite from "expo-sqlite";
 import {WebSQLDatabase} from "expo-sqlite";
-import DatabaseMigrationService from "./migration/DatabaseMigrationService";
 import * as FileSystem from "expo-file-system";
+import DatabaseMigrationService from "./migration/DatabaseMigrationService";
 
 const DATABASE_NAME = "grow-buddy.db";
 
@@ -16,6 +16,10 @@ const MIGRATIONS = [
          winter_proof       integer,
          baldur_article_id  varchar(255)
      );`,
+    `alter table plants
+        add column last_time_watered date;`,
+    `alter table plants
+        add column last_time_fertilised date;`
 ];
 
 class GrowBuddyDatabaseService {

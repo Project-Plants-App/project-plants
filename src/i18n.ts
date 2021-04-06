@@ -9,6 +9,8 @@ i18n.translations = {
         SETTINGS: 'Einstellungen',
         NEW: 'Neu',
         SEARCH: 'Suchen',
+        LAST_TIME_WATERED: 'Letztes Mal gegossen',
+        LAST_TIME_FERTILISED: 'Letztes Mal gedüngt',
         // preferred location
         PREFERRED_LOCATION: 'Standort',
         PREFERRED_LOCATION_UNDEFINED: 'Undefiniert',

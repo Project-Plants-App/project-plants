@@ -11,7 +11,7 @@ import {
     TopNavigationAction
 } from "@ui-kitten/components";
 import React, {useState} from "react";
-import {Linking, ListRenderItemInfo, StyleSheet, TouchableOpacity, View} from "react-native";
+import {Linking, ListRenderItemInfo, ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
 import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
 import {Plant} from "../../../../../model/Plant";
@@ -21,13 +21,14 @@ import {WaterDemand} from "../../../../../model/WaterDemand";
 import {PreferredLocation} from "../../../../../model/PreferredLocation";
 import {WinterProof} from "../../../../../model/WinterProof";
 import BaldurGartenService from "../../../../../services/BaldurGartenService";
+import PlantRepository from "../../../../../repositories/PlantRepository";
 
 export default () => {
 
     const navigation = useNavigation<PlantsStackNavigationProp<PlantsTabRoute.PLANTS_EDIT>>();
     const route = useRoute<PlantsStackRouteProp<PlantsTabRoute.PLANTS_EDIT>>();
 
-    const [plant] = useState(route.params.plant || {} as Plant)
+    const [plant, setPlant] = useState(route.params.plant || {} as Plant)
 
     const back = () => {
         navigation.dispatch(StackActions.popToTop());
@@ -77,18 +78,58 @@ export default () => {
     ];
 
     const renderPlantAttributes = (entry: ListRenderItemInfo<any>) => (
-        <ListItem
-            title={entry.item.value}
-            description={entry.item.label}
-            disabled={true}
-        />
+        <ListItem title={entry.item.value} description={entry.item.label} disabled={true}/>
     );
 
-    const CardHeader = (props: any) => (
-        <View {...props}>
-            <Text category="s1">Allgemeine Informationen</Text>
-        </View>
-    )
+    const formatDate = (date: Date) => {
+        return date ? date.toLocaleDateString() : '';
+    }
+
+    const updatePlant = async () => {
+        await PlantRepository.insertOrUpdatePlant(plant);
+        setPlant({...plant});
+    }
+
+    const plantActivities = [
+        {
+            label: i18n.t('LAST_TIME_WATERED'),
+            value: formatDate(plant.lastTimeWatered),
+            onPress: async () => {
+                plant.lastTimeWatered = new Date();
+                await updatePlant();
+            }
+        },
+        {
+            label: i18n.t('LAST_TIME_FERTILISED'),
+            value: formatDate(plant.lastTimeFertilised),
+            onPress: async () => {
+                plant.lastTimeFertilised = new Date();
+                await updatePlant();
+            }
+        }
+    ];
+
+    const renderActivities = (entry: ListRenderItemInfo<any>) => {
+        const icon = (props: any) => (
+            <Icon {...props} name="refresh-outline"/>
+        );
+
+        const button = (props: any) => (
+            <Button {...props} accessoryRight={icon} appearance="ghost" onPress={entry.item.onPress}/>
+        );
+
+        return (
+            <ListItem title={entry.item.value} description={entry.item.label} accessoryRight={button} disabled={true}/>
+        );
+    };
+
+    const CardHeader = (title: string) => {
+        return (props: any) => (
+            <View {...props}>
+                <Text category="s1">{title}</Text>
+            </View>
+        )
+    }
 
     return (
         <React.Fragment>
@@ -98,26 +139,35 @@ export default () => {
                            accessoryRight={EditAction}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
-                <Card style={styles.card} status="basic" disabled={true}>
-                    <TouchableOpacity onPress={()=> openAvatarDetail()} style={styles.avatarContainer}>
-                        <PlantAvatar avatar={plant.avatar} size="giant"/>
-                    </TouchableOpacity>
+                <ScrollView>
+                    <View style={styles.contentContainer}>
+                        <Card style={styles.card} status="basic" disabled={true}>
+                            <TouchableOpacity onPress={() => openAvatarDetail()} style={styles.avatarContainer}>
+                                <PlantAvatar avatar={plant.avatar} size="giant"/>
+                            </TouchableOpacity>
 
-                    <Text category='s1' style={styles.headerTitle}>{plant.name}</Text>
-                </Card>
-                <Card style={styles.card} header={CardHeader} status="basic" disabled={true}>
-                    <List data={plantAttributes} renderItem={renderPlantAttributes}
-                          ItemSeparatorComponent={Divider}/>
+                            <Text category='s1' style={styles.headerTitle}>{plant.name}</Text>
+                        </Card>
+                        <Card style={styles.card} header={CardHeader("Allgemeine Informationen")} status="basic"
+                              disabled={true}>
+                            <List data={plantAttributes} renderItem={renderPlantAttributes}
+                                  ItemSeparatorComponent={Divider}/>
 
-                    {plant.baldurArticleId &&
-                    <Button accessoryLeft={LinkIcon}
-                            appearance="outline"
-                            style={styles.button}
-                            onPress={() => Linking.openURL(BaldurGartenService.createBaldurDetailLink(plant.baldurArticleId))}>
-                        BALDUR-Garten
-                    </Button>
-                    }
-                </Card>
+                            {plant.baldurArticleId &&
+                            <Button accessoryLeft={LinkIcon}
+                                    appearance="outline"
+                                    style={styles.button}
+                                    onPress={() => Linking.openURL(BaldurGartenService.createBaldurDetailLink(plant.baldurArticleId))}>
+                                BALDUR-Garten
+                            </Button>
+                            }
+                        </Card>
+                        <Card style={styles.card} header={CardHeader("Aktivitäten")} status="basic" disabled={true}>
+                            <List data={plantActivities} renderItem={renderActivities}
+                                  ItemSeparatorComponent={Divider}/>
+                        </Card>
+                    </View>
+                </ScrollView>
             </Layout>
             <Divider/>
         </React.Fragment>
@@ -127,19 +177,21 @@ export default () => {
 
 const styles = StyleSheet.create({
     layout: {
-        flex: 1,
-        paddingTop: 15
+        flex: 1
+    },
+    contentContainer: {
+        margin: 15,
+        marginBottom: 0
     },
     avatarContainer: {
-        alignSelf:"center",
+        alignSelf: "center",
         marginBottom: 15,
     },
     headerTitle: {
         textAlign: "center"
     },
     card: {
-        margin: 15,
-        marginTop: 0
+        marginBottom: 15
     },
     button: {
         marginTop: 15

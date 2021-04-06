@@ -8,19 +8,10 @@ const PLANT_INSERT_STATEMENT = `insert into plants (id,
                                                     preferred_location,
                                                     water_demand,
                                                     winter_proof,
-                                                    baldur_article_id)
-                                values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?, ?, ?)`
-
-
-const PLANT_SELECT_STATEMENT = `select id,
-                                       name,
-                                       avatar,
-                                       preferred_location,
-                                       water_demand,
-                                       winter_proof,
-                                       baldur_article_id
-                                from plants
-                                where id = ?`
+                                                    baldur_article_id,
+                                                    last_time_watered,
+                                                    last_time_fertilised)
+                                values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?, ?, ?, ?, ?)`
 
 const PLANT_SELECT_ALL_STATEMENT = `select id,
                                            name,
@@ -28,16 +19,22 @@ const PLANT_SELECT_ALL_STATEMENT = `select id,
                                            preferred_location,
                                            water_demand,
                                            winter_proof,
-                                           baldur_article_id
+                                           baldur_article_id,
+                                           last_time_watered,
+                                           last_time_fertilised
                                     from plants`
 
+const PLANT_SELECT_STATEMENT = `${PLANT_SELECT_ALL_STATEMENT} where id = ?`
+
 const PLANT_UPDATE_STATEMENT = `update plants
-                                set name               = ?,
-                                    avatar             = ?,
-                                    preferred_location = ?,
-                                    water_demand       = ?,
-                                    winter_proof       = ?,
-                                    baldur_article_id  = ?
+                                set name                 = ?,
+                                    avatar               = ?,
+                                    preferred_location   = ?,
+                                    water_demand         = ?,
+                                    winter_proof         = ?,
+                                    baldur_article_id    = ?,
+                                    last_time_watered    = ?,
+                                    last_time_fertilised = ?
                                 where id = ?`
 
 const PLANT_DELETE_STATEMENT = `delete
@@ -55,7 +52,9 @@ class PlantRepository {
             plant.preferredLocation,
             plant.waterDemand,
             plant.winterProof,
-            plant.baldurArticleId
+            plant.baldurArticleId,
+            plant.lastTimeWatered ? plant.lastTimeWatered.toISOString() : undefined,
+            plant.lastTimeFertilised ? plant.lastTimeFertilised.toISOString() : undefined,
         ];
 
         if (plant.id === undefined) {
@@ -99,8 +98,21 @@ class PlantRepository {
             preferredLocation: row.preferred_location,
             waterDemand: row.water_demand,
             winterProof: row.winter_proof,
-            baldurArticleId: row.baldur_article_id
+            baldurArticleId: row.baldur_article_id,
+            lastTimeWatered: this.parseDate(row.last_time_watered),
+            lastTimeFertilised: this.parseDate(row.last_time_fertilised)
         } as Plant
+    }
+
+    private parseDate(date: string) {
+        try {
+            if (date) {
+                return new Date(Date.parse(date));
+            }
+        } catch (e) {
+            // ignore
+        }
+        return undefined as any as Date;
     }
 
     async deletePlant(id: number): Promise<void> {
