@@ -76,7 +76,7 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title="Pflanze von Baldur wählen"
+            <TopNavigation title="Pflanze von BALDUR-Garten wählen"
                            alignment="center"
                            accessoryLeft={CancelAction}/>
             <Divider/>

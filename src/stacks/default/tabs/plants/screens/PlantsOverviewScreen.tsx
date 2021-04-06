@@ -88,7 +88,7 @@ export default () => {
                        backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.75)'}}
                        onBackdropPress={() => setPrePlantCreationDialogVisible(false)}>
                     <Card disabled={true}>
-                        <Text>Hast du die Pflanze bei Baldur gekauft?</Text>
+                        <Text>Hast du die Pflanze bei BALDUR-Garten gekauft?</Text>
                         <View style={{flexDirection:"row", justifyContent:"center", marginTop:15}}>
                         <Button onPress={() => openBaldurPrefill()} style={{marginRight:15}}>Ja</Button>
                         <Button onPress={() => openPlantCreate()}>Nein</Button>
