@@ -62,7 +62,7 @@ class BaldurGartenService {
     private extractPlantName(rawHtml: string) {
         const names = this.extractValuesOfElementsWithClass(rawHtml, "pds-description__headline");
 
-        return names.length === 0 ? undefined : names[0].replaceAll("&#039;", "'");
+        return names.length === 0 ? undefined : names[0].replace(/&#039;/g, "'");
     }
 
     private extractPlantAttributes(rawHtml: string) {
@@ -173,7 +173,7 @@ class BaldurGartenService {
 
     private async extractAvatar(plantName: string, rawHtml: string) {
         try {
-            const namePattern = Array.from(plantName.matchAll(/(\w+)/g))
+            const namePattern = this.getAllMatches(plantName, /(\w+)/g)
                 .map((match) => {
                     return match[1].trim();
                 })
@@ -181,7 +181,7 @@ class BaldurGartenService {
 
             const pattern = new RegExp(`alt="[^\"]*${namePattern}[^\"]*" src="([^"]+)"`, 'gm');
 
-            const images = Array.from(rawHtml.matchAll(pattern))
+            const images = this.getAllMatches(rawHtml, pattern)
                 .map((match) => {
                     return match[1].trim();
                 });
@@ -210,10 +210,20 @@ class BaldurGartenService {
     private extractValuesOfElementsWithClass(rawHtml: string, cssClass: string): string[] {
         const pattern = new RegExp(`${cssClass}[^>]+>([^<]+)<`, 'gm');
 
-        return Array.from(rawHtml.matchAll(pattern))
+        return this.getAllMatches(rawHtml, pattern)
             .map((match) => {
                 return match[1].trim();
             });
+    }
+
+    private getAllMatches(text: string, pattern: RegExp) {
+        let match;
+        let matches = [];
+        while ((match = pattern.exec(text)) !== null) {
+            matches.push(match);
+        }
+
+        return matches;
     }
 
 }
