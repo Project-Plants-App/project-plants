@@ -165,23 +165,29 @@ class BaldurGartenService {
     }
 
     private async extractAvatar(searchResult: BaldurGartenProductSearchResult, rawHtml: string) {
-        const pattern = new RegExp(`alt="${this.escapeRegex(searchResult.name)}" src="([^"]+)"`, 'g');
+        try {
+            const pattern = new RegExp(`alt="${this.escapeRegex(searchResult.name)}" src="([^"]+)"`, 'g');
 
-        const images = Array.from(rawHtml.matchAll(pattern))
-            .map((match) => {
-                return match[1].trim();
+            const images = Array.from(rawHtml.matchAll(pattern))
+                .map((match) => {
+                    return match[1].trim();
+                });
+
+            if (images.length === 0) {
+                return undefined;
+            }
+
+            const asset = await Asset.fromModule(`${BALDUR_GARTEN_BASE_URL}/${images[0]}`).downloadAsync();
+            const avatarAsBase64 = await FileSystem.readAsStringAsync(asset.localUri!, {
+                encoding: "base64"
             });
 
-        if (images.length === 0) {
+            return ImageDataUriHelper.toImageDataUri(asset.localUri!, avatarAsBase64);
+        } catch (error) {
+            console.error(error)
+
             return undefined;
         }
-
-        const asset = await Asset.fromModule(`${BALDUR_GARTEN_BASE_URL}/${images[0]}`).downloadAsync();
-        const avatarAsBase64 = await FileSystem.readAsStringAsync(asset.localUri!, {
-            encoding: "base64"
-        });
-
-        return ImageDataUriHelper.toImageDataUri(asset.localUri!, avatarAsBase64)
     }
 
     private escapeRegex(value: string) {
