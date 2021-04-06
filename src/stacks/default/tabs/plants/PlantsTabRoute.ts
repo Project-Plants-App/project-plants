@@ -6,6 +6,7 @@ export enum PlantsTabRoute {
     PLANTS = "plants",
     PLANTS_OVERVIEW = "plants-overview",
     PLANTS_DETAIL = "plants-detail",
+    PLANTS_AVATAR_DETAIL = "plants-avatar-detail",
     PLANTS_EDIT = "plants-edit",
     PLANTS_BALDUR_PREFILL = "plants-baldur-prefill"
 }
@@ -13,6 +14,9 @@ export enum PlantsTabRoute {
 export type PlantsStackRouteParams = {
     "plants-overview": undefined;
     "plants-detail": {
+        plant: Plant
+    },
+    "plants-avatar-detail": {
         plant: Plant
     }
     "plants-edit": {

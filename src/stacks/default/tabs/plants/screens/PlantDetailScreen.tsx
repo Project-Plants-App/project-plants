@@ -11,7 +11,7 @@ import {
     TopNavigationAction
 } from "@ui-kitten/components";
 import React, {useState} from "react";
-import {Linking, ListRenderItemInfo, StyleSheet, View} from "react-native";
+import {Linking, ListRenderItemInfo, StyleSheet, TouchableOpacity, View} from "react-native";
 import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
 import {Plant} from "../../../../../model/Plant";
@@ -35,6 +35,10 @@ export default () => {
 
     const edit = async () => {
         navigation.navigate({name: PlantsTabRoute.PLANTS_EDIT, params: {plant}});
+    }
+
+    const openAvatarDetail = () => {
+        navigation.navigate({name: PlantsTabRoute.PLANTS_AVATAR_DETAIL, params: {plant}});
     }
 
     const BackIcon = (props: any) => (
@@ -95,7 +99,10 @@ export default () => {
             <Divider/>
             <Layout style={styles.layout} level="2">
                 <Card style={styles.card} status="basic" disabled={true}>
-                    <PlantAvatar avatar={plant.avatar} size="giant" style={styles.avatar}/>
+                    <TouchableOpacity onPress={()=> openAvatarDetail()} style={styles.avatarContainer}>
+                        <PlantAvatar avatar={plant.avatar} size="giant"/>
+                    </TouchableOpacity>
+
                     <Text category='s1' style={styles.headerTitle}>{plant.name}</Text>
                 </Card>
                 <Card style={styles.card} header={CardHeader} status="basic" disabled={true}>
@@ -123,8 +130,8 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 15
     },
-    avatar: {
-        alignSelf: "center",
+    avatarContainer: {
+        alignSelf:"center",
         marginBottom: 15,
     },
     headerTitle: {
