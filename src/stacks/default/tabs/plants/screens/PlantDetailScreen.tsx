@@ -22,6 +22,7 @@ import {PreferredLocation} from "../../../../../model/PreferredLocation";
 import {WinterProof} from "../../../../../model/WinterProof";
 import BaldurGartenService from "../../../../../services/BaldurGartenService";
 import PlantRepository from "../../../../../repositories/PlantRepository";
+import CardListContainer from "../../../../../common/components/CardListContainer";
 
 export default () => {
 
@@ -150,9 +151,11 @@ export default () => {
                         </Card>
                         <Card style={styles.card} header={CardHeader("Allgemeine Informationen")} status="basic"
                               disabled={true}>
-                            <List data={plantAttributes} renderItem={renderPlantAttributes}
-                                  ItemSeparatorComponent={Divider}/>
-
+                            <CardListContainer noBottomMargin>
+                                <List data={plantAttributes} renderItem={renderPlantAttributes}
+                                      ItemSeparatorComponent={Divider}/>
+                                <Divider/>
+                            </CardListContainer>
                             {plant.baldurArticleId &&
                             <Button accessoryLeft={LinkIcon}
                                     appearance="outline"
@@ -163,8 +166,10 @@ export default () => {
                             }
                         </Card>
                         <Card style={styles.card} header={CardHeader("Aktivitäten")} status="basic" disabled={true}>
-                            <List data={plantActivities} renderItem={renderActivities}
-                                  ItemSeparatorComponent={Divider}/>
+                            <CardListContainer>
+                                <List data={plantActivities} renderItem={renderActivities}
+                                      ItemSeparatorComponent={Divider}/>
+                            </CardListContainer>
                         </Card>
                     </View>
                 </ScrollView>
