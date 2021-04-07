@@ -86,7 +86,7 @@ export default () => {
                 <List data={searchResults} renderItem={renderSearchResult}
                       ItemSeparatorComponent={Divider} style={styles.list}/>
 
-                <Button onPress={skip} style={styles.button}>Überspringen</Button>
+                <Button onPress={skip} style={styles.button}>Nicht gefunden</Button>
             </Layout>
             <Divider/>
         </React.Fragment>

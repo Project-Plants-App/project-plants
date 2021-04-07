@@ -1,11 +1,13 @@
 import {
     Button,
+    Calendar,
     Card,
     Divider,
     Icon,
     Layout,
     List,
     ListItem,
+    Modal,
     Text,
     TopNavigation,
     TopNavigationAction
@@ -30,6 +32,8 @@ export default () => {
     const route = useRoute<PlantsStackRouteProp<PlantsTabRoute.PLANTS_EDIT>>();
 
     const [plant, setPlant] = useState(route.params.plant || {} as Plant)
+    const [lastTimeWateredDialogVisible, setLastTimeWateredDialogVisible] = useState(false);
+    const [lastTimeFertilisedDialogVisible, setLastTimeFertilisedDialogVisible] = useState(false);
 
     const back = () => {
         navigation.dispatch(StackActions.popToTop());
@@ -91,28 +95,40 @@ export default () => {
         setPlant({...plant});
     }
 
+    const updateLastTimeWatered = async (date: Date) => {
+        setLastTimeWateredDialogVisible(false);
+
+        plant.lastTimeWatered = date;
+        await updatePlant();
+    }
+
+    const updateLastTimeFertilised = async (date: Date) => {
+        setLastTimeFertilisedDialogVisible(false);
+
+        plant.lastTimeFertilised = date;
+        await updatePlant();
+    }
+
     const plantActivities = [
         {
             label: i18n.t('LAST_TIME_WATERED'),
             value: formatDate(plant.lastTimeWatered),
-            onPress: async () => {
-                plant.lastTimeWatered = new Date();
-                await updatePlant();
+            onPress: () => {
+                setLastTimeWateredDialogVisible(true);
             }
         },
         {
             label: i18n.t('LAST_TIME_FERTILISED'),
             value: formatDate(plant.lastTimeFertilised),
-            onPress: async () => {
-                plant.lastTimeFertilised = new Date();
-                await updatePlant();
+            onPress: () => {
+                setLastTimeFertilisedDialogVisible(true);
             }
         }
     ];
 
     const renderActivities = (entry: ListRenderItemInfo<any>) => {
         const icon = (props: any) => (
-            <Icon {...props} name="refresh-outline"/>
+            <Icon {...props} name="calendar-outline"/>
         );
 
         const button = (props: any) => (
@@ -173,6 +189,29 @@ export default () => {
                         </Card>
                     </View>
                 </ScrollView>
+
+                <Modal visible={lastTimeWateredDialogVisible}
+                       backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.75)'}}
+                       onBackdropPress={() => setLastTimeWateredDialogVisible(false)}>
+                    <Card>
+                        <Calendar
+                            style={styles.datePicker}
+                            onSelect={date => updateLastTimeWatered(date)}
+                        />
+                    </Card>
+                </Modal>
+
+                <Modal visible={lastTimeFertilisedDialogVisible}
+                       backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.75)'}}
+                       onBackdropPress={() => setLastTimeFertilisedDialogVisible(false)}>
+                    <Card>
+                        <Calendar
+                            style={styles.datePicker}
+                            onSelect={date => updateLastTimeFertilised(date)}
+                        />
+                    </Card>
+                </Modal>
+
             </Layout>
             <Divider/>
         </React.Fragment>
@@ -200,5 +239,9 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 15
+    },
+    datePicker: {
+        marginHorizontal: -25,
+        marginVertical: -20
     }
 });
