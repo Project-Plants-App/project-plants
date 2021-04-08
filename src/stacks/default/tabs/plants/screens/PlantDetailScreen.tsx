@@ -122,6 +122,7 @@ export default () => {
         {
             label: i18n.t('LAST_TIME_WATERED'),
             value: formatDate(plant.lastTimeWatered),
+            icon: 'droplet-outline',
             onPress: () => {
                 setLastTimeWateredDialogVisible(true);
             }
@@ -129,6 +130,7 @@ export default () => {
         {
             label: i18n.t('LAST_TIME_FERTILISED'),
             value: formatDate(plant.lastTimeFertilised),
+            icon: 'flash-outline',
             onPress: () => {
                 setLastTimeFertilisedDialogVisible(true);
             }
@@ -136,6 +138,7 @@ export default () => {
         {
             label: i18n.t('LAST_TIME_SPRAYED'),
             value: formatDate(plant.lastTimeSprayed),
+            icon: 'shield-outline',
             onPress: () => {
                 setLastTimeSprayedDialogVisible(true);
             }
@@ -143,16 +146,24 @@ export default () => {
     ];
 
     const renderActivities = (entry: ListRenderItemInfo<any>) => {
-        const icon = (props: any) => (
+        const iconLeft = (props: any) => (
+            <Icon {...props} name={entry.item.icon}/>
+        );
+
+        const buttonIcon = (props: any) => (
             <Icon {...props} name="calendar-outline"/>
         );
 
         const button = (props: any) => (
-            <Button {...props} accessoryRight={icon} appearance="ghost" onPress={entry.item.onPress}/>
+            <Button {...props} accessoryRight={buttonIcon} appearance="ghost" onPress={entry.item.onPress}/>
         );
 
         return (
-            <ListItem title={entry.item.value} description={entry.item.label} accessoryRight={button} disabled={true}/>
+            <ListItem title={entry.item.value}
+                      description={entry.item.label}
+                      accessoryLeft={iconLeft}
+                      accessoryRight={button}
+                      disabled={true}/>
         );
     };
 
