@@ -61,8 +61,19 @@ class BaldurGartenService {
 
     private extractPlantName(rawHtml: string) {
         const names = this.extractValuesOfElementsWithClass(rawHtml, "pds-description__headline");
+        if (names.length === 0) {
+            return undefined;
+        }
 
-        return names.length === 0 ? undefined : names[0].replace(/&#039;/g, "'");
+        return this.unescapeHtmlValue(names[0]);
+    }
+
+    private unescapeHtmlValue(rawHtmlValue: string) {
+        return rawHtmlValue
+            // --> '
+            .replace(/&#039;/g, "'")
+            // --> &
+            .replace(/&amp;/g, "&");
     }
 
     private extractPlantAttributes(rawHtml: string) {
