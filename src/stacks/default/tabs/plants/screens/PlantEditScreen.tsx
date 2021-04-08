@@ -73,11 +73,7 @@ export default () => {
     };
 
     const cancel = () => {
-        if (plant.id !== undefined) {
-            navigation.goBack();
-        } else {
-            navigation.dispatch(StackActions.popToTop());
-        }
+        navigation.goBack();
     }
 
     const save = async () => {
@@ -87,9 +83,13 @@ export default () => {
         plant.preferredLocation = preferredLocation.row;
         plant.winterProof = winterProof.row;
 
-        await PlantRepository.insertOrUpdatePlant(plant);
-
-        navigation.dispatch(StackActions.popToTop());
+        if (ObjectUtils.isDefined(plant.id)) {
+            await PlantRepository.insertOrUpdatePlant(plant);
+            navigation.goBack();
+        } else {
+            await PlantRepository.insertOrUpdatePlant(plant);
+            navigation.replace(PlantsTabRoute.PLANTS_DETAIL, {plant});
+        }
     }
 
     const deletePlant = async () => {

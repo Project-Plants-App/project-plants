@@ -36,7 +36,7 @@ export default () => {
     const select = async (searchResult: BaldurGartenProductSearchResult) => {
         const plant = await BaldurGartenService.extractPlantDetails(searchResult.id);
 
-        navigation.navigate({name: PlantsTabRoute.PLANTS_EDIT, params: {plant}});
+        navigation.replace(PlantsTabRoute.PLANTS_EDIT, {plant});
     }
 
     const skip = () => {
@@ -44,7 +44,7 @@ export default () => {
     }
 
     const cancel = () => {
-        navigation.dispatch(StackActions.popToTop());
+        navigation.goBack();
     }
 
     const CancelIcon = (props: any) => (
