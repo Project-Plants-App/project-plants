@@ -29,6 +29,7 @@ import IndexPathHelper from "../../../../../common/IndexPathHelper";
 import {WinterProof} from "../../../../../model/WinterProof";
 import BaldurGartenService from "../../../../../services/BaldurGartenService";
 import ObjectUtils from "../../../../../common/ObjectUtils";
+import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 
 const IMAGE_PICKER_OPTIONS: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images,
@@ -157,7 +158,7 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title={plant.id === undefined ? i18n.t('NEW') : plant.name}
+            <TopNavigation title={renderTopNavigationTitle(plant.id === undefined ? i18n.t('NEW') : plant.name)}
                            alignment="center"
                            accessoryLeft={CancelAction}
                            accessoryRight={SaveAction}/>

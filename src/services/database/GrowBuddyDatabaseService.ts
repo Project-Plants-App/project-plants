@@ -19,7 +19,9 @@ const MIGRATIONS = [
     `alter table plants
         add column last_time_watered date;`,
     `alter table plants
-        add column last_time_fertilised date;`
+        add column last_time_fertilised date;`,
+    `alter table plants
+        add column last_time_sprayed date;`
 ];
 
 class GrowBuddyDatabaseService {

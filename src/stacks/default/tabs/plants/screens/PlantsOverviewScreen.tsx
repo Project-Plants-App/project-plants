@@ -10,7 +10,8 @@ import {
     Modal,
     Text,
     TopNavigation,
-    TopNavigationAction
+    TopNavigationAction,
+    useStyleSheet
 } from "@ui-kitten/components";
 import React, {useState} from "react";
 import {ListRenderItemInfo, StyleSheet, View} from "react-native";
@@ -20,8 +21,12 @@ import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
 import PlantRepository from "../../../../../repositories/PlantRepository";
 import i18n from "../../../../../i18n";
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
+import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
+import Badge from "../../../../../common/components/Badge";
 
 export default () => {
+
+    const stylesSheets = useStyleSheet(styles);
 
     const navigation = useNavigation<PlantsStackNavigationProp<PlantsTabRoute.PLANTS_OVERVIEW>>();
     const route = useRoute<PlantsStackRouteProp<PlantsTabRoute.PLANTS_OVERVIEW>>();
@@ -64,14 +69,40 @@ export default () => {
     );
 
     const renderPlantAvatar = (plant: Plant) => {
-        return (props: any) => {
-            return (<PlantAvatar {...props} avatar={plant.avatar}/>)
+        return () => {
+            return (<PlantAvatar size="large" avatar={plant.avatar}/>)
         }
     }
 
     const renderItem = ({item}: ListRenderItemInfo<Plant>) => {
+        const renderDescription = (props: any) => {
+            return (
+                <View {...props} style={[props.style, {flexDirection: "row", alignItems: "center", marginTop: 5}]}>
+                    {item.lastTimeWatered &&
+                    <Badge icon="droplet-outline"
+                           title={item.lastTimeWatered?.toLocaleDateString()}
+                           style={{marginRight: 5}}/>
+                    }
+                    {item.lastTimeFertilised &&
+                    <Badge icon="flash-outline"
+                           title={item.lastTimeFertilised?.toLocaleDateString()}
+                           style={{marginRight: 5}}/>
+                    }
+                    {item.lastTimeSprayed &&
+                    <Badge icon="shield-outline"
+                           title={item.lastTimeSprayed?.toLocaleDateString()}/>
+                    }
+                </View>
+            )
+        }
+
+        const renderTitle = (props: any) => (
+            <Text {...props} numberOfLines={1}>{item.name}</Text>
+        )
+
         return (
-            <ListItem title={item.name}
+            <ListItem title={renderTitle}
+                      description={renderDescription}
                       accessoryLeft={renderPlantAvatar(item)}
                       onPress={() => openPlantDetail(item)}/>
         )
@@ -79,7 +110,9 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title={i18n.t('ALL_PLANTS')} alignment="center" accessoryRight={CreateAction}/>
+            <TopNavigation title={renderTopNavigationTitle(i18n.t('ALL_PLANTS'))}
+                           alignment="center"
+                           accessoryRight={CreateAction}/>
             <Divider/>
             <Layout style={styles.layout}>
                 <List data={plants} renderItem={renderItem} style={styles.list} ItemSeparatorComponent={Divider}/>
@@ -89,9 +122,9 @@ export default () => {
                        onBackdropPress={() => setPrePlantCreationDialogVisible(false)}>
                     <Card disabled={true}>
                         <Text>Hast du die Pflanze bei BALDUR-Garten gekauft?</Text>
-                        <View style={{flexDirection:"row", justifyContent:"center", marginTop:15}}>
-                        <Button onPress={() => openBaldurPrefill()} style={{marginRight:15}}>Ja</Button>
-                        <Button onPress={() => openPlantCreate()}>Nein</Button>
+                        <View style={{flexDirection: "row", justifyContent: "center", marginTop: 15}}>
+                            <Button onPress={() => openBaldurPrefill()} style={{marginRight: 15}}>Ja</Button>
+                            <Button onPress={() => openPlantCreate()}>Nein</Button>
                         </View>
                     </Card>
                 </Modal>

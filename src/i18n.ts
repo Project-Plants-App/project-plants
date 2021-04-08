@@ -11,6 +11,7 @@ i18n.translations = {
         SEARCH: 'Suchen',
         LAST_TIME_WATERED: 'Letztes Mal gegossen',
         LAST_TIME_FERTILISED: 'Letztes Mal gedüngt',
+        LAST_TIME_SPRAYED: 'Letztes Mal gespritzt',
         // preferred location
         PREFERRED_LOCATION: 'Standort',
         PREFERRED_LOCATION_UNDEFINED: 'Undefiniert',

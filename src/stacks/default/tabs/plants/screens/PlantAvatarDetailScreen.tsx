@@ -2,8 +2,9 @@ import React, {useState} from "react";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
 import {Plant} from "../../../../../model/Plant";
-import {Divider, Icon, Layout, TopNavigation, TopNavigationAction} from "@ui-kitten/components";
+import {Icon, Layout, TopNavigation, TopNavigationAction} from "@ui-kitten/components";
 import {Image, StyleSheet} from 'react-native';
+import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 
 export default () => {
 
@@ -26,7 +27,7 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title={plant.name}
+            <TopNavigation title={renderTopNavigationTitle(plant.name)}
                            alignment="center"
                            accessoryLeft={BackAction}/>
             <Layout style={styles.layout}>
@@ -42,6 +43,6 @@ const styles = StyleSheet.create({
         flex: 1
     },
     avatar: {
-        flexGrow:1
+        flexGrow: 1
     }
 });

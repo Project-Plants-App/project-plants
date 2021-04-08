@@ -16,6 +16,7 @@ import PlantAvatar from "../../../../../common/components/PlantAvatar";
 import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
 import BaldurGartenService, {BaldurGartenProductSearchResult} from "../../../../../services/BaldurGartenService";
+import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 
 export default () => {
 
@@ -76,7 +77,7 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title="Pflanze von BALDUR-Garten wählen"
+            <TopNavigation title={renderTopNavigationTitle("Pflanze von BALDUR-Garten wählen")}
                            alignment="center"
                            accessoryLeft={CancelAction}/>
             <Divider/>

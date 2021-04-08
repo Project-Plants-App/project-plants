@@ -13,5 +13,6 @@ export interface Plant {
     baldurArticleId: string;
     lastTimeWatered: Date;
     lastTimeFertilised: Date;
+    lastTimeSprayed: Date;
 
 }

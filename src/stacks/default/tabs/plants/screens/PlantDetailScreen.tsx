@@ -25,6 +25,7 @@ import {WinterProof} from "../../../../../model/WinterProof";
 import BaldurGartenService from "../../../../../services/BaldurGartenService";
 import PlantRepository from "../../../../../repositories/PlantRepository";
 import CardListContainer from "../../../../../common/components/CardListContainer";
+import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 
 export default () => {
 
@@ -34,6 +35,7 @@ export default () => {
     const [plant, setPlant] = useState(route.params.plant || {} as Plant)
     const [lastTimeWateredDialogVisible, setLastTimeWateredDialogVisible] = useState(false);
     const [lastTimeFertilisedDialogVisible, setLastTimeFertilisedDialogVisible] = useState(false);
+    const [lastTimeSprayedDialogVisible, setLastTimeSprayedDialogVisible] = useState(false);
 
     const back = () => {
         navigation.dispatch(StackActions.popToTop());
@@ -109,6 +111,13 @@ export default () => {
         await updatePlant();
     }
 
+    const updateLastTimeSprayed = async (date: Date) => {
+        setLastTimeSprayedDialogVisible(false);
+
+        plant.lastTimeSprayed = date;
+        await updatePlant();
+    }
+
     const plantActivities = [
         {
             label: i18n.t('LAST_TIME_WATERED'),
@@ -122,6 +131,13 @@ export default () => {
             value: formatDate(plant.lastTimeFertilised),
             onPress: () => {
                 setLastTimeFertilisedDialogVisible(true);
+            }
+        },
+        {
+            label: i18n.t('LAST_TIME_SPRAYED'),
+            value: formatDate(plant.lastTimeSprayed),
+            onPress: () => {
+                setLastTimeSprayedDialogVisible(true);
             }
         }
     ];
@@ -150,7 +166,7 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title={plant.name}
+            <TopNavigation title={renderTopNavigationTitle(plant.name)}
                            alignment="center"
                            accessoryLeft={BackAction}
                            accessoryRight={EditAction}/>
@@ -208,6 +224,17 @@ export default () => {
                         <Calendar
                             style={styles.datePicker}
                             onSelect={date => updateLastTimeFertilised(date)}
+                        />
+                    </Card>
+                </Modal>
+
+                <Modal visible={lastTimeSprayedDialogVisible}
+                       backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.75)'}}
+                       onBackdropPress={() => setLastTimeSprayedDialogVisible(false)}>
+                    <Card>
+                        <Calendar
+                            style={styles.datePicker}
+                            onSelect={date => updateLastTimeSprayed(date)}
                         />
                     </Card>
                 </Modal>

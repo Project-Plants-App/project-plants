@@ -3,6 +3,7 @@ import {Divider, Layout, List, ListItem, TopNavigation} from "@ui-kitten/compone
 import {ListRenderItemInfo} from "react-native";
 import ImportExportService from "../../../../../services/ImportExportService";
 import GrowBuddyDatabaseService from "../../../../../services/database/GrowBuddyDatabaseService";
+import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 
 export default () => {
 
@@ -35,7 +36,7 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title="Settings" alignment="center"/>
+            <TopNavigation title={renderTopNavigationTitle("Settings")} alignment="center"/>
             <Divider/>
             <Layout style={{flex: 1}}>
                 <List

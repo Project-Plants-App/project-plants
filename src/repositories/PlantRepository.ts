@@ -10,21 +10,25 @@ const PLANT_INSERT_STATEMENT = `insert into plants (id,
                                                     winter_proof,
                                                     baldur_article_id,
                                                     last_time_watered,
-                                                    last_time_fertilised)
-                                values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?, ?, ?, ?, ?)`
+                                                    last_time_fertilised,
+                                                    last_time_sprayed)
+                                values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
-const PLANT_SELECT_ALL_STATEMENT = `select id,
-                                           name,
-                                           avatar,
-                                           preferred_location,
-                                           water_demand,
-                                           winter_proof,
-                                           baldur_article_id,
-                                           last_time_watered,
-                                           last_time_fertilised
-                                    from plants`
+const PLANT_BASE_SELECT_STATEMENT = `select id,
+                                            name,
+                                            avatar,
+                                            preferred_location,
+                                            water_demand,
+                                            winter_proof,
+                                            baldur_article_id,
+                                            last_time_watered,
+                                            last_time_fertilised,
+                                            last_time_sprayed
+                                     from plants`
 
-const PLANT_SELECT_STATEMENT = `${PLANT_SELECT_ALL_STATEMENT} where id = ?`
+const PLANT_SELECT_ALL_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} order by name`
+
+const PLANT_SELECT_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} where id = ?`
 
 const PLANT_UPDATE_STATEMENT = `update plants
                                 set name                 = ?,
@@ -34,7 +38,8 @@ const PLANT_UPDATE_STATEMENT = `update plants
                                     winter_proof         = ?,
                                     baldur_article_id    = ?,
                                     last_time_watered    = ?,
-                                    last_time_fertilised = ?
+                                    last_time_fertilised = ?,
+                                    last_time_sprayed    = ?
                                 where id = ?`
 
 const PLANT_DELETE_STATEMENT = `delete
@@ -55,6 +60,7 @@ class PlantRepository {
             plant.baldurArticleId,
             plant.lastTimeWatered ? plant.lastTimeWatered.toISOString() : undefined,
             plant.lastTimeFertilised ? plant.lastTimeFertilised.toISOString() : undefined,
+            plant.lastTimeSprayed ? plant.lastTimeSprayed.toISOString() : undefined
         ];
 
         if (plant.id === undefined) {
@@ -100,7 +106,8 @@ class PlantRepository {
             winterProof: row.winter_proof,
             baldurArticleId: row.baldur_article_id,
             lastTimeWatered: this.parseDate(row.last_time_watered),
-            lastTimeFertilised: this.parseDate(row.last_time_fertilised)
+            lastTimeFertilised: this.parseDate(row.last_time_fertilised),
+            lastTimeSprayed: this.parseDate(row.last_time_sprayed)
         } as Plant
     }
 
