@@ -4,11 +4,14 @@ import i18n from 'i18n-js';
 i18n.translations = {
     de: {
         NAME: 'Name',
+        BOTANICAL_NAME: 'Botanischer Name',
         PLANTS: 'Pflanzen',
         ALL_PLANTS: 'Alle Pflanzen',
         SETTINGS: 'Einstellungen',
         NEW: 'Neu',
         SEARCH: 'Suchen',
+        AMOUNT: 'Anzahl',
+        PLANTED: 'Gepflanzt',
         LAST_TIME_WATERED: 'Letztes Mal gegossen',
         LAST_TIME_FERTILISED: 'Letztes Mal gedüngt',
         LAST_TIME_SPRAYED: 'Letztes Mal gespritzt',
@@ -33,7 +36,10 @@ i18n.translations = {
         WINTER_PROOF: 'Winterhart',
         WINTER_PROOF_UNDEFINED: 'Undefiniert',
         WINTER_PROOF_NO: 'Nein',
-        WINTER_PROOF_YES: 'Ja'
+        WINTER_PROOF_YES: 'Ja',
+        // detail link name
+        BALDUR_GARTEN: 'BALDUR-Garten',
+        MEIN_SCHOENER_GARTEN: 'Mein schöner Garten'
     },
 };
 

@@ -1,13 +1,10 @@
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {
-    Button,
-    Card,
     Divider,
     Icon,
     Layout,
     List,
     ListItem,
-    Modal,
     Text,
     TopNavigation,
     TopNavigationAction,
@@ -26,13 +23,10 @@ import Badge from "../../../../../common/components/Badge";
 
 export default () => {
 
-    const stylesSheets = useStyleSheet(styles);
-
     const navigation = useNavigation<PlantsStackNavigationProp<PlantsTabRoute.PLANTS_OVERVIEW>>();
     const route = useRoute<PlantsStackRouteProp<PlantsTabRoute.PLANTS_OVERVIEW>>();
 
     const [plants, setPlants] = useState<Plant[]>();
-    const [prePlantCreationDialogVisible, setPrePlantCreationDialogVisible] = useState(false);
 
     const reload = () => {
         PlantRepository.selectAllPlants().then((plants) => {
@@ -48,16 +42,8 @@ export default () => {
         navigation.navigate({name: PlantsTabRoute.PLANTS_DETAIL, params: {plant}});
     }
 
-    const openBaldurPrefill = () => {
-        setPrePlantCreationDialogVisible(false);
-
-        navigation.navigate({name: PlantsTabRoute.PLANTS_BALDUR_PREFILL, params: {}});
-    }
-
-    const openPlantCreate = () => {
-        setPrePlantCreationDialogVisible(false);
-
-        navigation.navigate({name: PlantsTabRoute.PLANTS_EDIT, params: {}});
+    const openPrefillScreen = () => {
+        navigation.navigate({name: PlantsTabRoute.PLANTS_PREFILL, params: {}});
     }
 
     const SettingsIcon = (props: any) => (
@@ -65,7 +51,7 @@ export default () => {
     );
 
     const CreateAction = () => (
-        <TopNavigationAction icon={SettingsIcon} onPress={() => setPrePlantCreationDialogVisible(true)}/>
+        <TopNavigationAction icon={SettingsIcon} onPress={() => openPrefillScreen()}/>
     );
 
     const renderPlantAvatar = (plant: Plant) => {
@@ -116,18 +102,6 @@ export default () => {
             <Divider/>
             <Layout style={styles.layout}>
                 <List data={plants} renderItem={renderItem} style={styles.list} ItemSeparatorComponent={Divider}/>
-
-                <Modal visible={prePlantCreationDialogVisible}
-                       backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.75)'}}
-                       onBackdropPress={() => setPrePlantCreationDialogVisible(false)}>
-                    <Card disabled={true}>
-                        <Text>Hast du die Pflanze bei BALDUR-Garten gekauft?</Text>
-                        <View style={{flexDirection: "row", justifyContent: "center", marginTop: 15}}>
-                            <Button onPress={() => openBaldurPrefill()} style={{marginRight: 15}}>Ja</Button>
-                            <Button onPress={() => openPlantCreate()}>Nein</Button>
-                        </View>
-                    </Card>
-                </Modal>
             </Layout>
             <Divider/>
         </React.Fragment>

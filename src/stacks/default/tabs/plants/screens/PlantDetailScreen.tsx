@@ -22,10 +22,10 @@ import PlantAvatar from "../../../../../common/components/PlantAvatar";
 import {WaterDemand} from "../../../../../model/WaterDemand";
 import {PreferredLocation} from "../../../../../model/PreferredLocation";
 import {WinterProof} from "../../../../../model/WinterProof";
-import BaldurGartenService from "../../../../../services/BaldurGartenService";
 import PlantRepository from "../../../../../repositories/PlantRepository";
 import CardListContainer from "../../../../../common/components/CardListContainer";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
+import AmountPlantedAtText from "../../../../../common/components/AmountPlantedAtText";
 
 export default () => {
 
@@ -191,20 +191,26 @@ export default () => {
                             </TouchableOpacity>
 
                             <Text category='s1' style={styles.headerTitle}>{plant.name}</Text>
+
+                            <AmountPlantedAtText plant={plant} textCategory="s2" style={styles.amountPlantedAtText}/>
                         </Card>
                         <Card style={styles.card} header={CardHeader("Allgemeine Informationen")} status="basic"
                               disabled={true}>
-                            <CardListContainer noBottomMargin>
-                                <List data={plantAttributes} renderItem={renderPlantAttributes}
-                                      ItemSeparatorComponent={Divider}/>
-                                <Divider/>
+                            <CardListContainer>
+                                <React.Fragment>
+                                    <List data={plantAttributes} renderItem={renderPlantAttributes}
+                                          ItemSeparatorComponent={Divider}/>
+                                    {plant.detailLink1 &&
+                                    <Divider/>
+                                    }
+                                </React.Fragment>
                             </CardListContainer>
-                            {plant.baldurArticleId &&
+                            {plant.detailLink1 &&
                             <Button accessoryLeft={LinkIcon}
                                     appearance="outline"
                                     style={styles.button}
-                                    onPress={() => Linking.openURL(BaldurGartenService.createBaldurDetailLink(plant.baldurArticleId))}>
-                                BALDUR-Garten
+                                    onPress={() => Linking.openURL(plant.detailLink1)}>
+                                {i18n.t(plant.detailLinkName1)}
                             </Button>
                             }
                         </Card>
@@ -271,6 +277,9 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         textAlign: "center"
+    },
+    amountPlantedAtText: {
+        marginTop: 15
     },
     card: {
         marginBottom: 15

@@ -12,31 +12,29 @@ import {
 } from "@ui-kitten/components";
 import {ListRenderItemInfo, StyleSheet} from "react-native";
 import i18n from "../../../../../i18n";
-import PlantAvatar from "../../../../../common/components/PlantAvatar";
-import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
-import BaldurGartenService, {BaldurGartenProductSearchResult} from "../../../../../services/BaldurGartenService";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
+import {Plant} from "../../../../../model/Plant";
+import GrowBuddyPlantsService from "../../../../../services/GrowBuddyPlantsService";
 
 export default () => {
 
-    const navigation = useNavigation<PlantsStackNavigationProp<PlantsTabRoute.PLANTS_BALDUR_PREFILL>>();
-    const route = useRoute<PlantsStackRouteProp<PlantsTabRoute.PLANTS_BALDUR_PREFILL>>();
+    const navigation = useNavigation<PlantsStackNavigationProp<PlantsTabRoute.PLANTS_PREFILL>>();
+    const route = useRoute<PlantsStackRouteProp<PlantsTabRoute.PLANTS_PREFILL>>();
 
     const [query, setQuery] = useState('');
-    const [searchResults, setSearchResults] = useState<BaldurGartenProductSearchResult[]>([]);
+    const [searchResults, setSearchResults] = useState<Plant[]>([]);
 
     const onChangeText = async (query: string) => {
         setQuery(query);
 
-        BaldurGartenService.searchForProducts(query).then((searchResults) => {
+        GrowBuddyPlantsService.searchForProducts(query).then((searchResults) => {
             setSearchResults(searchResults);
         })
     };
 
-    const select = async (searchResult: BaldurGartenProductSearchResult) => {
-        const plant = await BaldurGartenService.extractPlantDetails(searchResult.id);
-
+    const select = async (plant: Plant) => {
         navigation.replace(PlantsTabRoute.PLANTS_EDIT, {plant});
     }
 
@@ -60,16 +58,10 @@ export default () => {
         <Icon {...props} name="chevron-right-outline"/>
     );
 
-    const renderAvatar = (item: BaldurGartenProductSearchResult) => {
-        return (props: any) => {
-            return <PlantAvatar {...props} avatar={item.avatarUrl}/>
-        }
-    }
-
-    const renderSearchResult = (entry: ListRenderItemInfo<BaldurGartenProductSearchResult>) => (
+    const renderSearchResult = (entry: ListRenderItemInfo<Plant>) => (
         <ListItem
             title={entry.item.name}
-            accessoryLeft={renderAvatar(entry.item)}
+            description={i18n.t(entry.item.detailLinkName1)}
             accessoryRight={ChevronRightIcon}
             onPress={() => select(entry.item)}
         />
@@ -77,7 +69,7 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle("Pflanze von BALDUR-Garten wählen")}
+            <TopNavigation title={renderTopNavigationTitle("Pflanze suchen")}
                            alignment="center"
                            accessoryLeft={CancelAction}/>
             <Divider/>

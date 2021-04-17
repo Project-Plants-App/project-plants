@@ -1,6 +1,7 @@
 import {
     Button,
     Card,
+    Datepicker,
     Divider,
     Icon,
     IndexPath,
@@ -27,7 +28,6 @@ import PlantAvatar from "../../../../../common/components/PlantAvatar";
 import ImageDataUriHelper from "../../../../../common/ImageDataUriHelper";
 import IndexPathHelper from "../../../../../common/IndexPathHelper";
 import {WinterProof} from "../../../../../model/WinterProof";
-import BaldurGartenService from "../../../../../services/BaldurGartenService";
 import ObjectUtils from "../../../../../common/ObjectUtils";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 
@@ -35,6 +35,16 @@ const IMAGE_PICKER_OPTIONS: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images,
     base64: true
 };
+
+const convertIndexPathToAmountValue = (indexPath: IndexPath) => {
+    return indexPath.row + 1;
+}
+
+const convertAmountValueToIndexPath = (amount: number) => {
+    return ObjectUtils.isDefined(amount) ?
+        IndexPathHelper.createIndexPath(amount - 1) :
+        IndexPathHelper.createIndexPath(0)
+}
 
 export default () => {
 
@@ -44,10 +54,13 @@ export default () => {
     const [plant] = useState(route.params.plant || {} as Plant)
 
     const [avatar, setAvatar] = useState<undefined | string>(plant.avatar)
-    const [name, setName] = useState(plant.name || '')
-    const [waterDemand, setWaterDemand] = useState(IndexPathHelper.createIndexPath(plant.waterDemand, WaterDemand.WATER_DEMAND_UNDEFINED))
-    const [preferredLocation, setPreferredLocation] = useState(IndexPathHelper.createIndexPath(plant.preferredLocation, PreferredLocation.PREFERRED_LOCATION_UNDEFINED))
-    const [winterProof, setWinterProof] = useState(IndexPathHelper.createIndexPath(plant.winterProof, WinterProof.WINTER_PROOF_UNDEFINED))
+    const [name, setName] = useState(ObjectUtils.isDefined(plant.name) ? plant.name : '');
+    const [botanicalName, setBotanicalName] = useState(ObjectUtils.isDefined(plant.botanicalName) ? plant.botanicalName : '');
+    const [planted, setPlanted] = useState(plant.planted);
+    const [amount, setAmount] = useState(convertAmountValueToIndexPath(plant.amount));
+    const [waterDemand, setWaterDemand] = useState(IndexPathHelper.createIndexPath(plant.waterDemand, WaterDemand.WATER_DEMAND_UNDEFINED));
+    const [preferredLocation, setPreferredLocation] = useState(IndexPathHelper.createIndexPath(plant.preferredLocation, PreferredLocation.PREFERRED_LOCATION_UNDEFINED));
+    const [winterProof, setWinterProof] = useState(IndexPathHelper.createIndexPath(plant.winterProof, WinterProof.WINTER_PROOF_UNDEFINED));
 
     const handleImagePickerResult = (result: ImagePickerResult) => {
         if (!result.cancelled) {
@@ -83,6 +96,8 @@ export default () => {
         plant.waterDemand = waterDemand.row;
         plant.preferredLocation = preferredLocation.row;
         plant.winterProof = winterProof.row;
+        plant.planted = planted;
+        plant.amount = convertIndexPathToAmountValue(amount);
 
         if (ObjectUtils.isDefined(plant.id)) {
             await PlantRepository.insertOrUpdatePlant(plant);
@@ -98,26 +113,6 @@ export default () => {
 
         navigation.dispatch(StackActions.popToTop());
     }
-
-    const loadInfoFromBaldurGarten = async () => {
-        let plantInfos = await BaldurGartenService.extractPlantDetails(plant.baldurArticleId);
-        if (ObjectUtils.isDefined(plantInfos.name)) {
-            setName(plantInfos.name);
-        }
-        if (ObjectUtils.isDefined(plantInfos.avatar)) {
-            setAvatar(plantInfos.avatar);
-        }
-        if (ObjectUtils.isDefined(plantInfos.winterProof)) {
-            setWinterProof(IndexPathHelper.createIndexPath(plantInfos.winterProof));
-        }
-        if (ObjectUtils.isDefined(plantInfos.preferredLocation)) {
-            setPreferredLocation(IndexPathHelper.createIndexPath(plantInfos.preferredLocation));
-        }
-        if (ObjectUtils.isDefined(plantInfos.waterDemand)) {
-            setWaterDemand(IndexPathHelper.createIndexPath(plantInfos.waterDemand));
-        }
-    }
-
 
     const CameraIcon = (props: any) => (
         <Icon {...props} name="camera-outline"/>
@@ -143,6 +138,10 @@ export default () => {
         <TopNavigationAction icon={SaveIcon} onPress={() => save()}/>
     );
 
+    const CalendarIcon = (props: any) => (
+        <Icon {...props} name='calendar'/>
+    );
+
     const renderEnumOptions = (enumType: any) => {
         const options = [];
         for (const enumValue in enumType) {
@@ -151,6 +150,15 @@ export default () => {
                 options.push(<SelectItem title={translateEnumValue(enumValueAsNumber, enumType)}
                                          key={enumValueAsNumber}/>)
             }
+        }
+
+        return options;
+    }
+
+    const renderAmountOptions = () => {
+        const options = [];
+        for (let i = 1; i <= 50; i++) {
+            options.push(<SelectItem title={i} key={i}/>)
         }
 
         return options;
@@ -168,58 +176,67 @@ export default () => {
                                       behavior={Platform.OS === "ios" ? "padding" : "height"}
                                       keyboardVerticalOffset={100}>
                     <ScrollView>
-                        <Card style={styles.card} status="basic" disabled={true}>
-                            <PlantAvatar avatar={avatar} size="giant" style={styles.avatar}/>
-                            <View style={styles.avatarInputs}>
-                                <Button accessoryLeft={CameraIcon}
-                                        appearance="outline"
-                                        onPress={createAvatarWithCamera}
-                                        style={styles.leftAvatarInput}/>
-                                <Button accessoryLeft={MediaLibraryIcon}
-                                        appearance="outline"
-                                        onPress={chooseAvatarFromMediaLibrary}/>
-                            </View>
-                            <Input label={i18n.t('NAME')} style={styles.input} value={name} onChangeText={setName}/>
-                        </Card>
-                        <Card style={styles.card} status="basic" disabled={true}>
-                            <Select label={i18n.t('WATER_DEMAND')}
-                                    selectedIndex={waterDemand}
-                                    value={() => <Text>{translateEnumValue(waterDemand.row, WaterDemand)}</Text>}
-                                    onSelect={index => setWaterDemand(index as IndexPath)}>
-                                {renderEnumOptions(WaterDemand)}
-                            </Select>
-                            <Select label={i18n.t('PREFERRED_LOCATION')} style={styles.input}
-                                    selectedIndex={preferredLocation}
-                                    value={() =>
-                                        <Text>{translateEnumValue(preferredLocation.row, PreferredLocation)}</Text>}
-                                    onSelect={index => setPreferredLocation(index as IndexPath)}>
-                                {renderEnumOptions(PreferredLocation)}
-                            </Select>
-                            <Select label={i18n.t('WINTER_PROOF')} style={styles.input}
-                                    selectedIndex={winterProof}
-                                    value={() =>
-                                        <Text>{translateEnumValue(winterProof.row, WinterProof)}</Text>}
-                                    onSelect={index => setWinterProof(index as IndexPath)}>
-                                {renderEnumOptions(WinterProof)}
-                            </Select>
-                        </Card>
+                        <View style={styles.contentContainer}>
+                            <Card style={styles.card} status="basic" disabled={true}>
+                                <PlantAvatar avatar={avatar} size="giant" style={styles.avatar}/>
+                                <View style={styles.avatarInputs}>
+                                    <Button accessoryLeft={CameraIcon}
+                                            appearance="outline"
+                                            onPress={createAvatarWithCamera}
+                                            style={styles.leftAvatarInput}/>
+                                    <Button accessoryLeft={MediaLibraryIcon}
+                                            appearance="outline"
+                                            onPress={chooseAvatarFromMediaLibrary}/>
+                                </View>
+                                <Input label={i18n.t('NAME')} style={styles.input} value={name} onChangeText={setName}/>
+                                <Input label={i18n.t('BOTANICAL_NAME')} style={styles.input} value={botanicalName}
+                                       onChangeText={setBotanicalName}/>
+                                <Datepicker
+                                    label={i18n.t('PLANTED')}
+                                    style={styles.input}
+                                    date={planted}
+                                    onSelect={planted => setPlanted(planted)}
+                                    accessoryRight={CalendarIcon}
+                                />
+                                <Select label={i18n.t('AMOUNT')}
+                                        style={styles.input}
+                                        selectedIndex={amount}
+                                        value={() => <Text>{convertIndexPathToAmountValue(amount)}</Text>}
+                                        onSelect={index => setAmount(index as IndexPath)}>
+                                    {renderAmountOptions()}
+                                </Select>
+                            </Card>
+                            <Card style={styles.card} status="basic" disabled={true}>
+                                <Select label={i18n.t('WATER_DEMAND')}
+                                        selectedIndex={waterDemand}
+                                        value={() => <Text>{translateEnumValue(waterDemand.row, WaterDemand)}</Text>}
+                                        onSelect={index => setWaterDemand(index as IndexPath)}>
+                                    {renderEnumOptions(WaterDemand)}
+                                </Select>
+                                <Select label={i18n.t('PREFERRED_LOCATION')} style={styles.input}
+                                        selectedIndex={preferredLocation}
+                                        value={() =>
+                                            <Text>{translateEnumValue(preferredLocation.row, PreferredLocation)}</Text>}
+                                        onSelect={index => setPreferredLocation(index as IndexPath)}>
+                                    {renderEnumOptions(PreferredLocation)}
+                                </Select>
+                                <Select label={i18n.t('WINTER_PROOF')} style={styles.input}
+                                        selectedIndex={winterProof}
+                                        value={() =>
+                                            <Text>{translateEnumValue(winterProof.row, WinterProof)}</Text>}
+                                        onSelect={index => setWinterProof(index as IndexPath)}>
+                                    {renderEnumOptions(WinterProof)}
+                                </Select>
+                            </Card>
 
-                        {plant.baldurArticleId &&
-                        <Button appearance="outline"
-                                style={[styles.button, styles.firstButton]}
-                                onPress={loadInfoFromBaldurGarten}>
-                            Infos von BALDUR-Garten laden
-                        </Button>
-                        }
-
-                        {plant.id !== undefined &&
-                        <Button onPress={deletePlant}
-                                appearance="outline"
-                                status="danger"
-                                style={styles.button}>
-                            Löschen
-                        </Button>
-                        }
+                            {plant.id !== undefined &&
+                            <Button onPress={deletePlant}
+                                    appearance="outline"
+                                    status="danger">
+                                Löschen
+                            </Button>
+                            }
+                        </View>
                     </ScrollView>
                 </KeyboardAvoidingView>
             </Layout>
@@ -232,8 +249,11 @@ export default () => {
 
 const styles = StyleSheet.create({
     layout: {
-        flex: 1,
-        paddingTop: 15
+        flex: 1
+    },
+    contentContainer: {
+        margin: 15,
+        marginBottom: 15
     },
     avatar: {
         alignSelf: "center",
@@ -250,13 +270,13 @@ const styles = StyleSheet.create({
         marginTop: 15
     },
     card: {
-        margin: 15,
-        marginTop: 0
-    },
-    button: {
-        marginHorizontal: 15
+        marginBottom: 15
     },
     firstButton: {
         marginBottom: 15
+    },
+    datePicker: {
+        marginHorizontal: -25,
+        marginVertical: -20
     }
 });

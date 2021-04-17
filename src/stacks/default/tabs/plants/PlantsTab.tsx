@@ -4,7 +4,7 @@ import React from "react";
 import PlantsOverviewScreen from "./screens/PlantsOverviewScreen";
 import PlantEditScreen from "./screens/PlantEditScreen";
 import PlantDetailScreen from "./screens/PlantDetailScreen";
-import PlantBaldurGartenPrefillScreen from "./screens/PlantBaldurGartenPrefillScreen";
+import GrowBuddyPlantsPrefillScreen from "./screens/GrowBuddyPlantsPrefillScreen";
 import PlantAvatarDetailScreen from "./screens/PlantAvatarDetailScreen";
 
 const Stack = createStackNavigator();
@@ -17,7 +17,7 @@ export default function PlantsTab() {
             <Stack.Screen name={PlantsTabRoute.PLANTS_DETAIL} component={PlantDetailScreen}/>
             <Stack.Screen name={PlantsTabRoute.PLANTS_AVATAR_DETAIL} component={PlantAvatarDetailScreen}/>
             <Stack.Screen name={PlantsTabRoute.PLANTS_EDIT} component={PlantEditScreen}/>
-            <Stack.Screen name={PlantsTabRoute.PLANTS_BALDUR_PREFILL} component={PlantBaldurGartenPrefillScreen}/>
+            <Stack.Screen name={PlantsTabRoute.PLANTS_PREFILL} component={GrowBuddyPlantsPrefillScreen}/>
         </Stack.Navigator>
     )
 

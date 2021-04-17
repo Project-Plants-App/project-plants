@@ -4,27 +4,37 @@ import GrowBuddyDatabaseService from "../services/database/GrowBuddyDatabaseServ
 
 const PLANT_INSERT_STATEMENT = `insert into plants (id,
                                                     name,
+                                                    botanical_name,
                                                     avatar,
                                                     preferred_location,
                                                     water_demand,
                                                     winter_proof,
-                                                    baldur_article_id,
+                                                    detail_link_1,
+                                                    detail_link_name_1,
+                                                    planted,
+                                                    amount,
                                                     last_time_watered,
                                                     last_time_fertilised,
                                                     last_time_sprayed)
-                                values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+                                values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                                        ?, ?)`
 
 const PLANT_BASE_SELECT_STATEMENT = `select id,
                                             name,
+                                            botanical_name,
                                             avatar,
                                             preferred_location,
                                             water_demand,
                                             winter_proof,
-                                            baldur_article_id,
+                                            detail_link_1,
+                                            detail_link_name_1,
+                                            planted,
+                                            amount,
                                             last_time_watered,
                                             last_time_fertilised,
                                             last_time_sprayed
-                                     from plants`
+                                     from plants
+                                     where deleted = false`
 
 const PLANT_SELECT_ALL_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} order by name`
 
@@ -32,18 +42,22 @@ const PLANT_SELECT_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} where id = ?`
 
 const PLANT_UPDATE_STATEMENT = `update plants
                                 set name                 = ?,
+                                    botanical_name       = ?,
                                     avatar               = ?,
                                     preferred_location   = ?,
                                     water_demand         = ?,
                                     winter_proof         = ?,
-                                    baldur_article_id    = ?,
+                                    detail_link_1        = ?,
+                                    detail_link_name_1   = ?,
+                                    planted              = ?,
+                                    amount               = ?,
                                     last_time_watered    = ?,
                                     last_time_fertilised = ?,
                                     last_time_sprayed    = ?
                                 where id = ?`
 
-const PLANT_DELETE_STATEMENT = `delete
-                                from plants
+const PLANT_DELETE_STATEMENT = `update plants
+                                set deleted = true
                                 where id = ?`
 
 class PlantRepository {
@@ -53,11 +67,15 @@ class PlantRepository {
 
         const args = [
             plant.name,
+            plant.botanicalName,
             plant.avatar,
             plant.preferredLocation,
             plant.waterDemand,
             plant.winterProof,
-            plant.baldurArticleId,
+            plant.detailLink1,
+            plant.detailLinkName1,
+            plant.planted ? plant.planted.toISOString() : undefined,
+            plant.amount,
             plant.lastTimeWatered ? plant.lastTimeWatered.toISOString() : undefined,
             plant.lastTimeFertilised ? plant.lastTimeFertilised.toISOString() : undefined,
             plant.lastTimeSprayed ? plant.lastTimeSprayed.toISOString() : undefined
@@ -100,11 +118,15 @@ class PlantRepository {
         return {
             id: row.id,
             name: row.name,
+            botanicalName: row.botanical_name,
             avatar: row.avatar,
             preferredLocation: row.preferred_location,
             waterDemand: row.water_demand,
             winterProof: row.winter_proof,
-            baldurArticleId: row.baldur_article_id,
+            detailLink1: row.detail_link_1,
+            detailLinkName1: row.detail_link_name_1,
+            planted: this.parseDate(row.planted),
+            amount: row.amount,
             lastTimeWatered: this.parseDate(row.last_time_watered),
             lastTimeFertilised: this.parseDate(row.last_time_fertilised),
             lastTimeSprayed: this.parseDate(row.last_time_sprayed)
