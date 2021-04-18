@@ -3,8 +3,8 @@ import ObjectUtils from "./ObjectUtils";
 
 class IndexPathHelper {
 
-    createIndexPath(value: number, defaultValue?: number) {
-        return new IndexPath(ObjectUtils.isDefined(value) ? value : ObjectUtils.isDefined(defaultValue) ? defaultValue! : 0);
+    createIndexPath(value?: number, defaultValue?: number) {
+        return new IndexPath(ObjectUtils.isDefined(value) ? value! : ObjectUtils.isDefined(defaultValue) ? defaultValue! : 0);
     }
 
 }

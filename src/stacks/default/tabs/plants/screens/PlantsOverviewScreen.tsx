@@ -20,6 +20,7 @@ import i18n from "../../../../../i18n";
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import Badge from "../../../../../common/components/Badge";
+import ObjectUtils from "../../../../../common/ObjectUtils";
 
 export default () => {
 
@@ -66,17 +67,17 @@ export default () => {
                 <View {...props} style={[props.style, {flexDirection: "row", alignItems: "center", marginTop: 5}]}>
                     {item.lastTimeWatered &&
                     <Badge icon="droplet-outline"
-                           title={item.lastTimeWatered?.toLocaleDateString()}
+                           title={ObjectUtils.formatDate(item.lastTimeWatered)!}
                            style={{marginRight: 5}}/>
                     }
                     {item.lastTimeFertilised &&
                     <Badge icon="flash-outline"
-                           title={item.lastTimeFertilised?.toLocaleDateString()}
+                           title={ObjectUtils.formatDate(item.lastTimeFertilised)!}
                            style={{marginRight: 5}}/>
                     }
                     {item.lastTimeSprayed &&
                     <Badge icon="shield-outline"
-                           title={item.lastTimeSprayed?.toLocaleDateString()}/>
+                           title={ObjectUtils.formatDate(item.lastTimeSprayed)!}/>
                     }
                 </View>
             )

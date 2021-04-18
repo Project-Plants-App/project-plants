@@ -38,7 +38,7 @@ const PLANT_BASE_SELECT_STATEMENT = `select id,
 
 const PLANT_SELECT_ALL_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} order by name`
 
-const PLANT_SELECT_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} where id = ?`
+const PLANT_SELECT_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} and id = ?`
 
 const PLANT_UPDATE_STATEMENT = `update plants
                                 set name                 = ?,
@@ -74,11 +74,11 @@ class PlantRepository {
             plant.winterProof,
             plant.detailLink1,
             plant.detailLinkName1,
-            plant.planted ? plant.planted.toISOString() : undefined,
+            plant.planted,
             plant.amount,
-            plant.lastTimeWatered ? plant.lastTimeWatered.toISOString() : undefined,
-            plant.lastTimeFertilised ? plant.lastTimeFertilised.toISOString() : undefined,
-            plant.lastTimeSprayed ? plant.lastTimeSprayed.toISOString() : undefined
+            plant.lastTimeWatered,
+            plant.lastTimeFertilised,
+            plant.lastTimeSprayed,
         ];
 
         if (plant.id === undefined) {
@@ -125,23 +125,12 @@ class PlantRepository {
             winterProof: row.winter_proof,
             detailLink1: row.detail_link_1,
             detailLinkName1: row.detail_link_name_1,
-            planted: this.parseDate(row.planted),
+            planted: row.planted,
             amount: row.amount,
-            lastTimeWatered: this.parseDate(row.last_time_watered),
-            lastTimeFertilised: this.parseDate(row.last_time_fertilised),
-            lastTimeSprayed: this.parseDate(row.last_time_sprayed)
+            lastTimeWatered: row.last_time_watered,
+            lastTimeFertilised: row.last_time_fertilised,
+            lastTimeSprayed: row.last_time_sprayed
         } as Plant
-    }
-
-    private parseDate(date: string) {
-        try {
-            if (date) {
-                return new Date(Date.parse(date));
-            }
-        } catch (e) {
-            // ignore
-        }
-        return undefined as any as Date;
     }
 
     async deletePlant(plant: Plant): Promise<void> {

@@ -17,6 +17,7 @@ import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from ".
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import {Plant} from "../../../../../model/Plant";
 import GrowBuddyPlantsService from "../../../../../services/GrowBuddyPlantsService";
+import ObjectUtils from "../../../../../common/ObjectUtils";
 
 export default () => {
 
@@ -61,7 +62,7 @@ export default () => {
     const renderSearchResult = (entry: ListRenderItemInfo<Plant>) => (
         <ListItem
             title={entry.item.name}
-            description={i18n.t(entry.item.detailLinkName1)}
+            description={ObjectUtils.isDefined(entry.item.detailLinkName1) ? i18n.t(entry.item.detailLinkName1!) : 'UNKNOWN'}
             accessoryRight={ChevronRightIcon}
             onPress={() => select(entry.item)}
         />
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
     },
     list: {
         marginTop: 15,
-        flexGrow: 0
+        flexGrow: 1
     },
     button: {
         marginTop: 15,

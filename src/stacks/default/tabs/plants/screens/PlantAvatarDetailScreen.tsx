@@ -27,7 +27,7 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle(plant.name)}
+            <TopNavigation title={renderTopNavigationTitle(plant.name || '')}
                            alignment="center"
                            accessoryLeft={BackAction}/>
             <Layout style={styles.layout}>

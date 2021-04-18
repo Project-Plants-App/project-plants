@@ -13,7 +13,7 @@ type AmountPlantedAtText = {
 export default ({plant, textCategory, style}: AmountPlantedAtText) => {
 
     const showAmount = () => {
-        return ObjectUtils.isDefined(plant.amount) && plant.amount > 1;
+        return ObjectUtils.isDefined(plant.amount) && plant.amount! > 1;
     }
 
     const showPlanted = () => {
@@ -23,13 +23,13 @@ export default ({plant, textCategory, style}: AmountPlantedAtText) => {
     return (
         <View style={[styles.view, style]}>
             {showAmount() &&
-            <Text category={textCategory}>{plant.amount} Stück</Text>
+            <Text category={textCategory}>{plant.amount!} Stück</Text>
             }
             {showAmount() && showPlanted() &&
             <Text category={textCategory}> </Text>
             }
             {showPlanted() &&
-            <Text category={textCategory}>gepflanzt am {plant.planted.toLocaleDateString()}</Text>
+            <Text category={textCategory}>gepflanzt am {ObjectUtils.formatDate(plant.planted)!}</Text>
             }
         </View>
     )

@@ -26,6 +26,9 @@ import PlantRepository from "../../../../../repositories/PlantRepository";
 import CardListContainer from "../../../../../common/components/CardListContainer";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import AmountPlantedAtText from "../../../../../common/components/AmountPlantedAtText";
+import ObjectUtils from "../../../../../common/ObjectUtils";
+import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
+import renderCardHeader from "../../../../../common/components/renderCardHeader";
 
 export default () => {
 
@@ -36,6 +39,12 @@ export default () => {
     const [lastTimeWateredDialogVisible, setLastTimeWateredDialogVisible] = useState(false);
     const [lastTimeFertilisedDialogVisible, setLastTimeFertilisedDialogVisible] = useState(false);
     const [lastTimeSprayedDialogVisible, setLastTimeSprayedDialogVisible] = useState(false);
+
+    useOnFocusOnceEffect(() => {
+        PlantRepository.selectPlant(plant.id!).then((plant) => {
+            setPlant(plant);
+        });
+    })
 
     const back = () => {
         navigation.dispatch(StackActions.popToTop());
@@ -88,8 +97,8 @@ export default () => {
         <ListItem title={entry.item.value} description={entry.item.label} disabled={true}/>
     );
 
-    const formatDate = (date: Date) => {
-        return date ? date.toLocaleDateString() : '';
+    const formatDate = (date?: string) => {
+        return ObjectUtils.formatDate(date);
     }
 
     const updatePlant = async () => {
@@ -100,21 +109,21 @@ export default () => {
     const updateLastTimeWatered = async (date: Date) => {
         setLastTimeWateredDialogVisible(false);
 
-        plant.lastTimeWatered = date;
+        plant.lastTimeWatered = date.toISOString();
         await updatePlant();
     }
 
     const updateLastTimeFertilised = async (date: Date) => {
         setLastTimeFertilisedDialogVisible(false);
 
-        plant.lastTimeFertilised = date;
+        plant.lastTimeFertilised = date.toISOString();
         await updatePlant();
     }
 
     const updateLastTimeSprayed = async (date: Date) => {
         setLastTimeSprayedDialogVisible(false);
 
-        plant.lastTimeSprayed = date;
+        plant.lastTimeSprayed = date.toISOString();
         await updatePlant();
     }
 
@@ -167,17 +176,9 @@ export default () => {
         );
     };
 
-    const CardHeader = (title: string) => {
-        return (props: any) => (
-            <View {...props}>
-                <Text category="s1">{title}</Text>
-            </View>
-        )
-    }
-
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle(plant.name)}
+            <TopNavigation title={renderTopNavigationTitle(plant.name || '')}
                            alignment="center"
                            accessoryLeft={BackAction}
                            accessoryRight={EditAction}/>
@@ -194,7 +195,7 @@ export default () => {
 
                             <AmountPlantedAtText plant={plant} textCategory="s2" style={styles.amountPlantedAtText}/>
                         </Card>
-                        <Card style={styles.card} header={CardHeader("Allgemeine Informationen")} status="basic"
+                        <Card style={styles.card} header={renderCardHeader("Allgemeine Informationen")} status="basic"
                               disabled={true}>
                             <CardListContainer>
                                 <React.Fragment>
@@ -209,12 +210,12 @@ export default () => {
                             <Button accessoryLeft={LinkIcon}
                                     appearance="outline"
                                     style={styles.button}
-                                    onPress={() => Linking.openURL(plant.detailLink1)}>
-                                {i18n.t(plant.detailLinkName1)}
+                                    onPress={() => Linking.openURL(plant.detailLink1!)}>
+                                {ObjectUtils.isDefined(plant.detailLinkName1) ? i18n.t(plant.detailLinkName1!) : 'UNKNOWN'}
                             </Button>
                             }
                         </Card>
-                        <Card style={styles.card} header={CardHeader("Aktivitäten")} status="basic" disabled={true}>
+                        <Card style={styles.card} header={renderCardHeader("Aktivitäten")} status="basic" disabled={true}>
                             <CardListContainer>
                                 <List data={plantActivities} renderItem={renderActivities}
                                       ItemSeparatorComponent={Divider}/>

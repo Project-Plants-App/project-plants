@@ -40,9 +40,9 @@ const convertIndexPathToAmountValue = (indexPath: IndexPath) => {
     return indexPath.row + 1;
 }
 
-const convertAmountValueToIndexPath = (amount: number) => {
+const convertAmountValueToIndexPath = (amount?: number) => {
     return ObjectUtils.isDefined(amount) ?
-        IndexPathHelper.createIndexPath(amount - 1) :
+        IndexPathHelper.createIndexPath(amount! - 1) :
         IndexPathHelper.createIndexPath(0)
 }
 
@@ -56,7 +56,7 @@ export default () => {
     const [avatar, setAvatar] = useState<undefined | string>(plant.avatar)
     const [name, setName] = useState(ObjectUtils.isDefined(plant.name) ? plant.name : '');
     const [botanicalName, setBotanicalName] = useState(ObjectUtils.isDefined(plant.botanicalName) ? plant.botanicalName : '');
-    const [planted, setPlanted] = useState(plant.planted);
+    const [planted, setPlanted] = useState(ObjectUtils.parseDate(plant.planted));
     const [amount, setAmount] = useState(convertAmountValueToIndexPath(plant.amount));
     const [waterDemand, setWaterDemand] = useState(IndexPathHelper.createIndexPath(plant.waterDemand, WaterDemand.WATER_DEMAND_UNDEFINED));
     const [preferredLocation, setPreferredLocation] = useState(IndexPathHelper.createIndexPath(plant.preferredLocation, PreferredLocation.PREFERRED_LOCATION_UNDEFINED));
@@ -96,7 +96,7 @@ export default () => {
         plant.waterDemand = waterDemand.row;
         plant.preferredLocation = preferredLocation.row;
         plant.winterProof = winterProof.row;
-        plant.planted = planted;
+        plant.planted = planted?.toISOString();
         plant.amount = convertIndexPathToAmountValue(amount);
 
         if (ObjectUtils.isDefined(plant.id)) {
@@ -166,10 +166,11 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle(plant.id === undefined ? i18n.t('NEW') : plant.name)}
-                           alignment="center"
-                           accessoryLeft={CancelAction}
-                           accessoryRight={SaveAction}/>
+            <TopNavigation
+                title={renderTopNavigationTitle(ObjectUtils.isDefined(plant.id) ? (plant.name || '') : i18n.t('NEW'))}
+                alignment="center"
+                accessoryLeft={CancelAction}
+                accessoryRight={SaveAction}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
                 <KeyboardAvoidingView style={{flex: 1}}
