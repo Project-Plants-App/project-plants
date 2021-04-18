@@ -8,9 +8,12 @@ const GROW_BUDDY_PLANT_API_BASE_URL = "http://jonasbamberger.synology.me:9090";
 
 class GrowBuddyPlantsService {
 
-    searchForProducts(query: string): Promise<Plant[]> {
+    searchForProducts(query: string, sources: PlantInfoSource[]): Promise<Plant[]> {
         const params = new URLSearchParams();
         params.append("query", query);
+        sources.forEach((source) => {
+            params.append("sources", source);
+        });
 
         return fetch(`${GROW_BUDDY_PLANT_API_BASE_URL}/api/plant-infos?${params.toString()}`)
             .then((response) => (response.json()))
@@ -91,9 +94,10 @@ interface PlantInfo {
     winterProof?: boolean;
 }
 
-enum PlantInfoSource {
+export enum PlantInfoSource {
     BALDUR_GARTEN = "BALDUR_GARTEN",
-    MEIN_SCHOENER_GARTEN = "MEIN_SCHOENER_GARTEN"
+    MEIN_SCHOENER_GARTEN = "MEIN_SCHOENER_GARTEN",
+    PFLANZEN_FUER_UNSERE_GAERTEN = "PFLANZEN_FUER_UNSERE_GAERTEN"
 }
 
 enum PlantInfoWaterDemand {

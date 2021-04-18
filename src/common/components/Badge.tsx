@@ -4,7 +4,7 @@ import {StyleProp, StyleSheet, View, ViewStyle} from "react-native";
 
 type BadgeProps = {
     title: string,
-    icon: string,
+    icon?: string,
     style?: StyleProp<ViewStyle>
 }
 
@@ -13,7 +13,9 @@ export default ({title, icon, style}: BadgeProps) => {
 
     return (
         <View style={[style, styles.view, {backgroundColor: theme['background-basic-color-3']}]}>
+            {icon &&
             <Icon style={styles.icon} name={icon} fill={theme['text-basic-color']}/>
+            }
             <Text style={styles.text}>{title}</Text>
         </View>
     )

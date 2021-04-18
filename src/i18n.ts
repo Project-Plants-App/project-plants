@@ -10,6 +10,7 @@ i18n.translations = {
         SETTINGS: 'Einstellungen',
         NEW: 'Neu',
         SEARCH: 'Suchen',
+        SOURCES: 'Quellen',
         AMOUNT: 'Anzahl',
         PLANTED: 'Gepflanzt',
         LAST_TIME_WATERED: 'Letztes Mal gegossen',
@@ -39,7 +40,8 @@ i18n.translations = {
         WINTER_PROOF_YES: 'Ja',
         // detail link name
         BALDUR_GARTEN: 'BALDUR-Garten',
-        MEIN_SCHOENER_GARTEN: 'Mein schöner Garten'
+        MEIN_SCHOENER_GARTEN: 'Mein schöner Garten',
+        PFLANZEN_FUER_UNSERE_GAERTEN: 'Pflanzen für unsere Gärten'
     },
 };
 

@@ -1,39 +1,65 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Button,
     Divider,
     Icon,
+    IndexPath,
     Input,
     Layout,
     List,
     ListItem,
+    Select,
+    SelectItem,
+    Text,
     TopNavigation,
     TopNavigationAction
 } from "@ui-kitten/components";
-import {ListRenderItemInfo, StyleSheet} from "react-native";
-import i18n from "../../../../../i18n";
+import {ListRenderItemInfo, StyleSheet, View} from "react-native";
+import i18n, {translateEnumValue} from "../../../../../i18n";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import {Plant} from "../../../../../model/Plant";
-import GrowBuddyPlantsService from "../../../../../services/GrowBuddyPlantsService";
+import GrowBuddyPlantsService, {PlantInfoSource} from "../../../../../services/GrowBuddyPlantsService";
 import ObjectUtils from "../../../../../common/ObjectUtils";
+import Badge from "../../../../../common/components/Badge";
 
 export default () => {
 
     const navigation = useNavigation<PlantsStackNavigationProp<PlantsTabRoute.PLANTS_PREFILL>>();
     const route = useRoute<PlantsStackRouteProp<PlantsTabRoute.PLANTS_PREFILL>>();
 
+    const generateSelectableSources = () => {
+        return Object.keys(PlantInfoSource).map((sourceAsString) => (PlantInfoSource as any)[sourceAsString] as PlantInfoSource);
+    }
+
+    const generateInitialSourceSelection = () => {
+        return selectableSources.map((source) => new IndexPath(selectableSources.indexOf(source)));
+    }
+
+    const generateSelectItems = () => {
+        return selectableSources.map((source) => (
+            <SelectItem title={translateEnumValue(source, PlantInfoSource)}
+                        key={selectableSources.indexOf(source)}/>
+        ));
+    }
+
+    const getSelectedSources: () => PlantInfoSource[] = () => {
+        return selectedSources.map((source) => selectableSources[source.row]);
+    }
+
+    const [selectableSources] = useState(generateSelectableSources())
+
     const [query, setQuery] = useState('');
+    const [selectedSources, setSelectedSources] = useState<IndexPath[]>(generateInitialSourceSelection());
+
     const [searchResults, setSearchResults] = useState<Plant[]>([]);
 
-    const onChangeText = async (query: string) => {
-        setQuery(query);
-
-        GrowBuddyPlantsService.searchForProducts(query).then((searchResults) => {
+    useEffect(() => {
+        GrowBuddyPlantsService.searchForProducts(query, getSelectedSources()).then((searchResults) => {
             setSearchResults(searchResults);
         })
-    };
+    }, [query, selectedSources])
 
     const select = async (plant: Plant) => {
         navigation.replace(PlantsTabRoute.PLANTS_EDIT, {plant});
@@ -59,14 +85,32 @@ export default () => {
         <Icon {...props} name="chevron-right-outline"/>
     );
 
-    const renderSearchResult = (entry: ListRenderItemInfo<Plant>) => (
-        <ListItem
-            title={entry.item.name}
-            description={ObjectUtils.isDefined(entry.item.detailLinkName1) ? i18n.t(entry.item.detailLinkName1!) : 'UNKNOWN'}
-            accessoryRight={ChevronRightIcon}
-            onPress={() => select(entry.item)}
-        />
-    );
+    const renderSearchResult = (entry: ListRenderItemInfo<Plant>) => {
+        const renderDescription = (props: any) => {
+            return (
+                <View {...props}
+                      style={[props.style, {flexDirection: "column", alignItems: "flex-start", marginTop: 5}]}>
+                    {entry.item.detailLinkName1 &&
+                    <Badge
+                        title={ObjectUtils.isDefined(entry.item.detailLinkName1) ? i18n.t(entry.item.detailLinkName1!) : 'UNKNOWN'}
+                        style={{marginBottom: 5}}/>
+                    }
+                    {entry.item.botanicalName &&
+                    <Badge title={entry.item.botanicalName}/>
+                    }
+                </View>
+            )
+        }
+
+        return (
+            <ListItem
+                title={entry.item.name}
+                description={renderDescription}
+                accessoryRight={ChevronRightIcon}
+                onPress={() => select(entry.item)}
+            />
+        )
+    };
 
     return (
         <React.Fragment>
@@ -75,7 +119,16 @@ export default () => {
                            accessoryLeft={CancelAction}/>
             <Divider/>
             <Layout style={styles.layout}>
-                <Input label={i18n.t('SEARCH')} value={query} onChangeText={onChangeText}/>
+                <Input placeholder={i18n.t('SEARCH')} value={query}
+                       onChangeText={(query) => setQuery(query)}/>
+                <Select
+                    style={styles.select}
+                    multiSelect={true}
+                    selectedIndex={selectedSources}
+                    value={() => <Text>{i18n.t('SOURCES')}</Text>}
+                    onSelect={(selectedSources) => setSelectedSources(selectedSources as IndexPath[])}>
+                    {generateSelectItems()}
+                </Select>
 
                 <List data={searchResults} renderItem={renderSearchResult}
                       ItemSeparatorComponent={Divider} style={styles.list}/>
@@ -96,6 +149,9 @@ const styles = StyleSheet.create({
     list: {
         marginTop: 15,
         flexGrow: 1
+    },
+    select: {
+        marginTop: 15,
     },
     button: {
         marginTop: 15,
