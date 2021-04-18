@@ -1,6 +1,7 @@
 import PlantRepository from "../repositories/PlantRepository";
 import Clipboard from "expo-clipboard";
 import {Plant} from "../model/Plant";
+import ObjectUtils from "../common/ObjectUtils";
 
 class ImportExportService {
 
@@ -13,11 +14,13 @@ class ImportExportService {
 
     async importAllPlantsFromClipboard() {
         const plantsAsString = await Clipboard.getStringAsync();
-        const plants = JSON.parse(plantsAsString) as Plant[];
+        if (ObjectUtils.isDefined(plantsAsString)) {
+            const plants = JSON.parse(plantsAsString) as Plant[];
 
-        for (const plant of plants) {
-            plant.id = undefined;
-            await PlantRepository.insertOrUpdatePlant(plant);
+            for (const plant of plants) {
+                plant.id = undefined;
+                await PlantRepository.insertOrUpdatePlant(plant);
+            }
         }
     }
 
