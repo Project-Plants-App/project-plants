@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The name of the version which should be released'
+        required: true
+
+jobs:
+  release:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: |
+        curl -L https://github.com/Project-Env/project-env-shell/releases/download/v2.1.0/project-env-shell-linux-amd64 -o project-env-cli
+        chmod +x ./project-env-cli
+        ./project-env-cli refresh --config-file=project-env.yml --output-template=github-actions.peb --output-file=github-actions-env.sh
+        ./github-actions-env.sh
+
+    - run: |
+        npm ci
+        npx expo publish --non-interactive --release-channel production
+      env:
+        EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        GROW_BUDDY_VERSION: ${{ github.event.inputs.version }}
+
+    - uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.event.inputs.version }}
+        release_name: v${{ github.event.inputs.version }}

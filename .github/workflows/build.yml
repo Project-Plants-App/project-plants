@@ -21,6 +21,5 @@ jobs:
 
     - run: |
         npm ci
-        npx expo publish --non-interactive
       env:
         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
