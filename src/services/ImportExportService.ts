@@ -42,9 +42,13 @@ class ImportExportService {
     }
 
     private async addFolderToZip(zip: JSZip, folder: string) {
-        for (const file of (await FileSystem.readDirectoryAsync(`${FileSystem.documentDirectory}/${folder}`))) {
-            const content = await FileSystem.readAsStringAsync(`${FileSystem.documentDirectory}/${folder}/${file}`, {encoding: 'base64'});
-            zip.folder(folder)!.file(file, content, {base64: true, createFolders: true});
+        const folderUri = `${FileSystem.documentDirectory}/${folder}`;
+        const folderInfo = await FileSystem.getInfoAsync(folderUri);
+        if (folderInfo.exists) {
+            for (const file of (await FileSystem.readDirectoryAsync(`${FileSystem.documentDirectory}/${folder}`))) {
+                const content = FileSystem.readAsStringAsync(`${FileSystem.documentDirectory}/${folder}/${file}`, {encoding: 'base64'});
+                zip.folder(folder)!.file(file, content, {base64: true, createFolders: true});
+            }
         }
     }
 
