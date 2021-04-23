@@ -1,26 +1,16 @@
 import {useNavigation, useRoute} from "@react-navigation/native";
-import {
-    Divider,
-    Icon,
-    Layout,
-    List,
-    ListItem,
-    Text,
-    TopNavigation,
-    TopNavigationAction,
-    useStyleSheet
-} from "@ui-kitten/components";
+import {Divider, Icon, Layout, List, ListItem, Text, TopNavigation, TopNavigationAction} from "@ui-kitten/components";
 import React, {useState} from "react";
 import {ListRenderItemInfo, StyleSheet, View} from "react-native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
 import {Plant} from "../../../../../model/Plant";
 import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
-import PlantRepository from "../../../../../repositories/PlantRepository";
 import i18n from "../../../../../i18n";
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import Badge from "../../../../../common/components/Badge";
 import ObjectUtils from "../../../../../common/ObjectUtils";
+import PlantService from "../../../../../services/PlantService";
 
 export default () => {
 
@@ -30,7 +20,7 @@ export default () => {
     const [plants, setPlants] = useState<Plant[]>();
 
     const reload = () => {
-        PlantRepository.selectAllPlants().then((plants) => {
+        PlantService.getAllPlants().then((plants) => {
             setPlants(plants);
         });
     }

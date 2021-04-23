@@ -30,10 +30,10 @@ import IndexPathHelper from "../../../../../common/IndexPathHelper";
 import {WinterProof} from "../../../../../model/WinterProof";
 import ObjectUtils from "../../../../../common/ObjectUtils";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
+import PlantService from "../../../../../services/PlantService";
 
 const IMAGE_PICKER_OPTIONS: ImagePickerOptions = {
-    mediaTypes: MediaTypeOptions.Images,
-    base64: true
+    mediaTypes: MediaTypeOptions.Images
 };
 
 const convertIndexPathToAmountValue = (indexPath: IndexPath) => {
@@ -64,7 +64,7 @@ export default () => {
 
     const handleImagePickerResult = (result: ImagePickerResult) => {
         if (!result.cancelled) {
-            setAvatar(ImageDataUriHelper.toImageDataUri(result.uri, result.base64!))
+            setAvatar(result.uri)
         }
     }
 
@@ -100,16 +100,16 @@ export default () => {
         plant.amount = convertIndexPathToAmountValue(amount);
 
         if (ObjectUtils.isDefined(plant.id)) {
-            await PlantRepository.insertOrUpdatePlant(plant);
+            await PlantService.savePlant(plant);
             navigation.goBack();
         } else {
-            await PlantRepository.insertOrUpdatePlant(plant);
+            await PlantService.savePlant(plant);
             navigation.replace(PlantsTabRoute.PLANTS_DETAIL, {plant});
         }
     }
 
     const deletePlant = async () => {
-        await PlantRepository.deletePlant(plant);
+        await PlantService.savePlant(plant);
 
         navigation.dispatch(StackActions.popToTop());
     }

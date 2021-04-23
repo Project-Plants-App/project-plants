@@ -29,6 +29,7 @@ import AmountPlantedAtText from "../../../../../common/components/AmountPlantedA
 import ObjectUtils from "../../../../../common/ObjectUtils";
 import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
 import renderCardHeader from "../../../../../common/components/renderCardHeader";
+import PlantService from "../../../../../services/PlantService";
 
 export default () => {
 
@@ -41,10 +42,10 @@ export default () => {
     const [lastTimeSprayedDialogVisible, setLastTimeSprayedDialogVisible] = useState(false);
 
     useOnFocusOnceEffect(() => {
-        PlantRepository.selectPlant(plant.id!).then((plant) => {
+        PlantService.getPlant(plant.id!).then((plant) => {
             setPlant(plant);
         });
-    })
+    });
 
     const back = () => {
         navigation.dispatch(StackActions.popToTop());
@@ -102,7 +103,7 @@ export default () => {
     }
 
     const updatePlant = async () => {
-        await PlantRepository.insertOrUpdatePlant(plant);
+        await PlantService.savePlant(plant);
         setPlant({...plant});
     }
 
