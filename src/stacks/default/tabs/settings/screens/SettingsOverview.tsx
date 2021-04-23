@@ -4,6 +4,7 @@ import {ListRenderItemInfo} from "react-native";
 import ImportExportService from "../../../../../services/ImportExportService";
 import GrowBuddyDatabaseService from "../../../../../services/database/GrowBuddyDatabaseService";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
+import * as Sharing from 'expo-sharing';
 
 export default () => {
 
@@ -24,6 +25,16 @@ export default () => {
             title: 'Datenbank zurücksetzen',
             onPress: async () => {
                 await GrowBuddyDatabaseService.resetDatabase();
+            }
+        }, {
+            title: 'Backup erstellen',
+            onPress: async () => {
+                ImportExportService.createBackupZip().then((uri) => {
+                    Sharing.shareAsync(uri, {
+                        mimeType: 'application/zip',
+                        UTI: 'public.zip-archive'
+                    });
+                });
             }
         }
     ]
