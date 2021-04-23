@@ -62,7 +62,7 @@ export default () => {
     }, [query, selectedSources])
 
     const select = async (plant: Plant) => {
-        navigation.replace(PlantsTabRoute.PLANTS_EDIT, {plant});
+        navigation.navigate({name: PlantsTabRoute.PLANTS_EDIT, params: {plant}});
     }
 
     const skip = () => {
