@@ -57,17 +57,17 @@ export default () => {
                 <View {...props} style={[props.style, {flexDirection: "row", alignItems: "center", marginTop: 5}]}>
                     {item.lastTimeWatered &&
                     <Badge icon="droplet-outline"
-                           title={ObjectUtils.formatDate(item.lastTimeWatered)!}
+                           title={ObjectUtils.formatIsoDateString(item.lastTimeWatered)!}
                            style={{marginRight: 5}}/>
                     }
                     {item.lastTimeFertilised &&
                     <Badge icon="flash-outline"
-                           title={ObjectUtils.formatDate(item.lastTimeFertilised)!}
+                           title={ObjectUtils.formatIsoDateString(item.lastTimeFertilised)!}
                            style={{marginRight: 5}}/>
                     }
                     {item.lastTimeSprayed &&
                     <Badge icon="shield-outline"
-                           title={ObjectUtils.formatDate(item.lastTimeSprayed)!}/>
+                           title={ObjectUtils.formatIsoDateString(item.lastTimeSprayed)!}/>
                     }
                 </View>
             )

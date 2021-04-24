@@ -99,7 +99,7 @@ export default () => {
     );
 
     const formatDate = (date?: string) => {
-        return ObjectUtils.formatDate(date);
+        return ObjectUtils.formatIsoDateString(date);
     }
 
     const updatePlant = async () => {

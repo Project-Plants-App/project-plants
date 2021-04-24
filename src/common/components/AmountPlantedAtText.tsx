@@ -29,7 +29,7 @@ export default ({plant, textCategory, style}: AmountPlantedAtText) => {
             <Text category={textCategory}> </Text>
             }
             {showPlanted() &&
-            <Text category={textCategory}>gepflanzt am {ObjectUtils.formatDate(plant.planted)!}</Text>
+            <Text category={textCategory}>gepflanzt am {ObjectUtils.formatIsoDateString(plant.planted)!}</Text>
             }
         </View>
     )

@@ -4,7 +4,7 @@ class ObjectUtils {
         return value !== undefined && value !== null;
     }
 
-    parseDate(dateAsIsoString?: string): Date | undefined {
+    parseIsoDateString(dateAsIsoString?: string): Date | undefined {
         try {
             if (this.isDefined(dateAsIsoString)) {
                 return new Date(Date.parse(dateAsIsoString!));
@@ -15,7 +15,23 @@ class ObjectUtils {
         return undefined;
     }
 
-    formatDate(dateAsIsoString?: string): string | undefined {
+    formatTimeString(timeString?: string): string | undefined {
+        try {
+            if (this.isDefined(timeString)) {
+                let number = parseInt(timeString!);
+                if (isNaN(number)) {
+                    return undefined;
+                }
+
+                return new Date(number).toLocaleDateString();
+            }
+        } catch (e) {
+            // ignore
+        }
+        return undefined;
+    }
+
+    formatIsoDateString(dateAsIsoString?: string): string | undefined {
         try {
             if (this.isDefined(dateAsIsoString)) {
                 return new Date(Date.parse(dateAsIsoString!)).toLocaleDateString();
@@ -24,6 +40,10 @@ class ObjectUtils {
             // ignore
         }
         return undefined;
+    }
+
+    wait(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
 }

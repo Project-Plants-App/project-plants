@@ -49,6 +49,7 @@ class GrowBuddyDatabaseService {
     }
 
     async resetDatabase() {
+        this.closeDatabase();
         await FileSystem.deleteAsync(`${FileSystem.documentDirectory}/SQLite/${DATABASE_NAME}`);
         await this.openDatabase();
     }
@@ -56,6 +57,12 @@ class GrowBuddyDatabaseService {
     async openDatabase() {
         this.database = SQLite.openDatabase(DATABASE_NAME);
         await this.migrateDatabase();
+    }
+
+    async closeDatabase() {
+        // close database
+        (this.database! as any)._db.close();
+        this.database = undefined;
     }
 
 }
