@@ -78,9 +78,12 @@ class BackupService {
     async createBackup() {
         const zip = new JSZip();
 
-        (await this.getFoldersIncludedInBackup()).forEach(async (folder) => {
+        const foldersIncludedInBackup = await this.getFoldersIncludedInBackup();
+        for (const folder of foldersIncludedInBackup) {
+            console.log(`adding folder ${folder} to backup`);
+
             await this.addRecursivelyToZip(zip, '', folder);
-        });
+        }
 
         const base64String = await zip.generateAsync({
             type: "base64",
@@ -127,7 +130,7 @@ class BackupService {
             const fileSizeInMb = ObjectUtils.isDefined(fileInfoWithSize.size) ? `${fileInfoWithSize.size! / 1000000}` : 'unkown';
             console.log(`adding file ${fileUri} (${fileSizeInMb} MB)`);
 
-            const content = FileSystem.readAsStringAsync(fileUri, {encoding: 'base64'});
+            const content = await FileSystem.readAsStringAsync(fileUri, {encoding: 'base64'});
             this.relativizeZipInstance(zip, parent).file(file, content, {base64: true, createFolders: true});
         }
     }
