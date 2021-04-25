@@ -18,19 +18,18 @@ import {KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View} from "reac
 import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
 import {Plant} from "../../../../../model/Plant";
-import PlantRepository from "../../../../../repositories/PlantRepository";
 import {PreferredLocation} from "../../../../../model/PreferredLocation";
 import {WaterDemand} from "../../../../../model/WaterDemand";
 import i18n, {translateEnumValue} from "../../../../../i18n";
 import * as ImagePicker from 'expo-image-picker';
 import {ImagePickerOptions, ImagePickerResult, MediaTypeOptions} from 'expo-image-picker';
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
-import ImageDataUriHelper from "../../../../../common/ImageDataUriHelper";
 import IndexPathHelper from "../../../../../common/IndexPathHelper";
 import {WinterProof} from "../../../../../model/WinterProof";
 import ObjectUtils from "../../../../../common/ObjectUtils";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import PlantService from "../../../../../services/PlantService";
+import renderCardHeader from "../../../../../common/components/renderCardHeader";
 
 const IMAGE_PICKER_OPTIONS: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images
@@ -231,11 +230,13 @@ export default () => {
                             </Card>
 
                             {plant.id !== undefined &&
-                            <Button onPress={deletePlant}
-                                    appearance="outline"
-                                    status="danger">
-                                Löschen
-                            </Button>
+                            <Card status="basic">
+                                <Button onPress={deletePlant}
+                                        appearance="outline"
+                                        status="danger">
+                                    Löschen
+                                </Button>
+                            </Card>
                             }
                         </View>
                     </ScrollView>
@@ -246,7 +247,6 @@ export default () => {
     )
 
 }
-
 
 const styles = StyleSheet.create({
     layout: {

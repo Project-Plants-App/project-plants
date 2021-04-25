@@ -9,6 +9,7 @@ i18n.translations = {
         ALL_PLANTS: 'Alle Pflanzen',
         SETTINGS: 'Einstellungen',
         BACKUPS: 'Sicherungskopien',
+        DEVELOPER: 'Entwickler',
         NEW: 'Neu',
         SEARCH: 'Suchen',
         SOURCES: 'Quellen',

@@ -1,4 +1,4 @@
-import {Button, Divider, Icon, Layout, TopNavigation, TopNavigationAction} from "@ui-kitten/components";
+import {Button, Card, Divider, Icon, Layout, TopNavigation, TopNavigationAction} from "@ui-kitten/components";
 import React, {useState} from "react";
 import {StyleSheet} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
@@ -49,9 +49,11 @@ export default () => {
                            accessoryLeft={BackAction}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
-                <Button onPress={shareBackup}>Teilen</Button>
-                <Button status="danger" style={styles.button} onPress={applyBackup}>Übernehmen</Button>
-                <Button status="danger" style={styles.button} onPress={deleteBackup}>Löschen</Button>
+                <Card status="basic">
+                    <Button onPress={shareBackup}>Teilen</Button>
+                    <Button status="danger" style={styles.button} onPress={applyBackup}>Übernehmen</Button>
+                    <Button status="danger" style={styles.button} onPress={deleteBackup}>Löschen</Button>
+                </Card>
             </Layout>
             <Divider/>
         </React.Fragment>
