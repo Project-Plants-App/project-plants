@@ -22,7 +22,6 @@ import PlantAvatar from "../../../../../common/components/PlantAvatar";
 import {WaterDemand} from "../../../../../model/WaterDemand";
 import {PreferredLocation} from "../../../../../model/PreferredLocation";
 import {WinterProof} from "../../../../../model/WinterProof";
-import PlantRepository from "../../../../../repositories/PlantRepository";
 import CardListContainer from "../../../../../common/components/CardListContainer";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import AmountPlantedAtText from "../../../../../common/components/AmountPlantedAtText";
@@ -107,24 +106,21 @@ export default () => {
         setPlant({...plant});
     }
 
-    const updateLastTimeWatered = async (date: Date) => {
+    const updateLastTimeWatered = async (date?: Date) => {
         setLastTimeWateredDialogVisible(false);
-
-        plant.lastTimeWatered = date.toISOString();
+        plant.lastTimeWatered = date ? date.toISOString() : undefined;
         await updatePlant();
     }
 
-    const updateLastTimeFertilised = async (date: Date) => {
+    const updateLastTimeFertilised = async (date?: Date) => {
         setLastTimeFertilisedDialogVisible(false);
-
-        plant.lastTimeFertilised = date.toISOString();
+        plant.lastTimeFertilised = date ? date.toISOString() : undefined;
         await updatePlant();
     }
 
-    const updateLastTimeSprayed = async (date: Date) => {
+    const updateLastTimeSprayed = async (date?: Date) => {
         setLastTimeSprayedDialogVisible(false);
-
-        plant.lastTimeSprayed = date.toISOString();
+        plant.lastTimeSprayed = date ? date.toISOString() : undefined;
         await updatePlant();
     }
 
@@ -133,25 +129,22 @@ export default () => {
             label: i18n.t('LAST_TIME_WATERED'),
             value: formatDate(plant.lastTimeWatered),
             icon: 'droplet-outline',
-            onPress: () => {
-                setLastTimeWateredDialogVisible(true);
-            }
+            onTrashPress: () => updateLastTimeWatered(),
+            onCalendarPress: () => setLastTimeWateredDialogVisible(true)
         },
         {
             label: i18n.t('LAST_TIME_FERTILISED'),
             value: formatDate(plant.lastTimeFertilised),
             icon: 'flash-outline',
-            onPress: () => {
-                setLastTimeFertilisedDialogVisible(true);
-            }
+            onTrashPress: () => updateLastTimeFertilised(),
+            onCalendarPress: () => setLastTimeFertilisedDialogVisible(true)
         },
         {
             label: i18n.t('LAST_TIME_SPRAYED'),
             value: formatDate(plant.lastTimeSprayed),
             icon: 'shield-outline',
-            onPress: () => {
-                setLastTimeSprayedDialogVisible(true);
-            }
+            onTrashPress: () => updateLastTimeSprayed(),
+            onCalendarPress: () => setLastTimeSprayedDialogVisible(true)
         }
     ];
 
@@ -160,13 +153,24 @@ export default () => {
             <Icon {...props} name={entry.item.icon}/>
         );
 
-        const buttonIcon = (props: any) => (
+        const calendarIcon = (props: any) => (
             <Icon {...props} name="calendar-outline"/>
         );
 
-        const button = (props: any) => (
-            <Button {...props} accessoryRight={buttonIcon} appearance="ghost" onPress={entry.item.onPress}/>
+        const trashIcon = (props: any) => (
+            <Icon {...props} name="trash-outline"/>
         );
+
+        const button = (props: any) => {
+            return (
+                <React.Fragment>
+                    <Button {...props} accessoryRight={trashIcon} appearance="ghost" status="danger"
+                            onPress={entry.item.onTrashPress}/>
+                    <Button {...props} accessoryRight={calendarIcon} appearance="ghost"
+                            onPress={entry.item.onCalendarPress}/>
+                </React.Fragment>
+            )
+        };
 
         return (
             <ListItem title={entry.item.value}
@@ -216,7 +220,8 @@ export default () => {
                             </Button>
                             }
                         </Card>
-                        <Card style={styles.card} header={renderCardHeader("Aktivitäten")} status="basic" disabled={true}>
+                        <Card style={styles.card} header={renderCardHeader("Aktivitäten")} status="basic"
+                              disabled={true}>
                             <CardListContainer>
                                 <List data={plantActivities} renderItem={renderActivities}
                                       ItemSeparatorComponent={Divider}/>
