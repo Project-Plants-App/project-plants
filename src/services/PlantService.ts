@@ -23,7 +23,8 @@ class PlantService {
     }
 
     async deletePlant(plant: Plant): Promise<void> {
-        return PlantRepository.deletePlant(plant);
+        await PlantRepository.deletePlant(plant);
+        await ImageRepository.deleteImageIfExists(plant.id!);
     }
 
 }

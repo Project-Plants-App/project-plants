@@ -33,12 +33,11 @@ const PLANT_BASE_SELECT_STATEMENT = `select id,
                                             last_time_watered,
                                             last_time_fertilised,
                                             last_time_sprayed
-                                     from plants
-                                     where deleted = false`
+                                     from plants`
 
 const PLANT_SELECT_ALL_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} order by name`
 
-const PLANT_SELECT_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} and id = ?`
+const PLANT_SELECT_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} where id = ?`
 
 const PLANT_UPDATE_STATEMENT = `update plants
                                 set name                 = ?,
@@ -56,8 +55,7 @@ const PLANT_UPDATE_STATEMENT = `update plants
                                     last_time_sprayed    = ?
                                 where id = ?`
 
-const PLANT_DELETE_STATEMENT = `update plants
-                                set deleted = true
+const PLANT_DELETE_STATEMENT = `delete from plants
                                 where id = ?`
 
 class PlantRepository {

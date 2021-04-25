@@ -10,12 +10,9 @@ class ImageRepository {
             return uri;
         }
 
-        await FileSystem.makeDirectoryAsync(PLANT_AVATARS_DIRECTORY,{intermediates:true});
+        await FileSystem.makeDirectoryAsync(PLANT_AVATARS_DIRECTORY, {intermediates: true});
 
-        const existingImage = (await FileSystem.readDirectoryAsync(PLANT_AVATARS_DIRECTORY)).find(entry => entry.startsWith(`${id}_`));
-        if (ObjectUtils.isDefined(existingImage)) {
-            await FileSystem.deleteAsync(`${PLANT_AVATARS_DIRECTORY}/${existingImage}`)
-        }
+        await this.deleteImageIfExists(id);
 
         const filename = this.createFilename(id, uri);
         const destinationUri = `${PLANT_AVATARS_DIRECTORY}/${filename}`;
@@ -26,6 +23,14 @@ class ImageRepository {
         });
 
         return destinationUri;
+    }
+
+    async deleteImageIfExists(id: number) {
+        await FileSystem.makeDirectoryAsync(PLANT_AVATARS_DIRECTORY, {intermediates: true});
+        const existingImage = (await FileSystem.readDirectoryAsync(PLANT_AVATARS_DIRECTORY)).find(entry => entry.startsWith(`${id}_`));
+        if (ObjectUtils.isDefined(existingImage)) {
+            await FileSystem.deleteAsync(`${PLANT_AVATARS_DIRECTORY}/${existingImage}`)
+        }
     }
 
     private createFilename(id: number, uri: string) {

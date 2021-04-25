@@ -109,7 +109,7 @@ export default () => {
     }
 
     const deletePlant = async () => {
-        await PlantService.savePlant(plant);
+        await PlantService.deletePlant(plant);
 
         navigation.dispatch(StackActions.popToTop());
     }

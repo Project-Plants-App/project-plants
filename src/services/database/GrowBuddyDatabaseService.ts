@@ -33,7 +33,10 @@ const MIGRATIONS = [
     `alter table plants
         add column planted date`,
     `alter table plants
-        add column amount integer`
+        add column amount integer`,
+    `delete
+     from plants
+     where deleted = true`
 ];
 
 class GrowBuddyDatabaseService {
