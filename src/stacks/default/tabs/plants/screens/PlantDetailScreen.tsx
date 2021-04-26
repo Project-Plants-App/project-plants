@@ -1,7 +1,7 @@
 import {
     Button,
     Calendar,
-    Card,
+    Card, Datepicker,
     Divider,
     Icon,
     Layout,
@@ -25,7 +25,7 @@ import {WinterProof} from "../../../../../model/WinterProof";
 import CardListContainer from "../../../../../common/components/CardListContainer";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import AmountPlantedAtText from "../../../../../common/components/AmountPlantedAtText";
-import ObjectUtils from "../../../../../common/ObjectUtils";
+import ObjectUtils, {MIN_DATE} from "../../../../../common/ObjectUtils";
 import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
 import renderCardHeader from "../../../../../common/components/renderCardHeader";
 import PlantService from "../../../../../services/PlantService";
@@ -237,6 +237,7 @@ export default () => {
                         <Calendar
                             style={styles.datePicker}
                             onSelect={date => updateLastTimeWatered(date)}
+                            min={MIN_DATE}
                         />
                     </Card>
                 </Modal>
@@ -248,6 +249,7 @@ export default () => {
                         <Calendar
                             style={styles.datePicker}
                             onSelect={date => updateLastTimeFertilised(date)}
+                            min={MIN_DATE}
                         />
                     </Card>
                 </Modal>
@@ -259,6 +261,7 @@ export default () => {
                         <Calendar
                             style={styles.datePicker}
                             onSelect={date => updateLastTimeSprayed(date)}
+                            min={MIN_DATE}
                         />
                     </Card>
                 </Modal>

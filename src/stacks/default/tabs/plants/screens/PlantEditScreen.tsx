@@ -26,7 +26,7 @@ import {ImagePickerOptions, ImagePickerResult, MediaTypeOptions} from 'expo-imag
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
 import IndexPathHelper from "../../../../../common/IndexPathHelper";
 import {WinterProof} from "../../../../../model/WinterProof";
-import ObjectUtils from "../../../../../common/ObjectUtils";
+import ObjectUtils, {MIN_DATE} from "../../../../../common/ObjectUtils";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import PlantService from "../../../../../services/PlantService";
 import renderCardHeader from "../../../../../common/components/renderCardHeader";
@@ -195,6 +195,7 @@ export default () => {
                                     label={i18n.t('PLANTED')}
                                     style={styles.input}
                                     date={planted}
+                                    min={MIN_DATE}
                                     onSelect={planted => setPlanted(planted)}
                                     accessoryRight={CalendarIcon}
                                 />

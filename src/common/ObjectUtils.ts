@@ -1,3 +1,5 @@
+export const MIN_DATE = new Date(0);
+
 class ObjectUtils {
 
     isDefined(value: any) {
