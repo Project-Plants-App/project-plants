@@ -29,7 +29,6 @@ import {WinterProof} from "../../../../../model/WinterProof";
 import ObjectUtils, {MIN_DATE} from "../../../../../common/ObjectUtils";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import PlantService from "../../../../../services/PlantService";
-import renderCardHeader from "../../../../../common/components/renderCardHeader";
 
 const IMAGE_PICKER_OPTIONS: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images
@@ -89,21 +88,28 @@ export default () => {
         navigation.goBack();
     }
 
-    const save = async () => {
-        plant.name = name;
-        plant.avatar = avatar;
-        plant.waterDemand = waterDemand.row;
-        plant.preferredLocation = preferredLocation.row;
-        plant.winterProof = winterProof.row;
-        plant.planted = planted?.toISOString();
-        plant.amount = convertIndexPathToAmountValue(amount);
+    const getUpdatedPlant = () => {
+        return Object.assign(plant, {
+            name,
+            botanicalName,
+            avatar,
+            waterDemand: waterDemand.row,
+            preferredLocation: preferredLocation.row,
+            winterProof: winterProof.row,
+            planted: planted?.toISOString(),
+            amount: convertIndexPathToAmountValue(amount)
+        });
+    }
 
-        if (ObjectUtils.isDefined(plant.id)) {
-            await PlantService.savePlant(plant);
+    const save = async () => {
+        const updatedPlant = getUpdatedPlant();
+
+        if (ObjectUtils.isDefined(updatedPlant.id)) {
+            await PlantService.savePlant(updatedPlant);
             navigation.goBack();
         } else {
-            await PlantService.savePlant(plant);
-            navigation.replace(PlantsTabRoute.PLANTS_DETAIL, {plant});
+            await PlantService.savePlant(updatedPlant);
+            navigation.replace(PlantsTabRoute.PLANTS_DETAIL, {plant: updatedPlant});
         }
     }
 
@@ -111,6 +117,12 @@ export default () => {
         await PlantService.deletePlant(plant);
 
         navigation.dispatch(StackActions.popToTop());
+    }
+
+    const completePlant = async () => {
+        const updatedPlant = getUpdatedPlant();
+
+        navigation.navigate({name: PlantsTabRoute.PLANTS_PREFILL, params: {plant: updatedPlant}});
     }
 
     const CameraIcon = (props: any) => (
@@ -232,6 +244,11 @@ export default () => {
 
                             {plant.id !== undefined &&
                             <Card status="basic">
+                                <Button onPress={completePlant}
+                                        style={styles.firstButton}
+                                        appearance="outline">
+                                    Automatisch vervollständigen
+                                </Button>
                                 <Button onPress={deletePlant}
                                         appearance="outline"
                                         status="danger">

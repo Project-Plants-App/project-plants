@@ -18,15 +18,22 @@ class GrowBuddyPlantsService {
         return fetch(`${GROW_BUDDY_PLANT_API_BASE_URL}/api/plant-infos?${params.toString()}`)
             .then((response) => (response.json()))
             .then((searchResults: PlantInfo[]) => (
-                searchResults.map(searchResult => ({
-                    name: searchResult.name,
-                    botanicalName: searchResult.botanicalName,
-                    detailLink1: searchResult.detailLink,
-                    detailLinkName1: searchResult.source as string,
-                    waterDemand: this.mapWaterDemand(searchResult),
-                    preferredLocation: this.mapPreferredLocation(searchResult),
-                    winterProof: this.mapWinterProof(searchResult)
-                } as Plant))
+                searchResults.map(searchResult => {
+                    const plant = {
+                        name: searchResult.name,
+                        botanicalName: searchResult.botanicalName,
+                        detailLink1: searchResult.detailLink,
+                        detailLinkName1: searchResult.source as string,
+                        waterDemand: this.mapWaterDemand(searchResult),
+                        preferredLocation: this.mapPreferredLocation(searchResult),
+                        winterProof: this.mapWinterProof(searchResult)
+                    } as any;
+
+                    // remove undefined properties
+                    Object.keys(plant).forEach(key => !ObjectUtils.isDefined(plant[key]) && delete plant[key])
+
+                    return plant as Plant;
+                })
             ));
     }
 

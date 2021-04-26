@@ -48,9 +48,11 @@ export default () => {
         return selectedSources.map((source) => selectableSources[source.row]);
     }
 
+    const [existingPlant] = useState(route.params.plant)
+
     const [selectableSources] = useState(generateSelectableSources())
 
-    const [query, setQuery] = useState('');
+    const [query, setQuery] = useState(existingPlant?.name || '');
     const [selectedSources, setSelectedSources] = useState<IndexPath[]>(generateInitialSourceSelection());
 
     const [searchResults, setSearchResults] = useState<Plant[]>([]);
@@ -62,7 +64,14 @@ export default () => {
     }, [query, selectedSources])
 
     const select = async (plant: Plant) => {
-        navigation.navigate({name: PlantsTabRoute.PLANTS_EDIT, params: {plant}});
+        const mergedPlant = Object.assign(existingPlant || {}, plant);
+        console.log(mergedPlant)
+        if (existingPlant) {
+            navigation.goBack();
+            navigation.replace(PlantsTabRoute.PLANTS_EDIT, {plant: mergedPlant});
+        } else {
+            navigation.navigate({name: PlantsTabRoute.PLANTS_EDIT, params: {plant: mergedPlant}});
+        }
     }
 
     const skip = () => {
@@ -133,7 +142,9 @@ export default () => {
                 <List data={searchResults} renderItem={renderSearchResult}
                       ItemSeparatorComponent={Divider} style={styles.list}/>
 
+                {!existingPlant &&
                 <Button onPress={skip} style={styles.button}>Nicht gefunden</Button>
+                }
             </Layout>
             <Divider/>
         </React.Fragment>

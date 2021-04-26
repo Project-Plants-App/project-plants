@@ -22,7 +22,9 @@ export type PlantsStackRouteParams = {
     "plants-edit": {
         plant?: Plant
     },
-    "plants-prefill": {}
+    "plants-prefill": {
+        plant?: Plant
+    }
 }
 
 export type PlantsStackRouteProp<RouteName extends keyof PlantsStackRouteParams> = RouteProp<PlantsStackRouteParams, RouteName>;
