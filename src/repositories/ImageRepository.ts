@@ -2,11 +2,12 @@ import * as FileSystem from 'expo-file-system';
 import ObjectUtils from "../common/ObjectUtils";
 
 const PLANT_AVATARS_DIRECTORY = `${FileSystem.documentDirectory}/plant-avatars`;
+const DATA_URI = 'data:';
 
 class ImageRepository {
 
     async storeImage(id: number, uri: string) {
-        if (uri.startsWith(PLANT_AVATARS_DIRECTORY)) {
+        if (uri.startsWith(PLANT_AVATARS_DIRECTORY) || uri.startsWith(DATA_URI)) {
             return uri;
         }
 
@@ -17,10 +18,7 @@ class ImageRepository {
         const filename = this.createFilename(id, uri);
         const destinationUri = `${PLANT_AVATARS_DIRECTORY}/${filename}`;
 
-        await FileSystem.copyAsync({
-            from: uri,
-            to: destinationUri
-        });
+        await FileSystem.copyAsync({from: uri, to: destinationUri});
 
         return destinationUri;
     }
