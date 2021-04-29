@@ -2,20 +2,21 @@ import {StackNavigationProp} from "@react-navigation/stack";
 import {RouteProp} from "@react-navigation/native";
 import {ActivityType} from "../../../../model/ActivityType";
 
-export enum ActivitiesTabRoute {
+export enum ActivitiesStackRoute {
     ACTIVITIES = "activities",
-    ACTIVITY_TYPE_SELECTION = "activity-type-selection",
+    ACTIVITIES_OVERVIEW = "activities-overview",
     ACTIVITY_DATE_SELECTION = "activity-date-selection",
     ACTIVITY_PLANT_SELECTION = "activity-plant-selection"
 }
 
 export type ActivitiesStackRouteParams = {
+    "activities-overview": undefined;
     "activity-type-selection": undefined;
     "activity-date-selection": {
-        activityTypes: ActivityType[],
+        activityType: ActivityType,
     }
     "activity-plant-selection": {
-        activityTypes: ActivityType[],
+        activityType: ActivityType,
         activityDate: string
     }
 }

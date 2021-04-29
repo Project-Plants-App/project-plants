@@ -15,7 +15,7 @@ import {
 import React, {useState} from "react";
 import {Linking, ListRenderItemInfo, ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
 import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
-import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
+import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsStackRoute} from "../PlantsStackRoute";
 import {Plant} from "../../../../../model/Plant";
 import i18n, {translateEnumValue} from "../../../../../i18n";
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
@@ -29,11 +29,12 @@ import ObjectUtils, {MIN_DATE} from "../../../../../common/ObjectUtils";
 import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
 import renderCardHeader from "../../../../../common/components/renderCardHeader";
 import PlantService from "../../../../../services/PlantService";
+import renderBackAction from "../../../../../common/components/renderBackAction";
 
 export default () => {
 
-    const navigation = useNavigation<PlantsStackNavigationProp<PlantsTabRoute.PLANTS_EDIT>>();
-    const route = useRoute<PlantsStackRouteProp<PlantsTabRoute.PLANTS_EDIT>>();
+    const navigation = useNavigation<PlantsStackNavigationProp<PlantsStackRoute.PLANTS_EDIT>>();
+    const route = useRoute<PlantsStackRouteProp<PlantsStackRoute.PLANTS_EDIT>>();
 
     const [plant, setPlant] = useState(route.params.plant || {} as Plant)
     const [lastTimeWateredDialogVisible, setLastTimeWateredDialogVisible] = useState(false);
@@ -46,25 +47,13 @@ export default () => {
         });
     });
 
-    const back = () => {
-        navigation.dispatch(StackActions.popToTop());
-    }
-
     const edit = async () => {
-        navigation.navigate({name: PlantsTabRoute.PLANTS_EDIT, params: {plant}});
+        navigation.navigate({name: PlantsStackRoute.PLANTS_EDIT, params: {plant}});
     }
 
     const openAvatarDetail = () => {
-        navigation.navigate({name: PlantsTabRoute.PLANTS_AVATAR_DETAIL, params: {plant}});
+        navigation.navigate({name: PlantsStackRoute.PLANTS_AVATAR_DETAIL, params: {plant}});
     }
-
-    const BackIcon = (props: any) => (
-        <Icon {...props} name='arrow-back'/>
-    );
-
-    const BackAction = () => (
-        <TopNavigationAction icon={BackIcon} onPress={back}/>
-    );
 
     const EditIcon = (props: any) => (
         <Icon {...props} name='edit-outline'/>
@@ -185,7 +174,7 @@ export default () => {
         <React.Fragment>
             <TopNavigation title={renderTopNavigationTitle(plant.name || '')}
                            alignment="center"
-                           accessoryLeft={BackAction}
+                           accessoryLeft={renderBackAction(true)}
                            accessoryRight={EditAction}/>
             <Divider/>
             <Layout style={styles.layout} level="2">

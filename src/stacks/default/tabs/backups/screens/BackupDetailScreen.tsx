@@ -1,16 +1,17 @@
-import {Button, Card, Divider, Icon, Layout, TopNavigation, TopNavigationAction} from "@ui-kitten/components";
+import {Button, Card, Divider, Layout, TopNavigation} from "@ui-kitten/components";
 import React, {useState} from "react";
 import {StyleSheet} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
-import {SettingsTabNavigationProp, SettingsTabRoute, SettingsTabRouteProp} from "../SettingsTabRoute";
+import {BackupsStackNavigationProp, BackupsStackRoute, BackupsStackRouteProp} from "../BackupsStackRoute";
 import BackupService from "../../../../../services/BackupService";
 import * as Sharing from 'expo-sharing';
+import renderBackAction from "../../../../../common/components/renderBackAction";
 
 export default () => {
 
-    const navigation = useNavigation<SettingsTabNavigationProp<SettingsTabRoute.SETTINGS_BACKUP_DETAIL>>();
-    const route = useRoute<SettingsTabRouteProp<SettingsTabRoute.SETTINGS_BACKUP_DETAIL>>();
+    const navigation = useNavigation<BackupsStackNavigationProp<BackupsStackRoute.BACKUPS_DETAIL>>();
+    const route = useRoute<BackupsStackRouteProp<BackupsStackRoute.BACKUPS_DETAIL>>();
 
     const [backup] = useState(route.params.backup)
 
@@ -34,19 +35,11 @@ export default () => {
         await BackupService.applyBackup(backup);
     }
 
-    const BackIcon = (props: any) => (
-        <Icon {...props} name='arrow-back'/>
-    );
-
-    const BackAction = () => (
-        <TopNavigationAction icon={BackIcon} onPress={back}/>
-    );
-
     return (
         <React.Fragment>
             <TopNavigation title={renderTopNavigationTitle(backup.name)}
                            alignment="center"
-                           accessoryLeft={BackAction}/>
+                           accessoryLeft={renderBackAction()}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
                 <Card status="basic">

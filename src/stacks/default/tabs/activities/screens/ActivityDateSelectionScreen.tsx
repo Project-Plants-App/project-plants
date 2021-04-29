@@ -1,25 +1,25 @@
 import {useNavigation, useRoute} from "@react-navigation/native";
-import {Button, Card, Datepicker, Divider, Icon, Layout, Text, TopNavigation} from "@ui-kitten/components";
+import {Button, Card, Datepicker, Divider, Icon, Layout, TopNavigation} from "@ui-kitten/components";
 import React, {useState} from "react";
 import {StyleSheet} from "react-native";
-import i18n from "../../../../../i18n";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
-import {ActivitiesStackNavigationProp, ActivitiesStackRouteProp, ActivitiesTabRoute} from "../ActivitiesTabRoute";
+import {ActivitiesStackNavigationProp, ActivitiesStackRoute, ActivitiesStackRouteProp} from "../ActivitiesStackRoute";
 import ObjectUtils, {MIN_DATE} from "../../../../../common/ObjectUtils";
+import renderCancelAction from "../../../../../common/components/renderCancelAction";
 
 export default () => {
 
-    const navigation = useNavigation<ActivitiesStackNavigationProp<ActivitiesTabRoute.ACTIVITY_DATE_SELECTION>>();
-    const route = useRoute<ActivitiesStackRouteProp<ActivitiesTabRoute.ACTIVITY_DATE_SELECTION>>();
+    const navigation = useNavigation<ActivitiesStackNavigationProp<ActivitiesStackRoute.ACTIVITY_DATE_SELECTION>>();
+    const route = useRoute<ActivitiesStackRouteProp<ActivitiesStackRoute.ACTIVITY_DATE_SELECTION>>();
 
-    const [activityDate, setActivityDate] = useState<Date>();
+    const [activityDate, setActivityDate] = useState<Date>(new Date());
 
     const nextStep = () => {
-        const activityTypes = route.params.activityTypes;
+        const activityType = route.params.activityType;
         navigation.navigate({
-            name: ActivitiesTabRoute.ACTIVITY_PLANT_SELECTION,
+            name: ActivitiesStackRoute.ACTIVITY_PLANT_SELECTION,
             params: {
-                activityTypes,
+                activityType,
                 activityDate: activityDate!.toISOString()
             }
         });
@@ -31,29 +31,27 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle(i18n.t('ACTIVITIES'))}
-                           alignment="center"/>
+            <TopNavigation title={renderTopNavigationTitle("Datum wählen")}
+                           alignment="center"
+                           accessoryLeft={renderCancelAction()}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
                 <Card status="basic">
-                    <Text category="s1" style={styles.text}>
-                        Welches Datum möchtest du für diese Aktivitäten setzen?
-                    </Text>
                     <Datepicker
-                        style={styles.datePicker}
                         date={activityDate}
                         min={MIN_DATE}
                         onSelect={date => setActivityDate(date)}
                         accessoryRight={CalendarIcon}
                     />
-                    <Button onPress={nextStep}
-                            disabled={!ObjectUtils.isDefined(activityDate)}
-                            style={styles.button}>
-                        Weiter
-                    </Button>
                 </Card>
             </Layout>
             <Divider/>
+            <Layout style={styles.buttonContainer}>
+                <Button onPress={nextStep}
+                        disabled={!ObjectUtils.isDefined(activityDate)}>
+                    Weiter
+                </Button>
+            </Layout>
         </React.Fragment>
     )
 
@@ -68,10 +66,10 @@ const styles = StyleSheet.create({
     text: {
         textAlign: "center"
     },
-    datePicker: {
-        marginTop: 15
-    },
     button: {
         marginTop: 15
+    },
+    buttonContainer: {
+        padding: 15
     }
 });

@@ -13,22 +13,20 @@ import React, {useState} from "react";
 import {Alert, ListRenderItemInfo, StyleSheet, View} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
-import {SettingsTabNavigationProp, SettingsTabRoute, SettingsTabRouteProp} from "../SettingsTabRoute";
+import {DeveloperStackNavigationProp, DeveloperStackRoute, DeveloperStackRouteProp} from "../DeveloperStackRoute";
 import i18n from "../../../../../i18n";
 import renderCardHeader from "../../../../../common/components/renderCardHeader";
 import Constants from 'expo-constants';
 import CardListContainer from "../../../../../common/components/CardListContainer";
 import GrowBuddyDatabaseService from "../../../../../services/database/GrowBuddyDatabaseService";
 import * as Updates from 'expo-updates';
+import renderBackAction from "../../../../../common/components/renderBackAction";
+import DrawerAction from "../../../../../common/components/DrawerAction";
 
 export default () => {
 
-    const navigation = useNavigation<SettingsTabNavigationProp<SettingsTabRoute.SETTINGS_BACKUP_DETAIL>>();
-    const route = useRoute<SettingsTabRouteProp<SettingsTabRoute.SETTINGS_BACKUP_DETAIL>>();
-
-    const back = () => {
-        navigation.goBack();
-    }
+    const navigation = useNavigation<DeveloperStackNavigationProp<DeveloperStackRoute.DEVELOPER_OVERVIEW>>();
+    const route = useRoute<DeveloperStackRouteProp<DeveloperStackRoute.DEVELOPER_OVERVIEW>>();
 
     const checkForOTAUpdate = () => {
         Updates.checkForUpdateAsync().then((result) => {
@@ -69,14 +67,6 @@ export default () => {
         }
     ]
 
-    const BackIcon = (props: any) => (
-        <Icon {...props} name='arrow-back'/>
-    );
-
-    const BackAction = () => (
-        <TopNavigationAction icon={BackIcon} onPress={back}/>
-    );
-
     const renderVersionItem = ({item}: ListRenderItemInfo<any>) => {
         return (
             <ListItem title={item.value} description={item.key} disabled={true}/>
@@ -95,7 +85,7 @@ export default () => {
         <React.Fragment>
             <TopNavigation title={renderTopNavigationTitle(i18n.t('DEVELOPER'))}
                            alignment="center"
-                           accessoryLeft={BackAction}/>
+                           accessoryLeft={DrawerAction}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
                 <Card header={renderCardHeader('App Version')} style={styles.card} footer={Footer}>

@@ -17,7 +17,7 @@ import {
 import {ListRenderItemInfo, StyleSheet, View} from "react-native";
 import i18n, {translateEnumValue} from "../../../../../i18n";
 import {useNavigation, useRoute} from "@react-navigation/native";
-import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
+import {PlantsStackNavigationProp, PlantsStackRoute, PlantsStackRouteProp} from "../PlantsStackRoute";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import {Plant} from "../../../../../model/Plant";
 import GrowBuddyPlantsService, {PlantInfoSource} from "../../../../../services/GrowBuddyPlantsService";
@@ -26,8 +26,8 @@ import Badge from "../../../../../common/components/Badge";
 
 export default () => {
 
-    const navigation = useNavigation<PlantsStackNavigationProp<PlantsTabRoute.PLANTS_PREFILL>>();
-    const route = useRoute<PlantsStackRouteProp<PlantsTabRoute.PLANTS_PREFILL>>();
+    const navigation = useNavigation<PlantsStackNavigationProp<PlantsStackRoute.PLANTS_PREFILL>>();
+    const route = useRoute<PlantsStackRouteProp<PlantsStackRoute.PLANTS_PREFILL>>();
 
     const generateSelectableSources = () => {
         return Object.keys(PlantInfoSource).map((sourceAsString) => (PlantInfoSource as any)[sourceAsString] as PlantInfoSource);
@@ -68,14 +68,14 @@ export default () => {
         console.log(mergedPlant)
         if (existingPlant) {
             navigation.goBack();
-            navigation.replace(PlantsTabRoute.PLANTS_EDIT, {plant: mergedPlant});
+            navigation.replace(PlantsStackRoute.PLANTS_EDIT, {plant: mergedPlant});
         } else {
-            navigation.navigate({name: PlantsTabRoute.PLANTS_EDIT, params: {plant: mergedPlant}});
+            navigation.navigate({name: PlantsStackRoute.PLANTS_EDIT, params: {plant: mergedPlant}});
         }
     }
 
     const skip = () => {
-        navigation.navigate({name: PlantsTabRoute.PLANTS_EDIT, params: {}});
+        navigation.navigate({name: PlantsStackRoute.PLANTS_EDIT, params: {}});
     }
 
     const cancel = () => {
@@ -126,7 +126,6 @@ export default () => {
             <TopNavigation title={renderTopNavigationTitle("Pflanze suchen")}
                            alignment="center"
                            accessoryLeft={CancelAction}/>
-            <Divider/>
             <Layout style={styles.layout}>
                 <Input placeholder={i18n.t('SEARCH')} value={query}
                        onChangeText={(query) => setQuery(query)}/>
@@ -138,15 +137,18 @@ export default () => {
                     onSelect={(selectedSources) => setSelectedSources(selectedSources as IndexPath[])}>
                     {generateSelectItems()}
                 </Select>
-
-                <List data={searchResults} renderItem={renderSearchResult}
-                      ItemSeparatorComponent={Divider} style={styles.list}/>
-
-                {!existingPlant &&
-                <Button onPress={skip} style={styles.button}>Nicht gefunden</Button>
-                }
             </Layout>
             <Divider/>
+            <Layout style={styles.listContainer}>
+                <List data={searchResults} renderItem={renderSearchResult}
+                      ItemSeparatorComponent={Divider} style={styles.list}/>
+            </Layout>
+            <Divider/>
+            {!existingPlant &&
+            <Layout style={styles.layout}>
+                <Button onPress={skip} style={styles.button}>Nicht gefunden</Button>
+            </Layout>
+            }
         </React.Fragment>
     )
 
@@ -154,11 +156,13 @@ export default () => {
 
 const styles = StyleSheet.create({
     layout: {
-        flex: 1,
-        padding: 15
+        padding: 15,
+        paddingTop: 0
+    },
+    listContainer: {
+        flex: 1
     },
     list: {
-        marginTop: 15,
         flexGrow: 1
     },
     select: {

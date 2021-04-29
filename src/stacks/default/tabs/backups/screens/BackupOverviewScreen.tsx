@@ -1,4 +1,4 @@
-import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import React, {useState} from "react";
 import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
 import {Alert, ListRenderItemInfo, StyleSheet} from "react-native";
@@ -7,13 +7,13 @@ import {Divider, Icon, Layout, List, ListItem, TopNavigation, TopNavigationActio
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import i18n from "../../../../../i18n";
 import * as DocumentPicker from 'expo-document-picker';
-import {SettingsTabNavigationProp, SettingsTabRoute, SettingsTabRouteProp} from "../SettingsTabRoute";
-
+import {BackupsStackNavigationProp, BackupsStackRoute, BackupsStackRouteProp} from "../BackupsStackRoute";
+import DrawerAction from "../../../../../common/components/DrawerAction";
 
 export default () => {
 
-    const navigation = useNavigation<SettingsTabNavigationProp<SettingsTabRoute.SETTINGS_BACKUP_OVERVIEW>>();
-    const route = useRoute<SettingsTabRouteProp<SettingsTabRoute.SETTINGS_BACKUP_OVERVIEW>>();
+    const navigation = useNavigation<BackupsStackNavigationProp<BackupsStackRoute.BACKUPS_OVERVIEW>>();
+    const route = useRoute<BackupsStackRouteProp<BackupsStackRoute.BACKUPS_OVERVIEW>>();
 
     const [backups, setBackups] = useState<Backup[]>();
 
@@ -22,18 +22,6 @@ export default () => {
             setBackups(backups);
         });
     }
-
-    const back = () => {
-        navigation.dispatch(StackActions.popToTop());
-    }
-
-    const BackIcon = (props: any) => (
-        <Icon {...props} name='arrow-back'/>
-    );
-
-    const BackAction = () => (
-        <TopNavigationAction icon={BackIcon} onPress={back}/>
-    );
 
     const showBackupCreationAlert = () => {
         Alert.alert('Sicherungskopie hinzufügen', undefined, [
@@ -52,7 +40,7 @@ export default () => {
     }
 
     const openBackupDetail = (backup: Backup) => {
-        navigation.navigate({name: SettingsTabRoute.SETTINGS_BACKUP_DETAIL, params: {backup}});
+        navigation.navigate({name: BackupsStackRoute.BACKUPS_DETAIL, params: {backup}});
     }
 
     const createBackup = async () => {
@@ -90,7 +78,7 @@ export default () => {
         <React.Fragment>
             <TopNavigation title={renderTopNavigationTitle(i18n.t('BACKUPS'))}
                            alignment="center"
-                           accessoryLeft={BackAction}
+                           accessoryLeft={DrawerAction}
                            accessoryRight={CreateAction}/>
             <Divider/>
             <Layout style={styles.layout}>

@@ -1,8 +1,9 @@
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RouteProp} from "@react-navigation/native";
 import {Plant} from "../../../../model/Plant";
+import {DrawerNavigationProp} from "@react-navigation/drawer";
 
-export enum PlantsTabRoute {
+export enum PlantsStackRoute {
     PLANTS = "plants",
     PLANTS_OVERVIEW = "plants-overview",
     PLANTS_DETAIL = "plants-detail",
@@ -27,6 +28,8 @@ export type PlantsStackRouteParams = {
     }
 }
 
-export type PlantsStackRouteProp<RouteName extends keyof PlantsStackRouteParams> = RouteProp<PlantsStackRouteParams, RouteName>;
+export type PlantsStackRouteProp<RouteName extends keyof PlantsStackRouteParams> =
+    RouteProp<PlantsStackRouteParams, RouteName>;
 
-export type PlantsStackNavigationProp<RouteName extends keyof PlantsStackRouteParams> = StackNavigationProp<PlantsStackRouteParams, RouteName>;
+export type PlantsStackNavigationProp<RouteName extends keyof PlantsStackRouteParams> =
+    StackNavigationProp<PlantsStackRouteParams, RouteName> & DrawerNavigationProp<PlantsStackRouteParams, RouteName>;

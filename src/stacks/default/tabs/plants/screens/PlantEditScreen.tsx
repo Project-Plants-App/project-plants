@@ -16,7 +16,7 @@ import {
 import React, {useState} from "react";
 import {KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View} from "react-native";
 import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
-import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsTabRoute} from "../PlantsTabRoute";
+import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsStackRoute} from "../PlantsStackRoute";
 import {Plant} from "../../../../../model/Plant";
 import {PreferredLocation} from "../../../../../model/PreferredLocation";
 import {WaterDemand} from "../../../../../model/WaterDemand";
@@ -46,8 +46,8 @@ const convertAmountValueToIndexPath = (amount?: number) => {
 
 export default () => {
 
-    const navigation = useNavigation<PlantsStackNavigationProp<PlantsTabRoute.PLANTS_EDIT>>();
-    const route = useRoute<PlantsStackRouteProp<PlantsTabRoute.PLANTS_EDIT>>();
+    const navigation = useNavigation<PlantsStackNavigationProp<PlantsStackRoute.PLANTS_EDIT>>();
+    const route = useRoute<PlantsStackRouteProp<PlantsStackRoute.PLANTS_EDIT>>();
 
     const [plant] = useState(route.params.plant || {} as Plant)
 
@@ -109,7 +109,7 @@ export default () => {
             navigation.goBack();
         } else {
             await PlantService.savePlant(updatedPlant);
-            navigation.replace(PlantsTabRoute.PLANTS_DETAIL, {plant: updatedPlant});
+            navigation.replace(PlantsStackRoute.PLANTS_DETAIL, {plant: updatedPlant});
         }
     }
 
@@ -122,7 +122,7 @@ export default () => {
     const completePlant = async () => {
         const updatedPlant = getUpdatedPlant();
 
-        navigation.navigate({name: PlantsTabRoute.PLANTS_PREFILL, params: {plant: updatedPlant}});
+        navigation.navigate({name: PlantsStackRoute.PLANTS_PREFILL, params: {plant: updatedPlant}});
     }
 
     const CameraIcon = (props: any) => (
