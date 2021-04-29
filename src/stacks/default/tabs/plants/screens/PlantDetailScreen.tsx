@@ -1,7 +1,7 @@
 import {
     Button,
     Calendar,
-    Card, Datepicker,
+    Card,
     Divider,
     Icon,
     Layout,

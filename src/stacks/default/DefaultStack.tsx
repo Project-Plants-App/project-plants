@@ -6,6 +6,8 @@ import {BottomNavigation, BottomNavigationTab, Icon} from "@ui-kitten/components
 import {PlantsTabRoute} from "./tabs/plants/PlantsTabRoute";
 import {SettingsTabRoute} from "./tabs/settings/SettingsTabRoute";
 import i18n from "../../i18n";
+import {ActivitiesTabRoute} from "./tabs/activities/ActivitiesTabRoute";
+import ActivitiesTab from "./tabs/activities/ActivitiesTab";
 
 const {Navigator, Screen} = createBottomTabNavigator();
 
@@ -13,6 +15,10 @@ export default () => {
 
     const PlantsIcon = (props: any) => (
         <Icon {...props} name='list-outline'/>
+    );
+
+    const ActivitiesIcon = (props: any) => (
+        <Icon {...props} name='checkmark-circle-outline'/>
     );
 
     const SettingsIcon = (props: any) => (
@@ -24,6 +30,7 @@ export default () => {
             selectedIndex={state.index}
             onSelect={index => navigation.navigate(state.routeNames[index])}>
             <BottomNavigationTab title={i18n.t('PLANTS')} icon={PlantsIcon}/>
+            <BottomNavigationTab title={i18n.t('ACTIVITIES')} icon={ActivitiesIcon}/>
             <BottomNavigationTab title={i18n.t('SETTINGS')} icon={SettingsIcon}/>
         </BottomNavigation>
     );
@@ -31,6 +38,7 @@ export default () => {
     return (
         <Navigator tabBar={props => <BottomTabBar {...props} />}>
             <Screen name={PlantsTabRoute.PLANTS} component={PlantsTab}/>
+            <Screen name={ActivitiesTabRoute.ACTIVITIES} component={ActivitiesTab}/>
             <Screen name={SettingsTabRoute.SETTINGS} component={SettingsTab}/>
         </Navigator>
     );

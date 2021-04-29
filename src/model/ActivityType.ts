@@ -1,0 +1,5 @@
+export enum ActivityType {
+    LAST_TIME_WATERED,
+    LAST_TIME_FERTILISED,
+    LAST_TIME_SPRAYED
+}

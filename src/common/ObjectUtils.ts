@@ -1,3 +1,5 @@
+import {SelectItem} from "@ui-kitten/components";
+
 export const MIN_DATE = new Date(0);
 
 class ObjectUtils {
@@ -42,6 +44,12 @@ class ObjectUtils {
             // ignore
         }
         return undefined;
+    }
+
+    enumValues<T>(enumType: any) {
+        return Object.keys(enumType)
+            .filter(k => typeof (enumType as any)[k as any] === "number")
+            .map(k => (enumType as any)[k as any] as T);
     }
 
     wait(ms: number) {
