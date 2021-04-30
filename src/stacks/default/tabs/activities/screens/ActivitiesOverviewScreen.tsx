@@ -14,25 +14,22 @@ export default () => {
     const navigation = useNavigation<ActivitiesStackNavigationProp<ActivitiesStackRoute.ACTIVITIES_OVERVIEW>>();
     const route = useRoute<ActivitiesStackRouteProp<ActivitiesStackRoute.ACTIVITIES_OVERVIEW>>();
 
-    const executeActivity = (activityType: ActivityType) => {
+    function executeActivity(activityType: ActivityType) {
         navigation.navigate({
             name: ActivitiesStackRoute.ACTIVITY_DATE_SELECTION,
             params: {activityType}
         });
     }
 
-    const renderActivityButtons = () => {
-        return ObjectUtils
-            .enumValues<ActivityType>(ActivityType)
-            .map((activityType) => (
-                <Button onPress={() => executeActivity(activityType)}
-                        key={activityType}
-                        appearance="outline"
-                        style={styles.button}>
-                    {translateEnumValue(activityType, ActivityType)}
-                </Button>
-            ));
-    }
+    const renderActivityButtons = ObjectUtils.enumValues<ActivityType>(ActivityType)
+        .map((activityType) => (
+            <Button onPress={() => executeActivity(activityType)}
+                    key={activityType}
+                    appearance="outline"
+                    style={styles.button}>
+                {translateEnumValue(activityType, ActivityType)}
+            </Button>
+        ));
 
     return (
         <React.Fragment>
@@ -41,7 +38,7 @@ export default () => {
                            accessoryLeft={DrawerAction}/>
             <Divider/>
             <Layout style={styles.layout}>
-                {renderActivityButtons()}
+                {renderActivityButtons}
             </Layout>
             <Divider/>
         </React.Fragment>
