@@ -1,14 +1,17 @@
 import {Icon, Text, useTheme} from "@ui-kitten/components";
 import React from "react";
 import {StyleProp, StyleSheet, View, ViewStyle} from "react-native";
+import {ChildrenProp} from "@ui-kitten/components/devsupport";
 
 type BadgeProps = {
-    title: string,
+    title?: string,
     icon?: string,
-    style?: StyleProp<ViewStyle>
+    style?: StyleProp<ViewStyle>,
+    children?: ChildrenProp
 }
 
-export default ({title, icon, style}: BadgeProps) => {
+export default ({title, icon, style, children}: BadgeProps) => {
+
     const theme = useTheme();
 
     return (
@@ -16,7 +19,10 @@ export default ({title, icon, style}: BadgeProps) => {
             {icon &&
             <Icon style={styles.icon} name={icon} fill={theme['text-basic-color']}/>
             }
+            {title &&
             <Text style={styles.text}>{title}</Text>
+            }
+            {children}
         </View>
     )
 }
@@ -25,8 +31,8 @@ const styles = StyleSheet.create({
     view: {
         flexDirection: "row",
         alignItems: "center",
-        borderRadius: 50,
-        paddingHorizontal: 6,
+        borderRadius: 4,
+        padding: 6,
         paddingVertical: 3
     },
     icon: {
@@ -35,7 +41,6 @@ const styles = StyleSheet.create({
         marginRight: 3
     },
     text: {
-
         fontSize: 12
     }
 })

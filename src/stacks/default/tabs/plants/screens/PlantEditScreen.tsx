@@ -190,7 +190,7 @@ export default () => {
                     <ScrollView>
                         <View style={styles.contentContainer}>
                             <Card style={styles.card} status="basic" disabled={true}>
-                                <PlantAvatar avatar={avatar} size="giant" style={styles.avatar}/>
+                                <PlantAvatar avatar={avatar} size="giant" style={styles.avatar} shape="square"/>
                                 <View style={styles.avatarInputs}>
                                     <Button accessoryLeft={CameraIcon}
                                             appearance="outline"

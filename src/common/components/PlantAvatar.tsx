@@ -1,4 +1,4 @@
-import {Avatar, AvatarProps} from "@ui-kitten/components";
+import {Avatar, AvatarProps, useTheme} from "@ui-kitten/components";
 import React from "react";
 
 type PlantAvatarProps = {
@@ -7,8 +7,13 @@ type PlantAvatarProps = {
 
 export default (props: PlantAvatarProps) => {
 
-    const source = props.avatar ? {uri: props.avatar} : require('../../../assets/icon.png');
-    const style = [props.style, {tintColor: undefined}]
+    const theme = useTheme();
+
+    const source = props.avatar ? {uri: props.avatar} : require('../../../assets/plant-avatar-placeholder.png');
+    const style = [props.style, {
+        tintColor: undefined,
+        backgroundColor: theme['background-basic-color-3']
+    }]
 
     return (
         <Avatar {...props} style={style} source={source}/>

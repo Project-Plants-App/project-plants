@@ -9,8 +9,6 @@ const BACKUP_ROOT_PATH = `${FileSystem.documentDirectory}/${BACKUP_FOLDER}`
 
 const BACKUP_FILE_EXTENSION = ".zip";
 
-const IGNORED_FILES = ['__MACOSX', '.DS_Store'];
-
 class BackupService {
 
     async getAllBackups() {
@@ -59,13 +57,7 @@ class BackupService {
     }
 
     shouldRestoreFile(relativePath: string) {
-        for (const ignoredFile of IGNORED_FILES) {
-            if (relativePath.indexOf(ignoredFile) >= 0) {
-                return false;
-            }
-        }
-
-        return true;
+        return !ObjectUtils.isMetaFile(relativePath);
     }
 
     async addBackup(backupName: string, uri: string) {

@@ -13,23 +13,25 @@ import {
     TopNavigationAction
 } from "@ui-kitten/components";
 import React, {useState} from "react";
-import {Linking, ListRenderItemInfo, ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
-import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
-import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsStackRoute} from "../PlantsStackRoute";
+import {Linking, ListRenderItemInfo, ScrollView, StyleSheet, View} from "react-native";
+import {useNavigation, useRoute} from "@react-navigation/native";
+import {PlantsStackNavigationProp, PlantsStackRoute, PlantsStackRouteProp} from "../PlantsStackRoute";
 import {Plant} from "../../../../../model/Plant";
 import i18n, {translateEnumValue} from "../../../../../i18n";
-import PlantAvatar from "../../../../../common/components/PlantAvatar";
 import {WaterDemand} from "../../../../../model/WaterDemand";
 import {PreferredLocation} from "../../../../../model/PreferredLocation";
 import {WinterProof} from "../../../../../model/WinterProof";
 import CardListContainer from "../../../../../common/components/CardListContainer";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
-import AmountPlantedAtText from "../../../../../common/components/AmountPlantedAtText";
+import AmountPlantedAtBadge from "../../../../../common/components/AmountPlantedAtBadge";
 import ObjectUtils, {MIN_DATE} from "../../../../../common/ObjectUtils";
 import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
 import renderCardHeader from "../../../../../common/components/renderCardHeader";
 import PlantService from "../../../../../services/PlantService";
 import renderBackAction from "../../../../../common/components/renderBackAction";
+import Badge from "../../../../../common/components/Badge";
+import PlantAvatarHeader from "./components/PlantDetailHeader";
+import PlantDetailHeader from "./components/PlantDetailHeader";
 
 export default () => {
 
@@ -170,6 +172,8 @@ export default () => {
         );
     };
 
+    const avatar = plant.avatar ? {uri: plant.avatar} : require('../../../../../../assets/plant-avatar-placeholder.png');
+
     return (
         <React.Fragment>
             <TopNavigation title={renderTopNavigationTitle(plant.name || '')}
@@ -179,16 +183,9 @@ export default () => {
             <Divider/>
             <Layout style={styles.layout} level="2">
                 <ScrollView>
+                    <PlantDetailHeader plant={plant}/>
+                    <Divider/>
                     <View style={styles.contentContainer}>
-                        <Card style={styles.card} status="basic" disabled={true}>
-                            <TouchableOpacity onPress={() => openAvatarDetail()} style={styles.avatarContainer}>
-                                <PlantAvatar avatar={plant.avatar} size="giant"/>
-                            </TouchableOpacity>
-
-                            <Text category='s1' style={styles.headerTitle}>{plant.name}</Text>
-
-                            <AmountPlantedAtText plant={plant} textCategory="s2" style={styles.amountPlantedAtText}/>
-                        </Card>
                         <Card style={styles.card} header={renderCardHeader("Allgemeine Informationen")} status="basic"
                               disabled={true}>
                             <CardListContainer>
@@ -274,17 +271,11 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         marginBottom: 15,
     },
-    headerTitle: {
-        textAlign: "center"
-    },
-    amountPlantedAtText: {
-        marginTop: 15
-    },
     card: {
         marginBottom: 15
     },
     button: {
-        marginTop: 15
+        marginTop: 30
     },
     datePicker: {
         marginHorizontal: -25,

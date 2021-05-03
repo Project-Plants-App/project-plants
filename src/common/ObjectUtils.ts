@@ -1,8 +1,26 @@
-import {SelectItem} from "@ui-kitten/components";
-
 export const MIN_DATE = new Date(0);
 
+const META_FILES = ['__MACOSX', '.DS_Store'];
+
 class ObjectUtils {
+
+    isMetaFile(path: string) {
+        for (const metaFile of META_FILES) {
+            if (path.endsWith(metaFile)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bytesToMegaBytes(bytes?: number) {
+        if (this.isDefined(bytes)) {
+            return bytes! / 1000000;
+        } else {
+            return undefined;
+        }
+    }
 
     isDefined(value: any) {
         return value !== undefined && value !== null;

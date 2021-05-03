@@ -1,15 +1,5 @@
-import {
-    Button,
-    Card,
-    Divider,
-    Icon,
-    Layout,
-    List,
-    ListItem,
-    TopNavigation,
-    TopNavigationAction
-} from "@ui-kitten/components";
-import React, {useState} from "react";
+import {Button, Card, Divider, Layout, List, ListItem, TopNavigation} from "@ui-kitten/components";
+import React from "react";
 import {Alert, ListRenderItemInfo, StyleSheet, View} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
@@ -20,8 +10,8 @@ import Constants from 'expo-constants';
 import CardListContainer from "../../../../../common/components/CardListContainer";
 import GrowBuddyDatabaseService from "../../../../../services/database/GrowBuddyDatabaseService";
 import * as Updates from 'expo-updates';
-import renderBackAction from "../../../../../common/components/renderBackAction";
 import DrawerAction from "../../../../../common/components/DrawerAction";
+import ImageRepository from "../../../../../repositories/ImageRepository";
 
 export default () => {
 
@@ -54,6 +44,10 @@ export default () => {
                 );
             }
         });
+    }
+
+    async function compressImages() {
+        await ImageRepository.compressAllImages();
     }
 
     const versions = [
@@ -93,6 +87,11 @@ export default () => {
                         <List data={versions} renderItem={renderVersionItem}
                               ItemSeparatorComponent={Divider}/>
                     </CardListContainer>
+                </Card>
+                <Card header={renderCardHeader('Bilder')} style={styles.card}>
+                    <Button onPress={() => ImageRepository.compressAllImages()} status="warning">
+                        Bilder optimieren
+                    </Button>
                 </Card>
                 <Card header={renderCardHeader('Danger zone')}>
                     <Button onPress={() => GrowBuddyDatabaseService.resetDatabase()} status="danger">
