@@ -3,20 +3,18 @@ import {
     Card,
     Datepicker,
     Divider,
-    Icon,
     IndexPath,
     Input,
     Layout,
     Select,
     SelectItem,
     Text,
-    TopNavigation,
-    TopNavigationAction
+    TopNavigation
 } from "@ui-kitten/components";
 import React, {useState} from "react";
 import {KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View} from "react-native";
 import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
-import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsStackRoute} from "../PlantsStackRoute";
+import {PlantsStackNavigationProp, PlantsStackRoute, PlantsStackRouteProp} from "../PlantsStackRoute";
 import {Plant} from "../../../../../model/Plant";
 import {PreferredLocation} from "../../../../../model/PreferredLocation";
 import {WaterDemand} from "../../../../../model/WaterDemand";
@@ -24,11 +22,13 @@ import i18n, {translateEnumValue} from "../../../../../i18n";
 import * as ImagePicker from 'expo-image-picker';
 import {ImagePickerOptions, ImagePickerResult, MediaTypeOptions} from 'expo-image-picker';
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
-import IndexPathHelper from "../../../../../common/IndexPathHelper";
 import {WinterProof} from "../../../../../model/WinterProof";
-import ObjectUtils, {MIN_DATE} from "../../../../../common/ObjectUtils";
-import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
+import {createIndexPath, enumValues, isDefined, MIN_DATE, parseIsoDateString} from "../../../../../common/Utils";
+import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
 import PlantService from "../../../../../services/PlantService";
+import CancelAction from "../../../../../common/components/CancelAction";
+import SaveAction from "../../../../../common/components/SaveAction";
+import {CalendarIcon, CameraIcon, MediaLibraryIcon} from "../../../../../common/components/Icons";
 
 const IMAGE_PICKER_OPTIONS: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images
@@ -39,9 +39,9 @@ const convertIndexPathToAmountValue = (indexPath: IndexPath) => {
 }
 
 const convertAmountValueToIndexPath = (amount?: number) => {
-    return ObjectUtils.isDefined(amount) ?
-        IndexPathHelper.createIndexPath(amount! - 1) :
-        IndexPathHelper.createIndexPath(0)
+    return isDefined(amount) ?
+        createIndexPath(amount! - 1) :
+        createIndexPath(0)
 }
 
 export default () => {
@@ -52,43 +52,39 @@ export default () => {
     const [plant] = useState(route.params.plant || {} as Plant)
 
     const [avatar, setAvatar] = useState<undefined | string>(plant.avatar)
-    const [name, setName] = useState(ObjectUtils.isDefined(plant.name) ? plant.name : '');
-    const [botanicalName, setBotanicalName] = useState(ObjectUtils.isDefined(plant.botanicalName) ? plant.botanicalName : '');
-    const [planted, setPlanted] = useState(ObjectUtils.parseIsoDateString(plant.planted));
+    const [name, setName] = useState(isDefined(plant.name) ? plant.name : '');
+    const [botanicalName, setBotanicalName] = useState(isDefined(plant.botanicalName) ? plant.botanicalName : '');
+    const [planted, setPlanted] = useState(parseIsoDateString(plant.planted));
     const [amount, setAmount] = useState(convertAmountValueToIndexPath(plant.amount));
-    const [waterDemand, setWaterDemand] = useState(IndexPathHelper.createIndexPath(plant.waterDemand, WaterDemand.WATER_DEMAND_UNDEFINED));
-    const [preferredLocation, setPreferredLocation] = useState(IndexPathHelper.createIndexPath(plant.preferredLocation, PreferredLocation.PREFERRED_LOCATION_UNDEFINED));
-    const [winterProof, setWinterProof] = useState(IndexPathHelper.createIndexPath(plant.winterProof, WinterProof.WINTER_PROOF_UNDEFINED));
+    const [waterDemand, setWaterDemand] = useState(createIndexPath(plant.waterDemand, WaterDemand.WATER_DEMAND_UNDEFINED));
+    const [preferredLocation, setPreferredLocation] = useState(createIndexPath(plant.preferredLocation, PreferredLocation.PREFERRED_LOCATION_UNDEFINED));
+    const [winterProof, setWinterProof] = useState(createIndexPath(plant.winterProof, WinterProof.WINTER_PROOF_UNDEFINED));
 
-    const handleImagePickerResult = (result: ImagePickerResult) => {
+    function handleImagePickerResult(result: ImagePickerResult) {
         if (!result.cancelled) {
             setAvatar(result.uri)
         }
     }
 
-    const chooseAvatarFromMediaLibrary = async () => {
+    async function chooseAvatarFromMediaLibrary() {
         let response = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!response.granted) {
             return;
         }
 
         handleImagePickerResult(await ImagePicker.launchImageLibraryAsync(IMAGE_PICKER_OPTIONS));
-    };
+    }
 
-    const createAvatarWithCamera = async () => {
+    async function createAvatarWithCamera() {
         let response = await ImagePicker.requestCameraPermissionsAsync();
         if (!response.granted) {
             return;
         }
 
         handleImagePickerResult(await ImagePicker.launchCameraAsync(IMAGE_PICKER_OPTIONS));
-    };
-
-    const cancel = () => {
-        navigation.goBack();
     }
 
-    const getUpdatedPlant = () => {
+    function getUpdatedPlant() {
         return Object.assign(plant, {
             name,
             botanicalName,
@@ -101,10 +97,10 @@ export default () => {
         });
     }
 
-    const save = async () => {
+    async function save() {
         const updatedPlant = getUpdatedPlant();
 
-        if (ObjectUtils.isDefined(updatedPlant.id)) {
+        if (isDefined(updatedPlant.id)) {
             await PlantService.savePlant(updatedPlant);
             navigation.goBack();
         } else {
@@ -113,60 +109,26 @@ export default () => {
         }
     }
 
-    const deletePlant = async () => {
+    async function deletePlant() {
         await PlantService.deletePlant(plant);
 
         navigation.dispatch(StackActions.popToTop());
     }
 
-    const completePlant = async () => {
+    async function completePlant() {
         const updatedPlant = getUpdatedPlant();
 
         navigation.navigate({name: PlantsStackRoute.PLANTS_PREFILL, params: {plant: updatedPlant}});
     }
 
-    const CameraIcon = (props: any) => (
-        <Icon {...props} name="camera-outline"/>
-    );
-
-    const MediaLibraryIcon = (props: any) => (
-        <Icon {...props} name="image-outline"/>
-    );
-
-    const CancelIcon = (props: any) => (
-        <Icon {...props} name="close-outline"/>
-    );
-
-    const CancelAction = () => (
-        <TopNavigationAction icon={CancelIcon} onPress={() => cancel()}/>
-    );
-
-    const SaveIcon = (props: any) => (
-        <Icon {...props} name="save-outline"/>
-    );
-
-    const SaveAction = () => (
-        <TopNavigationAction icon={SaveIcon} onPress={() => save()}/>
-    );
-
-    const CalendarIcon = (props: any) => (
-        <Icon {...props} name='calendar'/>
-    );
-
-    const renderEnumOptions = (enumType: any) => {
-        const options = [];
-        for (const enumValue in enumType) {
-            const enumValueAsNumber = Number(enumValue);
-            if (!isNaN(enumValueAsNumber)) {
-                options.push(<SelectItem title={translateEnumValue(enumValueAsNumber, enumType)}
-                                         key={enumValueAsNumber}/>)
-            }
-        }
-
-        return options;
+    function renderEnumOptions<T>(enumType: any) {
+        return enumValues<T>(enumType)
+            .map((enumValue) => (
+                <SelectItem title={translateEnumValue(enumValue, enumType)} key={`${enumValue}`}/>
+            ));
     }
 
-    const renderAmountOptions = () => {
+    function renderAmountOptions() {
         const options = [];
         for (let i = 1; i <= 50; i++) {
             options.push(<SelectItem title={i} key={i}/>)
@@ -178,10 +140,10 @@ export default () => {
     return (
         <React.Fragment>
             <TopNavigation
-                title={renderTopNavigationTitle(ObjectUtils.isDefined(plant.id) ? (plant.name || '') : i18n.t('NEW'))}
+                title={TopNavigationTitle(isDefined(plant.id) ? (plant.name || '') : i18n.t('NEW'))}
                 alignment="center"
-                accessoryLeft={CancelAction}
-                accessoryRight={SaveAction}/>
+                accessoryLeft={CancelAction()}
+                accessoryRight={SaveAction(() => save())}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
                 <KeyboardAvoidingView style={{flex: 1}}

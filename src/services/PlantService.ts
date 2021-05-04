@@ -1,14 +1,14 @@
 import {Plant} from "../model/Plant";
 import ImageRepository from "../repositories/ImageRepository";
 import PlantRepository from "../repositories/PlantRepository";
-import ObjectUtils from "../common/ObjectUtils";
+import {isDefined} from "../common/Utils";
 
 class PlantService {
 
     async savePlant(plant: Plant) {
         await PlantRepository.insertOrUpdatePlant(plant);
 
-        if (ObjectUtils.isDefined(plant.avatar)) {
+        if (isDefined(plant.avatar)) {
             plant.avatar = await ImageRepository.storeImage(plant.id!, plant.avatar!);
             await PlantRepository.insertOrUpdatePlant(plant);
         }

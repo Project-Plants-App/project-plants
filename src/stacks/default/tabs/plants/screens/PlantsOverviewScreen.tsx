@@ -1,18 +1,18 @@
 import {useNavigation, useRoute} from "@react-navigation/native";
-import {Divider, Icon, Layout, List, ListItem, Text, TopNavigation, TopNavigationAction} from "@ui-kitten/components";
+import {Divider, Layout, List, ListItem, Text, TopNavigation} from "@ui-kitten/components";
 import React, {useState} from "react";
 import {ListRenderItemInfo, StyleSheet, View} from "react-native";
-import {PlantsStackNavigationProp, PlantsStackRouteProp, PlantsStackRoute} from "../PlantsStackRoute";
+import {PlantsStackNavigationProp, PlantsStackRoute, PlantsStackRouteProp} from "../PlantsStackRoute";
 import {Plant} from "../../../../../model/Plant";
 import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
 import i18n from "../../../../../i18n";
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
-import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
+import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
 import Badge from "../../../../../common/components/Badge";
-import ObjectUtils from "../../../../../common/ObjectUtils";
+import {formatIsoDateString} from "../../../../../common/Utils";
 import PlantService from "../../../../../services/PlantService";
 import DrawerAction from "../../../../../common/components/DrawerAction";
-import renderCreateAction from "../../../../../common/components/renderCreateAction";
+import renderCreateAction from "../../../../../common/components/CreateAction";
 
 export default () => {
 
@@ -21,47 +21,43 @@ export default () => {
 
     const [plants, setPlants] = useState<Plant[]>();
 
-    const reload = () => {
+    function reload() {
         PlantService.getAllPlants().then((plants) => {
             setPlants(plants);
         });
     }
 
-    useOnFocusOnceEffect(() => {
-        reload()
-    });
-
-    const openPlantDetail = (plant: Plant) => {
+    function openPlantDetail(plant: Plant) {
         navigation.navigate({name: PlantsStackRoute.PLANTS_DETAIL, params: {plant}});
     }
 
-    const openPrefillScreen = () => {
+    function openPrefillScreen() {
         navigation.navigate({name: PlantsStackRoute.PLANTS_PREFILL, params: {}});
     }
 
-    const renderPlantAvatar = (plant: Plant) => {
+    function renderPlantAvatar(plant: Plant) {
         return () => {
             return (<PlantAvatar size="large" avatar={plant.avatar}/>)
         }
     }
 
-    const renderItem = ({item}: ListRenderItemInfo<Plant>) => {
+    function renderItem({item}: ListRenderItemInfo<Plant>) {
         const renderDescription = (props: any) => {
             return (
                 <View {...props} style={[props.style, {flexDirection: "row", alignItems: "center", marginTop: 5}]}>
                     {item.lastTimeWatered &&
                     <Badge icon="droplet-outline"
-                           title={ObjectUtils.formatIsoDateString(item.lastTimeWatered)!}
+                           title={formatIsoDateString(item.lastTimeWatered)!}
                            style={{marginRight: 5}}/>
                     }
                     {item.lastTimeFertilised &&
                     <Badge icon="flash-outline"
-                           title={ObjectUtils.formatIsoDateString(item.lastTimeFertilised)!}
+                           title={formatIsoDateString(item.lastTimeFertilised)!}
                            style={{marginRight: 5}}/>
                     }
                     {item.lastTimeSprayed &&
                     <Badge icon="shield-outline"
-                           title={ObjectUtils.formatIsoDateString(item.lastTimeSprayed)!}/>
+                           title={formatIsoDateString(item.lastTimeSprayed)!}/>
                     }
                 </View>
             )
@@ -79,9 +75,13 @@ export default () => {
         )
     }
 
+    useOnFocusOnceEffect(() => {
+        reload()
+    });
+
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle(i18n.t('ALL_PLANTS'))}
+            <TopNavigation title={TopNavigationTitle(i18n.t('ALL_PLANTS'))}
                            alignment="center"
                            accessoryLeft={DrawerAction}
                            accessoryRight={renderCreateAction(openPrefillScreen)}/>

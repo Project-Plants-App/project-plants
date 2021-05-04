@@ -1,6 +1,6 @@
 import React from "react";
 import PlantsStack from "./tabs/plants/PlantsStack";
-import {Drawer, DrawerItem, Icon, IndexPath} from "@ui-kitten/components";
+import {Drawer, DrawerItem, IndexPath} from "@ui-kitten/components";
 import {PlantsStackRoute} from "./tabs/plants/PlantsStackRoute";
 import i18n from "../../i18n";
 import {ActivitiesStackRoute} from "./tabs/activities/ActivitiesStackRoute";
@@ -10,26 +10,11 @@ import BackupsStack from "./tabs/backups/BackupsStack";
 import {BackupsStackRoute} from "./tabs/backups/BackupsStackRoute";
 import {DeveloperStackRoute} from "./tabs/developer/DeveloperStackRoute";
 import DeveloperStack from "./tabs/developer/DeveloperStack";
+import {ActivitiesIcon, BackupsIcon, DeveloperIcon, PlantsIcon} from "../../common/components/Icons";
 
 const {Navigator, Screen} = createDrawerNavigator();
 
 export default () => {
-
-    const PlantsIcon = (props: any) => (
-        <Icon {...props} name='list-outline'/>
-    );
-
-    const ActivitiesIcon = (props: any) => (
-        <Icon {...props} name='checkmark-circle-outline'/>
-    );
-
-    const BackupsIcon = (props: any) => (
-        <Icon {...props} name='save-outline'/>
-    );
-
-    const DeveloperIcon = (props: any) => (
-        <Icon {...props} name='bulb-outline'/>
-    );
 
     const DrawerContent = ({navigation, state}: any) => (
         <Drawer

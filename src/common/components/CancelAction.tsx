@@ -1,12 +1,13 @@
-import {Icon, TopNavigationAction} from "@ui-kitten/components";
+import {TopNavigationAction} from "@ui-kitten/components";
 import React from "react";
 import {StackActions, useNavigation} from "@react-navigation/native";
+import {CancelIcon} from "./Icons";
 
 export default (popToTop?: boolean) => {
     return () => {
         const navigation = useNavigation();
 
-        const cancel = () => {
+        function cancel() {
             if (popToTop) {
                 navigation.dispatch(StackActions.popToTop());
             } else {
@@ -14,12 +15,8 @@ export default (popToTop?: boolean) => {
             }
         }
 
-        const CancelIcon = (props: any) => (
-            <Icon {...props} name="close-outline"/>
-        );
-
         return (
-            <TopNavigationAction icon={CancelIcon} onPress={cancel}/>
+            <TopNavigationAction icon={CancelIcon} onPress={() => cancel()}/>
         );
     }
 }

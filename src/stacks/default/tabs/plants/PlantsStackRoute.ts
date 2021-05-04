@@ -7,7 +7,6 @@ export enum PlantsStackRoute {
     PLANTS = "plants",
     PLANTS_OVERVIEW = "plants-overview",
     PLANTS_DETAIL = "plants-detail",
-    PLANTS_AVATAR_DETAIL = "plants-avatar-detail",
     PLANTS_EDIT = "plants-edit",
     PLANTS_PREFILL = "plants-prefill"
 }
@@ -17,9 +16,6 @@ export type PlantsStackRouteParams = {
     "plants-detail": {
         plant: Plant
     },
-    "plants-avatar-detail": {
-        plant: Plant
-    }
     "plants-edit": {
         plant?: Plant
     },

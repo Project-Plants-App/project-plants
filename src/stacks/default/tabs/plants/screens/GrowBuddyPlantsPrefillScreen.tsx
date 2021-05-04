@@ -18,10 +18,10 @@ import {ListRenderItemInfo, StyleSheet, View} from "react-native";
 import i18n, {translateEnumValue} from "../../../../../i18n";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRoute, PlantsStackRouteProp} from "../PlantsStackRoute";
-import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
+import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
 import {Plant} from "../../../../../model/Plant";
 import GrowBuddyPlantsService, {PlantInfoSource} from "../../../../../services/GrowBuddyPlantsService";
-import ObjectUtils from "../../../../../common/ObjectUtils";
+import {isDefined} from "../../../../../common/Utils";
 import Badge from "../../../../../common/components/Badge";
 
 export default () => {
@@ -101,7 +101,7 @@ export default () => {
                       style={[props.style, {flexDirection: "column", alignItems: "flex-start", marginTop: 5}]}>
                     {entry.item.detailLinkName1 &&
                     <Badge
-                        title={ObjectUtils.isDefined(entry.item.detailLinkName1) ? i18n.t(entry.item.detailLinkName1!) : 'UNKNOWN'}
+                        title={isDefined(entry.item.detailLinkName1) ? i18n.t(entry.item.detailLinkName1!) : 'UNKNOWN'}
                         style={{marginBottom: 5}}/>
                     }
                     {entry.item.botanicalName &&
@@ -123,7 +123,7 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle("Pflanze suchen")}
+            <TopNavigation title={TopNavigationTitle("Pflanze suchen")}
                            alignment="center"
                            accessoryLeft={CancelAction}/>
             <Layout style={styles.layout}>

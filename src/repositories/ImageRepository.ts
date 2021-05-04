@@ -1,7 +1,7 @@
 import * as FileSystem from 'expo-file-system';
-import ObjectUtils from "../common/ObjectUtils";
 import * as ImageManipulator from "expo-image-manipulator";
 import {Dimensions} from 'react-native';
+import {bytesToMegaBytes, isDefined, isMetaFile} from "../common/Utils";
 
 const PLANT_AVATARS_DIRECTORY = `${FileSystem.documentDirectory}/plant-avatars`;
 const DATA_URI = 'data:';
@@ -30,7 +30,7 @@ class ImageRepository {
     async deleteImageIfExists(id: number) {
         await FileSystem.makeDirectoryAsync(PLANT_AVATARS_DIRECTORY, {intermediates: true});
         const existingImage = (await FileSystem.readDirectoryAsync(PLANT_AVATARS_DIRECTORY)).find(entry => entry.startsWith(`${id}_`));
-        if (ObjectUtils.isDefined(existingImage)) {
+        if (isDefined(existingImage)) {
             await FileSystem.deleteAsync(`${PLANT_AVATARS_DIRECTORY}/${existingImage}`)
         }
     }
@@ -45,7 +45,7 @@ class ImageRepository {
 
     async compressImage(imageUri: string) {
         try {
-            if (ObjectUtils.isMetaFile(imageUri)) {
+            if (isMetaFile(imageUri)) {
                 return;
             }
 
@@ -59,10 +59,10 @@ class ImageRepository {
 
             console.debug(`compressing image ${imageUri}...`);
 
-            const originalImageSize = ObjectUtils.bytesToMegaBytes((await FileSystem.getInfoAsync(imageUri, {size: true})).size);
+            const originalImageSize = bytesToMegaBytes((await FileSystem.getInfoAsync(imageUri, {size: true})).size);
             const result = await ImageManipulator.manipulateAsync(imageUri, [{resize: {width: targetWidth}}], {compress: .9});
             await FileSystem.copyAsync({from: result.uri, to: imageUri});
-            const compressedImageSize = ObjectUtils.bytesToMegaBytes((await FileSystem.getInfoAsync(imageUri, {size: true})).size);
+            const compressedImageSize = bytesToMegaBytes((await FileSystem.getInfoAsync(imageUri, {size: true})).size);
 
             console.debug(`image size of ${imageUri} went from ${originalImageSize} MB to ${compressedImageSize} MB after compression`);
         } catch (e) {

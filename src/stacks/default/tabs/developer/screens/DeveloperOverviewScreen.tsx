@@ -2,10 +2,10 @@ import {Button, Card, Divider, Layout, List, ListItem, TopNavigation} from "@ui-
 import React from "react";
 import {Alert, ListRenderItemInfo, StyleSheet, View} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
-import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
+import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
 import {DeveloperStackNavigationProp, DeveloperStackRoute, DeveloperStackRouteProp} from "../DeveloperStackRoute";
 import i18n from "../../../../../i18n";
-import renderCardHeader from "../../../../../common/components/renderCardHeader";
+import renderCardHeader from "../../../../../common/components/CardHeader";
 import Constants from 'expo-constants';
 import CardListContainer from "../../../../../common/components/CardListContainer";
 import GrowBuddyDatabaseService from "../../../../../services/database/GrowBuddyDatabaseService";
@@ -77,7 +77,7 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle(i18n.t('DEVELOPER'))}
+            <TopNavigation title={TopNavigationTitle(i18n.t('DEVELOPER'))}
                            alignment="center"
                            accessoryLeft={DrawerAction}/>
             <Divider/>

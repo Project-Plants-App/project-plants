@@ -1,13 +1,13 @@
 import {Button, Divider, Layout, TopNavigation} from "@ui-kitten/components";
-import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import i18n, {translateEnumValue} from "../../../../../i18n";
 import DrawerAction from "../../../../../common/components/DrawerAction";
 import React from "react";
 import {StyleSheet} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {ActivitiesStackNavigationProp, ActivitiesStackRoute, ActivitiesStackRouteProp} from "../ActivitiesStackRoute";
-import ObjectUtils from "../../../../../common/ObjectUtils";
+import {enumValues} from "../../../../../common/Utils";
 import {ActivityType} from "../../../../../model/ActivityType";
+import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
 
 export default () => {
 
@@ -21,7 +21,7 @@ export default () => {
         });
     }
 
-    const renderActivityButtons = ObjectUtils.enumValues<ActivityType>(ActivityType)
+    const renderActivityButtons = enumValues<ActivityType>(ActivityType)
         .map((activityType) => (
             <Button onPress={() => executeActivity(activityType)}
                     key={activityType}
@@ -33,7 +33,7 @@ export default () => {
 
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle(i18n.t('ACTIVITIES'))}
+            <TopNavigation title={TopNavigationTitle(i18n.t('ACTIVITIES'))}
                            alignment="center"
                            accessoryLeft={DrawerAction}/>
             <Divider/>

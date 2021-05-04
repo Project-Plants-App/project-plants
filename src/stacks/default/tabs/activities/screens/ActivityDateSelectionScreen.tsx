@@ -2,10 +2,11 @@ import {useNavigation, useRoute} from "@react-navigation/native";
 import {Button, Card, Datepicker, Divider, Icon, Layout, TopNavigation} from "@ui-kitten/components";
 import React, {useState} from "react";
 import {StyleSheet} from "react-native";
-import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
 import {ActivitiesStackNavigationProp, ActivitiesStackRoute, ActivitiesStackRouteProp} from "../ActivitiesStackRoute";
-import ObjectUtils, {MIN_DATE} from "../../../../../common/ObjectUtils";
-import renderCancelAction from "../../../../../common/components/renderCancelAction";
+import {isDefined, MIN_DATE} from "../../../../../common/Utils";
+import {CalendarIcon} from "../../../../../common/components/Icons";
+import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
+import CancelAction from "../../../../../common/components/CancelAction";
 
 export default () => {
 
@@ -14,7 +15,7 @@ export default () => {
 
     const [activityDate, setActivityDate] = useState<Date>(new Date());
 
-    const nextStep = () => {
+    function nextStep() {
         const activityType = route.params.activityType;
         navigation.navigate({
             name: ActivitiesStackRoute.ACTIVITY_PLANT_SELECTION,
@@ -25,15 +26,11 @@ export default () => {
         });
     }
 
-    const CalendarIcon = (props: any) => (
-        <Icon {...props} name='calendar'/>
-    );
-
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle("Datum wählen")}
+            <TopNavigation title={TopNavigationTitle("Datum wählen")}
                            alignment="center"
-                           accessoryLeft={renderCancelAction()}/>
+                           accessoryLeft={CancelAction()}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
                 <Card status="basic">
@@ -48,7 +45,7 @@ export default () => {
             <Divider/>
             <Layout style={styles.buttonContainer}>
                 <Button onPress={nextStep}
-                        disabled={!ObjectUtils.isDefined(activityDate)}>
+                        disabled={!isDefined(activityDate)}>
                     Weiter
                 </Button>
             </Layout>

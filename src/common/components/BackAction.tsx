@@ -1,12 +1,13 @@
-import {Icon, TopNavigationAction} from "@ui-kitten/components";
+import {TopNavigationAction} from "@ui-kitten/components";
 import React from "react";
 import {StackActions, useNavigation} from "@react-navigation/native";
+import {BackIcon} from "./Icons";
 
 export default (popToTop?: boolean) => {
     return () => {
         const navigation = useNavigation();
 
-        const back = () => {
+        function back() {
             if (popToTop) {
                 navigation.dispatch(StackActions.popToTop());
             } else {
@@ -14,12 +15,8 @@ export default (popToTop?: boolean) => {
             }
         }
 
-        const BackIcon = (props: any) => (
-            <Icon {...props} name='arrow-back'/>
-        );
-
         return (
-            <TopNavigationAction icon={BackIcon} onPress={back}/>
+            <TopNavigationAction icon={BackIcon} onPress={() => back()}/>
         );
     }
 }

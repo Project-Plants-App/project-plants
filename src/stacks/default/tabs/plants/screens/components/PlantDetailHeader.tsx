@@ -4,6 +4,7 @@ import {Text, useTheme} from "@ui-kitten/components";
 import Badge from "../../../../../../common/components/Badge";
 import AmountPlantedAtBadge from "../../../../../../common/components/AmountPlantedAtBadge";
 import {Plant} from "../../../../../../model/Plant";
+import {AVATAR_PLACEHOLDER} from "../../../../../../common/components/Images";
 
 type PlantAvatarHeaderProps = {
     plant: Plant
@@ -15,7 +16,7 @@ export default (props: PlantAvatarHeaderProps) => {
 
     const {width} = useWindowDimensions();
 
-    const source = props.plant.avatar ? {uri: props.plant.avatar} : require('../../../../../../../assets/plant-avatar-placeholder.png');
+    const source = props.plant.avatar ? {uri: props.plant.avatar} : AVATAR_PLACEHOLDER;
     const style = [props.style, styles.header, {
         tintColor: undefined,
         height: width / 2.5,

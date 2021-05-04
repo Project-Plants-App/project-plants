@@ -8,9 +8,7 @@ import {
     List,
     ListItem,
     Modal,
-    Text,
-    TopNavigation,
-    TopNavigationAction
+    TopNavigation
 } from "@ui-kitten/components";
 import React, {useState} from "react";
 import {Linking, ListRenderItemInfo, ScrollView, StyleSheet, View} from "react-native";
@@ -22,16 +20,15 @@ import {WaterDemand} from "../../../../../model/WaterDemand";
 import {PreferredLocation} from "../../../../../model/PreferredLocation";
 import {WinterProof} from "../../../../../model/WinterProof";
 import CardListContainer from "../../../../../common/components/CardListContainer";
-import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
-import AmountPlantedAtBadge from "../../../../../common/components/AmountPlantedAtBadge";
-import ObjectUtils, {MIN_DATE} from "../../../../../common/ObjectUtils";
+import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
+import {formatIsoDateString, isDefined, MIN_DATE} from "../../../../../common/Utils";
 import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
-import renderCardHeader from "../../../../../common/components/renderCardHeader";
+import renderCardHeader from "../../../../../common/components/CardHeader";
 import PlantService from "../../../../../services/PlantService";
-import renderBackAction from "../../../../../common/components/renderBackAction";
-import Badge from "../../../../../common/components/Badge";
-import PlantAvatarHeader from "./components/PlantDetailHeader";
+import BackAction from "../../../../../common/components/BackAction";
 import PlantDetailHeader from "./components/PlantDetailHeader";
+import EditAction from "../../../../../common/components/EditAction";
+import {LinkIcon} from "../../../../../common/components/Icons";
 
 export default () => {
 
@@ -49,97 +46,40 @@ export default () => {
         });
     });
 
-    const edit = async () => {
+    async function edit() {
         navigation.navigate({name: PlantsStackRoute.PLANTS_EDIT, params: {plant}});
     }
 
-    const openAvatarDetail = () => {
-        navigation.navigate({name: PlantsStackRoute.PLANTS_AVATAR_DETAIL, params: {plant}});
+    function renderPlantAttributes(entry: ListRenderItemInfo<any>) {
+        return (
+            <ListItem title={entry.item.value} description={entry.item.label} disabled={true}/>
+        )
     }
 
-    const EditIcon = (props: any) => (
-        <Icon {...props} name='edit-outline'/>
-    );
-
-    const EditAction = () => (
-        <TopNavigationAction icon={EditIcon} onPress={() => edit()}/>
-    );
-
-    const LinkIcon = (props: any) => (
-        <Icon {...props} name="external-link-outline"/>
-    );
-
-    const plantAttributes = [
-        {
-            label: i18n.t('WATER_DEMAND'),
-            value: translateEnumValue(plant.waterDemand, WaterDemand)
-        },
-        {
-            label: i18n.t('PREFERRED_LOCATION'),
-            value: translateEnumValue(plant.preferredLocation, PreferredLocation)
-        },
-        {
-            label: i18n.t('WINTER_PROOF'),
-            value: translateEnumValue(plant.winterProof, WinterProof)
-        }
-    ];
-
-    const renderPlantAttributes = (entry: ListRenderItemInfo<any>) => (
-        <ListItem title={entry.item.value} description={entry.item.label} disabled={true}/>
-    );
-
-    const formatDate = (date?: string) => {
-        return ObjectUtils.formatIsoDateString(date);
-    }
-
-    const updatePlant = async () => {
+    async function updatePlant() {
         await PlantService.savePlant(plant);
         setPlant({...plant});
     }
 
-    const updateLastTimeWatered = async (date?: Date) => {
+    async function updateLastTimeWatered(date?: Date) {
         setLastTimeWateredDialogVisible(false);
         plant.lastTimeWatered = date ? date.toISOString() : undefined;
         await updatePlant();
     }
 
-    const updateLastTimeFertilised = async (date?: Date) => {
+    async function updateLastTimeFertilised(date?: Date) {
         setLastTimeFertilisedDialogVisible(false);
         plant.lastTimeFertilised = date ? date.toISOString() : undefined;
         await updatePlant();
     }
 
-    const updateLastTimeSprayed = async (date?: Date) => {
+    async function updateLastTimeSprayed(date?: Date) {
         setLastTimeSprayedDialogVisible(false);
         plant.lastTimeSprayed = date ? date.toISOString() : undefined;
         await updatePlant();
     }
 
-    const plantActivities = [
-        {
-            label: i18n.t('LAST_TIME_WATERED'),
-            value: formatDate(plant.lastTimeWatered),
-            icon: 'droplet-outline',
-            onTrashPress: () => updateLastTimeWatered(),
-            onCalendarPress: () => setLastTimeWateredDialogVisible(true)
-        },
-        {
-            label: i18n.t('LAST_TIME_FERTILISED'),
-            value: formatDate(plant.lastTimeFertilised),
-            icon: 'flash-outline',
-            onTrashPress: () => updateLastTimeFertilised(),
-            onCalendarPress: () => setLastTimeFertilisedDialogVisible(true)
-        },
-        {
-            label: i18n.t('LAST_TIME_SPRAYED'),
-            value: formatDate(plant.lastTimeSprayed),
-            icon: 'shield-outline',
-            onTrashPress: () => updateLastTimeSprayed(),
-            onCalendarPress: () => setLastTimeSprayedDialogVisible(true)
-        }
-    ];
-
-    const renderActivities = (entry: ListRenderItemInfo<any>) => {
+    function renderActivities(entry: ListRenderItemInfo<any>) {
         const iconLeft = (props: any) => (
             <Icon {...props} name={entry.item.icon}/>
         );
@@ -170,16 +110,53 @@ export default () => {
                       accessoryRight={button}
                       disabled={true}/>
         );
-    };
+    }
 
-    const avatar = plant.avatar ? {uri: plant.avatar} : require('../../../../../../assets/plant-avatar-placeholder.png');
+    const plantAttributes = [
+        {
+            label: i18n.t('WATER_DEMAND'),
+            value: translateEnumValue(plant.waterDemand, WaterDemand)
+        },
+        {
+            label: i18n.t('PREFERRED_LOCATION'),
+            value: translateEnumValue(plant.preferredLocation, PreferredLocation)
+        },
+        {
+            label: i18n.t('WINTER_PROOF'),
+            value: translateEnumValue(plant.winterProof, WinterProof)
+        }
+    ];
+
+    const plantActivities = [
+        {
+            label: i18n.t('LAST_TIME_WATERED'),
+            value: formatIsoDateString(plant.lastTimeWatered),
+            icon: 'droplet-outline',
+            onTrashPress: () => updateLastTimeWatered(),
+            onCalendarPress: () => setLastTimeWateredDialogVisible(true)
+        },
+        {
+            label: i18n.t('LAST_TIME_FERTILISED'),
+            value: formatIsoDateString(plant.lastTimeFertilised),
+            icon: 'flash-outline',
+            onTrashPress: () => updateLastTimeFertilised(),
+            onCalendarPress: () => setLastTimeFertilisedDialogVisible(true)
+        },
+        {
+            label: i18n.t('LAST_TIME_SPRAYED'),
+            value: formatIsoDateString(plant.lastTimeSprayed),
+            icon: 'shield-outline',
+            onTrashPress: () => updateLastTimeSprayed(),
+            onCalendarPress: () => setLastTimeSprayedDialogVisible(true)
+        }
+    ];
 
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle(plant.name || '')}
+            <TopNavigation title={TopNavigationTitle(plant.name || '')}
                            alignment="center"
-                           accessoryLeft={renderBackAction(true)}
-                           accessoryRight={EditAction}/>
+                           accessoryLeft={BackAction(true)}
+                           accessoryRight={EditAction(() => edit())}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
                 <ScrollView>
@@ -202,7 +179,7 @@ export default () => {
                                     appearance="outline"
                                     style={styles.button}
                                     onPress={() => Linking.openURL(plant.detailLink1!)}>
-                                {ObjectUtils.isDefined(plant.detailLinkName1) ? i18n.t(plant.detailLinkName1!) : 'UNKNOWN'}
+                                {isDefined(plant.detailLinkName1) ? i18n.t(plant.detailLinkName1!) : 'UNKNOWN'}
                             </Button>
                             }
                         </Card>

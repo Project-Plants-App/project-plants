@@ -2,7 +2,7 @@ import {Plant} from "../model/Plant";
 import {WinterProof} from "../model/WinterProof";
 import {WaterDemand} from "../model/WaterDemand";
 import {PreferredLocation} from "../model/PreferredLocation";
-import ObjectUtils from "../common/ObjectUtils";
+import {isDefined} from "../common/Utils";
 
 const GROW_BUDDY_PLANT_API_BASE_URL = "http://jonasbamberger.synology.me:9090";
 
@@ -30,7 +30,7 @@ class GrowBuddyPlantsService {
                     } as any;
 
                     // remove undefined properties
-                    Object.keys(plant).forEach(key => !ObjectUtils.isDefined(plant[key]) && delete plant[key])
+                    Object.keys(plant).forEach(key => !isDefined(plant[key]) && delete plant[key])
 
                     return plant as Plant;
                 })
@@ -38,7 +38,7 @@ class GrowBuddyPlantsService {
     }
 
     private mapWaterDemand(searchResult: PlantInfo) {
-        if (!ObjectUtils.isDefined(searchResult.waterDemand)) {
+        if (!isDefined(searchResult.waterDemand)) {
             return WaterDemand.WATER_DEMAND_UNDEFINED;
         }
 
@@ -59,7 +59,7 @@ class GrowBuddyPlantsService {
     }
 
     private mapPreferredLocation(searchResult: PlantInfo) {
-        if (!ObjectUtils.isDefined(searchResult.preferredLocation)) {
+        if (!isDefined(searchResult.preferredLocation)) {
             return PreferredLocation.PREFERRED_LOCATION_UNDEFINED;
         }
 
@@ -82,7 +82,7 @@ class GrowBuddyPlantsService {
     }
 
     private mapWinterProof(searchResult: PlantInfo) {
-        if (!ObjectUtils.isDefined(searchResult.winterProof)) {
+        if (!isDefined(searchResult.winterProof)) {
             return WinterProof.WINTER_PROOF_UNDEFINED;
         }
 

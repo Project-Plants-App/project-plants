@@ -5,7 +5,6 @@ import PlantsOverviewScreen from "./screens/PlantsOverviewScreen";
 import PlantEditScreen from "./screens/PlantEditScreen";
 import PlantDetailScreen from "./screens/PlantDetailScreen";
 import GrowBuddyPlantsPrefillScreen from "./screens/GrowBuddyPlantsPrefillScreen";
-import PlantAvatarDetailScreen from "./screens/PlantAvatarDetailScreen";
 
 const Stack = createStackNavigator();
 
@@ -15,7 +14,6 @@ export default () => {
         <Stack.Navigator initialRouteName={PlantsStackRoute.PLANTS_OVERVIEW} headerMode="none">
             <Stack.Screen name={PlantsStackRoute.PLANTS_OVERVIEW} component={PlantsOverviewScreen}/>
             <Stack.Screen name={PlantsStackRoute.PLANTS_DETAIL} component={PlantDetailScreen}/>
-            <Stack.Screen name={PlantsStackRoute.PLANTS_AVATAR_DETAIL} component={PlantAvatarDetailScreen}/>
             <Stack.Screen name={PlantsStackRoute.PLANTS_EDIT} component={PlantEditScreen}/>
             <Stack.Screen name={PlantsStackRoute.PLANTS_PREFILL} component={GrowBuddyPlantsPrefillScreen}/>
         </Stack.Navigator>

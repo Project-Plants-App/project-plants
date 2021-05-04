@@ -3,13 +3,13 @@ import {Button, Card, CheckBox, Divider, Layout, TopNavigation} from "@ui-kitten
 import React, {useState} from "react";
 import {ScrollView, StyleSheet, View} from "react-native";
 import {ActivitiesStackNavigationProp, ActivitiesStackRoute, ActivitiesStackRouteProp} from "../ActivitiesStackRoute";
-import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
+import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
 import PlantRepository from "../../../../../repositories/PlantRepository";
 import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
 import {Plant} from "../../../../../model/Plant";
 import {ActivityType} from "../../../../../model/ActivityType";
 import PlantService from "../../../../../services/PlantService";
-import renderBackAction from "../../../../../common/components/renderBackAction";
+import BackAction from "../../../../../common/components/BackAction";
 
 export default () => {
 
@@ -25,7 +25,7 @@ export default () => {
         });
     });
 
-    const save = async () => {
+    async function save() {
         const activityType = route.params.activityType;
         const activityDate = route.params.activityDate;
 
@@ -48,7 +48,7 @@ export default () => {
         navigation.dispatch(StackActions.popToTop());
     }
 
-    const toggleAllPlantsSelection = () => {
+    function toggleAllPlantsSelection() {
         if (areAllPlantsSelected()) {
             setSelectedPlants([]);
         } else {
@@ -56,11 +56,11 @@ export default () => {
         }
     }
 
-    const areAllPlantsSelected = () => {
+    function areAllPlantsSelected() {
         return selectedPlants.length === plants.length;
     }
 
-    const togglePlantSelection = (plant: Plant) => {
+    function togglePlantSelection(plant: Plant) {
         const index = selectedPlants.indexOf(plant);
         if (index !== -1) {
             selectedPlants.splice(index, 1);
@@ -71,27 +71,25 @@ export default () => {
         setSelectedPlants(selectedPlants.slice());
     }
 
-    const isPlantSelected = (plant: Plant) => {
+    function isPlantSelected(plant: Plant) {
         return selectedPlants.indexOf(plant) !== -1;
     }
 
-    const renderPlantOptions = () => {
-        return plants
-            .map((plant) => (
-                <CheckBox checked={isPlantSelected(plant)}
-                          onChange={() => togglePlantSelection(plant)}
-                          key={plant.id!}
-                          style={styles.checkbox}>
-                    {plant.name}
-                </CheckBox>
-            ));
-    }
+    const plantOptions = plants
+        .map((plant) => (
+            <CheckBox checked={isPlantSelected(plant)}
+                      onChange={() => togglePlantSelection(plant)}
+                      key={plant.id!}
+                      style={styles.checkbox}>
+                {plant.name}
+            </CheckBox>
+        ));
 
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle("Pflanzen wählen")}
+            <TopNavigation title={TopNavigationTitle("Pflanzen wählen")}
                            alignment="center"
-                           accessoryLeft={renderBackAction()}/>
+                           accessoryLeft={BackAction()}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
                 <ScrollView>
@@ -103,7 +101,7 @@ export default () => {
                                 Alle Pflanzen
                             </CheckBox>
                             <Divider/>
-                            {renderPlantOptions()}
+                            {plantOptions}
                         </Card>
                     </View>
                 </ScrollView>

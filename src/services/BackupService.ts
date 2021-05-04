@@ -1,5 +1,5 @@
 import * as FileSystem from 'expo-file-system';
-import ObjectUtils from "../common/ObjectUtils";
+import {formatTimeString, isDefined, isMetaFile} from "../common/Utils";
 import JSZip from "jszip";
 import * as Updates from 'expo-updates';
 import GrowBuddyDatabaseService from "./database/GrowBuddyDatabaseService";
@@ -57,7 +57,7 @@ class BackupService {
     }
 
     shouldRestoreFile(relativePath: string) {
-        return !ObjectUtils.isMetaFile(relativePath);
+        return !isMetaFile(relativePath);
     }
 
     async addBackup(backupName: string, uri: string) {
@@ -107,19 +107,19 @@ class BackupService {
         }
 
         if (fileInfo.isDirectory) {
-            const newParent = ObjectUtils.isDefined(parent) ? `${parent}/${file}` : file;
+            const newParent = isDefined(parent) ? `${parent}/${file}` : file;
 
             for (const child of (await FileSystem.readDirectoryAsync(fileUri))) {
                 await this.addRecursivelyToZip(zip, child, newParent);
             }
         } else {
             const fileInfoWithSize = await FileSystem.getInfoAsync(fileUri, {size: true});
-            if (!ObjectUtils.isDefined(fileInfoWithSize.size) || fileInfoWithSize.size! <= 0) {
+            if (!isDefined(fileInfoWithSize.size) || fileInfoWithSize.size! <= 0) {
                 console.debug(`skipping existing URI ${fileUri} with zero size`);
                 return;
             }
 
-            const fileSizeInMb = ObjectUtils.isDefined(fileInfoWithSize.size) ? `${fileInfoWithSize.size! / 1000000}` : 'unkown';
+            const fileSizeInMb = isDefined(fileInfoWithSize.size) ? `${fileInfoWithSize.size! / 1000000}` : 'unkown';
             console.log(`adding file ${fileUri} (${fileSizeInMb} MB)`);
 
             const content = await FileSystem.readAsStringAsync(fileUri, {encoding: 'base64'});
@@ -128,11 +128,11 @@ class BackupService {
     }
 
     private relativizeZipInstance(zip: JSZip, parent?: string) {
-        return ObjectUtils.isDefined(parent) ? zip.folder(parent!)! : zip;
+        return isDefined(parent) ? zip.folder(parent!)! : zip;
     }
 
     private createUri(file: string, parent?: string) {
-        if (ObjectUtils.isDefined(parent)) {
+        if (isDefined(parent)) {
             return `${FileSystem.documentDirectory}/${parent}/${file}`
         }
 
@@ -141,7 +141,7 @@ class BackupService {
 
     private createBackupDescriptorForBackupName(backupName: string) {
         const timestamp = backupName.replace(BACKUP_FILE_EXTENSION, '');
-        const creationDate = ObjectUtils.formatTimeString(timestamp);
+        const creationDate = formatTimeString(timestamp);
 
         return {name: backupName, creationDate, uri: `${BACKUP_ROOT_PATH}/${backupName}`} as Backup
     }

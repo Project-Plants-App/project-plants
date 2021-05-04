@@ -3,12 +3,13 @@ import React, {useState} from "react";
 import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
 import {Alert, ListRenderItemInfo, StyleSheet} from "react-native";
 import BackupService, {Backup} from "../../../../../services/BackupService";
-import {Divider, Icon, Layout, List, ListItem, TopNavigation, TopNavigationAction} from "@ui-kitten/components";
-import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
+import {Divider, Layout, List, ListItem, TopNavigation, TopNavigationAction} from "@ui-kitten/components";
+import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
 import i18n from "../../../../../i18n";
 import * as DocumentPicker from 'expo-document-picker';
 import {BackupsStackNavigationProp, BackupsStackRoute, BackupsStackRouteProp} from "../BackupsStackRoute";
 import DrawerAction from "../../../../../common/components/DrawerAction";
+import {SettingsIcon} from "../../../../../common/components/Icons";
 
 export default () => {
 
@@ -17,13 +18,13 @@ export default () => {
 
     const [backups, setBackups] = useState<Backup[]>();
 
-    const reload = () => {
+    function reload() {
         BackupService.getAllBackups().then((backups) => {
             setBackups(backups);
         });
     }
 
-    const showBackupCreationAlert = () => {
+    function showBackupCreationAlert() {
         Alert.alert('Sicherungskopie hinzufügen', undefined, [
             {
                 text: 'Erstellen',
@@ -39,16 +40,16 @@ export default () => {
         ]);
     }
 
-    const openBackupDetail = (backup: Backup) => {
+    function openBackupDetail(backup: Backup) {
         navigation.navigate({name: BackupsStackRoute.BACKUPS_DETAIL, params: {backup}});
     }
 
-    const createBackup = async () => {
+    async function createBackup() {
         await BackupService.createBackup();
         reload();
     }
 
-    const addBackup = async () => {
+    async function addBackup() {
         const result = await DocumentPicker.getDocumentAsync({type: 'application/zip'});
         if (result.type === 'success') {
             await BackupService.addBackup(result.name, result.uri);
@@ -56,27 +57,23 @@ export default () => {
         }
     }
 
-    useOnFocusOnceEffect(() => {
-        reload()
-    });
-
-    const SettingsIcon = (props: any) => (
-        <Icon {...props} name="plus-outline"/>
-    );
-
-    const CreateAction = () => (
-        <TopNavigationAction icon={SettingsIcon} onPress={() => showBackupCreationAlert()}/>
-    );
-
-    const renderItem = ({item}: ListRenderItemInfo<Backup>) => {
+    function renderItem({item}: ListRenderItemInfo<Backup>) {
         return (
             <ListItem title={item.name} description={item.creationDate} onPress={() => openBackupDetail(item)}/>
         )
     }
 
+    useOnFocusOnceEffect(() => {
+        reload()
+    });
+
+    const CreateAction = () => (
+        <TopNavigationAction icon={SettingsIcon} onPress={() => showBackupCreationAlert()}/>
+    );
+
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle(i18n.t('BACKUPS'))}
+            <TopNavigation title={TopNavigationTitle(i18n.t('BACKUPS'))}
                            alignment="center"
                            accessoryLeft={DrawerAction}
                            accessoryRight={CreateAction}/>

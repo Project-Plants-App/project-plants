@@ -2,7 +2,7 @@ import {Plant} from "../../model/Plant";
 import {Text} from "@ui-kitten/components";
 import {StyleProp, StyleSheet, ViewStyle} from "react-native";
 import React from "react";
-import ObjectUtils from "../ObjectUtils";
+import {formatIsoDateString, isDefined} from "../Utils";
 import Badge from "./Badge";
 
 type AmountPlantedAtBadge = {
@@ -13,12 +13,12 @@ type AmountPlantedAtBadge = {
 
 export default ({plant, textCategory, style}: AmountPlantedAtBadge) => {
 
-    const showAmount = () => {
-        return ObjectUtils.isDefined(plant.amount) && plant.amount! > 1;
+    function showAmount() {
+        return isDefined(plant.amount) && plant.amount! > 1;
     }
 
-    const showPlanted = () => {
-        return ObjectUtils.isDefined(plant.planted);
+    function showPlanted() {
+        return isDefined(plant.planted);
     }
 
     if (!showAmount() && !showPlanted()) {
@@ -35,7 +35,7 @@ export default ({plant, textCategory, style}: AmountPlantedAtBadge) => {
                 <Text category={textCategory}> </Text>
                 }
                 {showPlanted() &&
-                <Text category={textCategory}>gepflanzt am {ObjectUtils.formatIsoDateString(plant.planted)!}</Text>
+                <Text category={textCategory}>gepflanzt am {formatIsoDateString(plant.planted)!}</Text>
                 }
             </React.Fragment>
         </Badge>

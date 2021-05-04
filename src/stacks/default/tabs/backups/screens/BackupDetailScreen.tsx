@@ -2,11 +2,11 @@ import {Button, Card, Divider, Layout, TopNavigation} from "@ui-kitten/component
 import React, {useState} from "react";
 import {StyleSheet} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
-import renderTopNavigationTitle from "../../../../../common/components/renderTopNavigationTitle";
+import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
 import {BackupsStackNavigationProp, BackupsStackRoute, BackupsStackRouteProp} from "../BackupsStackRoute";
 import BackupService from "../../../../../services/BackupService";
 import * as Sharing from 'expo-sharing';
-import renderBackAction from "../../../../../common/components/renderBackAction";
+import BackAction from "../../../../../common/components/BackAction";
 
 export default () => {
 
@@ -15,31 +15,27 @@ export default () => {
 
     const [backup] = useState(route.params.backup)
 
-    const back = () => {
-        navigation.goBack();
-    }
-
-    const shareBackup = async () => {
+    async function shareBackup() {
         await Sharing.shareAsync(backup.uri, {
             mimeType: 'application/zip',
             UTI: 'public.zip-archive'
         });
     }
 
-    const deleteBackup = async () => {
+    async function deleteBackup() {
         await BackupService.deleteBackup(backup);
         navigation.goBack();
     }
 
-    const applyBackup = async () => {
+    async function applyBackup() {
         await BackupService.applyBackup(backup);
     }
 
     return (
         <React.Fragment>
-            <TopNavigation title={renderTopNavigationTitle(backup.name)}
+            <TopNavigation title={TopNavigationTitle(backup.name)}
                            alignment="center"
-                           accessoryLeft={renderBackAction()}/>
+                           accessoryLeft={BackAction()}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
                 <Card status="basic">
