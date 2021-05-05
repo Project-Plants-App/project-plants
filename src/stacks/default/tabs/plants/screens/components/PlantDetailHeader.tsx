@@ -2,15 +2,15 @@ import React from "react";
 import {ImageBackground, ImageBackgroundProps, StyleSheet, useWindowDimensions} from "react-native";
 import {Text, useTheme} from "@ui-kitten/components";
 import Badge from "../../../../../../common/components/Badge";
-import AmountPlantedAtBadge from "../../../../../../common/components/AmountPlantedAtBadge";
 import {Plant} from "../../../../../../model/Plant";
 import {AVATAR_PLACEHOLDER} from "../../../../../../common/components/Images";
+import AmountPlantedAtBadge from "./AmountPlantedAtBadge";
 
-type PlantAvatarHeaderProps = {
+type PlantDetailHeaderProps = {
     plant: Plant
 } & Omit<ImageBackgroundProps, 'source'>;
 
-export default (props: PlantAvatarHeaderProps) => {
+export default (props: PlantDetailHeaderProps) => {
 
     const theme = useTheme();
 
@@ -24,7 +24,7 @@ export default (props: PlantAvatarHeaderProps) => {
     }];
 
     return (
-        <ImageBackground {...props} style={style} source={source} resizeMode={"cover"} >
+        <ImageBackground {...props} style={style} source={source} resizeMode={"cover"}>
             <Badge>
                 <Text category="h5">{props.plant.name}</Text>
             </Badge>

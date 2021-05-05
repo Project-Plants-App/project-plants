@@ -7,6 +7,7 @@ import {BackupsStackNavigationProp, BackupsStackRoute, BackupsStackRouteProp} fr
 import BackupService from "../../../../../services/BackupService";
 import * as Sharing from 'expo-sharing';
 import BackAction from "../../../../../common/components/BackAction";
+import LoadingContainer from "../../../../../common/components/LoadingContainer";
 
 export default () => {
 
@@ -14,6 +15,7 @@ export default () => {
     const route = useRoute<BackupsStackRouteProp<BackupsStackRoute.BACKUPS_DETAIL>>();
 
     const [backup] = useState(route.params.backup)
+    const [waiting, setWaiting] = useState(false);
 
     async function shareBackup() {
         await Sharing.shareAsync(backup.uri, {
@@ -28,11 +30,16 @@ export default () => {
     }
 
     async function applyBackup() {
-        await BackupService.applyBackup(backup);
+        try {
+            setWaiting(true);
+            await BackupService.applyBackup(backup);
+        } finally {
+            setWaiting(false);
+        }
     }
 
     return (
-        <React.Fragment>
+        <LoadingContainer loading={waiting}>
             <TopNavigation title={TopNavigationTitle(backup.name)}
                            alignment="center"
                            accessoryLeft={BackAction()}/>
@@ -45,7 +52,7 @@ export default () => {
                 </Card>
             </Layout>
             <Divider/>
-        </React.Fragment>
+        </LoadingContainer>
     )
 
 }

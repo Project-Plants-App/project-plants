@@ -1,5 +1,5 @@
 import {Button, Card, Divider, Layout, List, ListItem, TopNavigation} from "@ui-kitten/components";
-import React from "react";
+import React, {useState} from "react";
 import {Alert, ListRenderItemInfo, StyleSheet, View} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
@@ -12,14 +12,29 @@ import GrowBuddyDatabaseService from "../../../../../services/database/GrowBuddy
 import * as Updates from 'expo-updates';
 import DrawerAction from "../../../../../common/components/DrawerAction";
 import ImageRepository from "../../../../../repositories/ImageRepository";
+import LoadingContainer from "../../../../../common/components/LoadingContainer";
 
 export default () => {
 
     const navigation = useNavigation<DeveloperStackNavigationProp<DeveloperStackRoute.DEVELOPER_OVERVIEW>>();
     const route = useRoute<DeveloperStackRouteProp<DeveloperStackRoute.DEVELOPER_OVERVIEW>>();
 
-    const checkForOTAUpdate = () => {
-        Updates.checkForUpdateAsync().then((result) => {
+    const [waiting, setWaiting] = useState(false);
+
+    async function fetchAndApplyOTAUpdate() {
+        try {
+            setWaiting(true);
+            await Updates.fetchUpdateAsync();
+            Updates.reloadAsync();
+        } finally {
+            setWaiting(false);
+        }
+    }
+
+    async function checkForOTAUpdate() {
+        try {
+            setWaiting(true);
+            const result = await Updates.checkForUpdateAsync();
             if (result.isAvailable) {
                 Alert.alert(
                     'OTA Aktualisierung',
@@ -27,11 +42,7 @@ export default () => {
                     [
                         {
                             text: 'Jetzt übernehmen',
-                            onPress: () => {
-                                Updates.fetchUpdateAsync().then(() => {
-                                    Updates.reloadAsync();
-                                });
-                            }
+                            onPress: () => fetchAndApplyOTAUpdate()
                         },
                         {text: 'Ignorieren'}
                     ]
@@ -43,11 +54,24 @@ export default () => {
                     [{text: 'OK'}]
                 );
             }
-        });
+        } finally {
+            setWaiting(false);
+        }
     }
 
-    async function compressImages() {
-        await ImageRepository.compressAllImages();
+    async function compressAllImages() {
+        try {
+            setWaiting(true);
+            await ImageRepository.compressAllImages();
+        } finally {
+            setWaiting(false);
+        }
+    }
+
+    function renderVersionItem({item}: ListRenderItemInfo<any>) {
+        return (
+            <ListItem title={item.value} description={item.key} disabled={true}/>
+        )
     }
 
     const versions = [
@@ -61,11 +85,6 @@ export default () => {
         }
     ]
 
-    const renderVersionItem = ({item}: ListRenderItemInfo<any>) => {
-        return (
-            <ListItem title={item.value} description={item.key} disabled={true}/>
-        )
-    }
 
     const Footer = (props: any) => (
         <View {...props}>
@@ -76,7 +95,7 @@ export default () => {
     )
 
     return (
-        <React.Fragment>
+        <LoadingContainer loading={waiting}>
             <TopNavigation title={TopNavigationTitle(i18n.t('DEVELOPER'))}
                            alignment="center"
                            accessoryLeft={DrawerAction}/>
@@ -89,7 +108,7 @@ export default () => {
                     </CardListContainer>
                 </Card>
                 <Card header={renderCardHeader('Bilder')} style={styles.card}>
-                    <Button onPress={() => ImageRepository.compressAllImages()} status="warning">
+                    <Button onPress={() => compressAllImages()} status="warning">
                         Bilder optimieren
                     </Button>
                 </Card>
@@ -100,7 +119,7 @@ export default () => {
                 </Card>
             </Layout>
             <Divider/>
-        </React.Fragment>
+        </LoadingContainer>
     )
 
 }

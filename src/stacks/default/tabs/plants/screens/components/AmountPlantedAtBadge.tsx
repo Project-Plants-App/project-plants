@@ -1,9 +1,9 @@
-import {Plant} from "../../model/Plant";
 import {Text} from "@ui-kitten/components";
 import {StyleProp, StyleSheet, ViewStyle} from "react-native";
 import React from "react";
-import {formatIsoDateString, isDefined} from "../Utils";
-import Badge from "./Badge";
+import {formatIsoDateString, isDefined} from "../../../../../../common/Utils";
+import {Plant} from "../../../../../../model/Plant";
+import Badge from "../../../../../../common/components/Badge";
 
 type AmountPlantedAtBadge = {
     plant: Plant,

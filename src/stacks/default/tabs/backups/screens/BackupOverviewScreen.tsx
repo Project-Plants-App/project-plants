@@ -10,6 +10,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import {BackupsStackNavigationProp, BackupsStackRoute, BackupsStackRouteProp} from "../BackupsStackRoute";
 import DrawerAction from "../../../../../common/components/DrawerAction";
 import {SettingsIcon} from "../../../../../common/components/Icons";
+import LoadingContainer from "../../../../../common/components/LoadingContainer";
 
 export default () => {
 
@@ -17,6 +18,7 @@ export default () => {
     const route = useRoute<BackupsStackRouteProp<BackupsStackRoute.BACKUPS_OVERVIEW>>();
 
     const [backups, setBackups] = useState<Backup[]>();
+    const [waiting, setWaiting] = useState(false);
 
     function reload() {
         BackupService.getAllBackups().then((backups) => {
@@ -45,8 +47,13 @@ export default () => {
     }
 
     async function createBackup() {
-        await BackupService.createBackup();
-        reload();
+        try {
+            setWaiting(true);
+            await BackupService.createBackup();
+            reload();
+        } finally {
+            setWaiting(false);
+        }
     }
 
     async function addBackup() {
@@ -72,7 +79,7 @@ export default () => {
     );
 
     return (
-        <React.Fragment>
+        <LoadingContainer loading={waiting}>
             <TopNavigation title={TopNavigationTitle(i18n.t('BACKUPS'))}
                            alignment="center"
                            accessoryLeft={DrawerAction}
@@ -82,7 +89,7 @@ export default () => {
                 <List data={backups} renderItem={renderItem} style={styles.list} ItemSeparatorComponent={Divider}/>
             </Layout>
             <Divider/>
-        </React.Fragment>
+        </LoadingContainer>
     )
 
 }
