@@ -1,19 +1,21 @@
 import {useNavigation, useRoute} from "@react-navigation/native";
-import {Button, Card, Datepicker, Divider, Icon, Layout, TopNavigation} from "@ui-kitten/components";
+import {Button, Card, Divider, Layout, TopNavigation} from "@ui-kitten/components";
 import React, {useState} from "react";
 import {StyleSheet} from "react-native";
 import {ActivitiesStackNavigationProp, ActivitiesStackRoute, ActivitiesStackRouteProp} from "../ActivitiesStackRoute";
-import {isDefined, MIN_DATE} from "../../../../../common/Utils";
+import {formatAsIsoString, isDefined, MIN_DATE} from "../../../../../common/Utils";
 import {CalendarIcon} from "../../../../../common/components/Icons";
 import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
 import CancelAction from "../../../../../common/components/CancelAction";
+import moment, {Moment} from "moment";
+import MomentBackedDatepicker from "../../../../../common/components/MomentBackedDatepicker";
 
 export default () => {
 
     const navigation = useNavigation<ActivitiesStackNavigationProp<ActivitiesStackRoute.ACTIVITY_DATE_SELECTION>>();
     const route = useRoute<ActivitiesStackRouteProp<ActivitiesStackRoute.ACTIVITY_DATE_SELECTION>>();
 
-    const [activityDate, setActivityDate] = useState<Date>(new Date());
+    const [activityDate, setActivityDate] = useState<Moment>(moment());
 
     function nextStep() {
         const activityType = route.params.activityType;
@@ -21,7 +23,7 @@ export default () => {
             name: ActivitiesStackRoute.ACTIVITY_PLANT_SELECTION,
             params: {
                 activityType,
-                activityDate: activityDate!.toISOString()
+                activityDate: formatAsIsoString(activityDate)!
             }
         });
     }
@@ -34,7 +36,7 @@ export default () => {
             <Divider/>
             <Layout style={styles.layout} level="2">
                 <Card status="basic">
-                    <Datepicker
+                    <MomentBackedDatepicker
                         date={activityDate}
                         min={MIN_DATE}
                         onSelect={date => setActivityDate(date)}

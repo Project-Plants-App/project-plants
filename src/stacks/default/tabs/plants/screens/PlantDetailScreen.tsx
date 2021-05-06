@@ -1,15 +1,4 @@
-import {
-    Button,
-    Calendar,
-    Card,
-    Divider,
-    Icon,
-    Layout,
-    List,
-    ListItem,
-    Modal,
-    TopNavigation
-} from "@ui-kitten/components";
+import {Button, Card, Divider, Icon, Layout, List, ListItem, Modal, TopNavigation} from "@ui-kitten/components";
 import React, {useState} from "react";
 import {Linking, ListRenderItemInfo, ScrollView, StyleSheet, View} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
@@ -21,7 +10,7 @@ import {PreferredLocation} from "../../../../../model/PreferredLocation";
 import {WinterProof} from "../../../../../model/WinterProof";
 import CardListContainer from "../../../../../common/components/CardListContainer";
 import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
-import {formatIsoDateString, isDefined, MIN_DATE} from "../../../../../common/Utils";
+import {formatAsIsoString, formatIsoDateStringAsTimeAgo, isDefined, MIN_DATE} from "../../../../../common/Utils";
 import {useOnFocusOnceEffect} from "../../../../../common/hooks/Hooks";
 import renderCardHeader from "../../../../../common/components/CardHeader";
 import PlantService from "../../../../../services/PlantService";
@@ -29,6 +18,8 @@ import BackAction from "../../../../../common/components/BackAction";
 import PlantDetailHeader from "./components/PlantDetailHeader";
 import EditAction from "../../../../../common/components/EditAction";
 import {LinkIcon} from "../../../../../common/components/Icons";
+import MomentBackedCalendar from "../../../../../common/components/MomentBackedCalendar";
+import {Moment} from "moment";
 
 export default () => {
 
@@ -61,21 +52,21 @@ export default () => {
         setPlant({...plant});
     }
 
-    async function updateLastTimeWatered(date?: Date) {
+    async function updateLastTimeWatered(date?: Moment) {
         setLastTimeWateredDialogVisible(false);
-        plant.lastTimeWatered = date ? date.toISOString() : undefined;
+        plant.lastTimeWatered = formatAsIsoString(date);
         await updatePlant();
     }
 
-    async function updateLastTimeFertilised(date?: Date) {
+    async function updateLastTimeFertilised(date?: Moment) {
         setLastTimeFertilisedDialogVisible(false);
-        plant.lastTimeFertilised = date ? date.toISOString() : undefined;
+        plant.lastTimeFertilised = formatAsIsoString(date);
         await updatePlant();
     }
 
-    async function updateLastTimeSprayed(date?: Date) {
+    async function updateLastTimeSprayed(date?: Moment) {
         setLastTimeSprayedDialogVisible(false);
-        plant.lastTimeSprayed = date ? date.toISOString() : undefined;
+        plant.lastTimeSprayed = formatAsIsoString(date);
         await updatePlant();
     }
 
@@ -130,21 +121,21 @@ export default () => {
     const plantActivities = [
         {
             label: i18n.t('LAST_TIME_WATERED'),
-            value: formatIsoDateString(plant.lastTimeWatered),
+            value: formatIsoDateStringAsTimeAgo(plant.lastTimeWatered),
             icon: 'droplet-outline',
             onTrashPress: () => updateLastTimeWatered(),
             onCalendarPress: () => setLastTimeWateredDialogVisible(true)
         },
         {
             label: i18n.t('LAST_TIME_FERTILISED'),
-            value: formatIsoDateString(plant.lastTimeFertilised),
+            value: formatIsoDateStringAsTimeAgo(plant.lastTimeFertilised),
             icon: 'flash-outline',
             onTrashPress: () => updateLastTimeFertilised(),
             onCalendarPress: () => setLastTimeFertilisedDialogVisible(true)
         },
         {
             label: i18n.t('LAST_TIME_SPRAYED'),
-            value: formatIsoDateString(plant.lastTimeSprayed),
+            value: formatIsoDateStringAsTimeAgo(plant.lastTimeSprayed),
             icon: 'shield-outline',
             onTrashPress: () => updateLastTimeSprayed(),
             onCalendarPress: () => setLastTimeSprayedDialogVisible(true)
@@ -197,7 +188,7 @@ export default () => {
                        backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.75)'}}
                        onBackdropPress={() => setLastTimeWateredDialogVisible(false)}>
                     <Card>
-                        <Calendar
+                        <MomentBackedCalendar
                             style={styles.datePicker}
                             onSelect={date => updateLastTimeWatered(date)}
                             min={MIN_DATE}
@@ -209,7 +200,7 @@ export default () => {
                        backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.75)'}}
                        onBackdropPress={() => setLastTimeFertilisedDialogVisible(false)}>
                     <Card>
-                        <Calendar
+                        <MomentBackedCalendar
                             style={styles.datePicker}
                             onSelect={date => updateLastTimeFertilised(date)}
                             min={MIN_DATE}
@@ -221,7 +212,7 @@ export default () => {
                        backdropStyle={{backgroundColor: 'rgba(0, 0, 0, 0.75)'}}
                        onBackdropPress={() => setLastTimeSprayedDialogVisible(false)}>
                     <Card>
-                        <Calendar
+                        <MomentBackedCalendar
                             style={styles.datePicker}
                             onSelect={date => updateLastTimeSprayed(date)}
                             min={MIN_DATE}

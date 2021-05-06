@@ -23,12 +23,20 @@ import * as ImagePicker from 'expo-image-picker';
 import {ImagePickerOptions, ImagePickerResult, MediaTypeOptions} from 'expo-image-picker';
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
 import {WinterProof} from "../../../../../model/WinterProof";
-import {createIndexPath, enumValues, isDefined, MIN_DATE, parseIsoDateString} from "../../../../../common/Utils";
+import {
+    createIndexPath,
+    enumValues,
+    formatAsIsoString,
+    isDefined,
+    MIN_DATE,
+    parseIsoDateString
+} from "../../../../../common/Utils";
 import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
 import PlantService from "../../../../../services/PlantService";
 import CancelAction from "../../../../../common/components/CancelAction";
 import SaveAction from "../../../../../common/components/SaveAction";
 import {CalendarIcon, CameraIcon, MediaLibraryIcon} from "../../../../../common/components/Icons";
+import MomentBackedDatepicker from "../../../../../common/components/MomentBackedDatepicker";
 
 const IMAGE_PICKER_OPTIONS: ImagePickerOptions = {
     mediaTypes: MediaTypeOptions.Images
@@ -92,7 +100,7 @@ export default () => {
             waterDemand: waterDemand.row,
             preferredLocation: preferredLocation.row,
             winterProof: winterProof.row,
-            planted: planted?.toISOString(),
+            planted: formatAsIsoString(planted),
             amount: convertIndexPathToAmountValue(amount)
         });
     }
@@ -165,7 +173,7 @@ export default () => {
                                 <Input label={i18n.t('NAME')} style={styles.input} value={name} onChangeText={setName}/>
                                 <Input label={i18n.t('BOTANICAL_NAME')} style={styles.input} value={botanicalName}
                                        onChangeText={setBotanicalName}/>
-                                <Datepicker
+                                <MomentBackedDatepicker
                                     label={i18n.t('PLANTED')}
                                     style={styles.input}
                                     date={planted}

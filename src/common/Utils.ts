@@ -1,7 +1,9 @@
 import {IndexPath} from "@ui-kitten/components";
+import moment, {Moment} from "moment";
+import i18n from "i18n-js";
 
 export const META_FILES = ['__MACOSX', '.DS_Store'];
-export const MIN_DATE = new Date(0);
+export const MIN_DATE = moment(new Date(0));
 
 export function createIndexPath(value?: number, defaultValue?: number) {
     return new IndexPath(isDefined(value) ? value! : isDefined(defaultValue) ? defaultValue! : 0);
@@ -29,10 +31,21 @@ export function isDefined(value: any) {
     return value !== undefined && value !== null;
 }
 
-export function parseIsoDateString(dateAsIsoString?: string): Date | undefined {
+export function formatAsIsoString(date?: Moment): string | undefined {
+    try {
+        if (isDefined(date)) {
+            return date?.toISOString();
+        }
+    } catch (e) {
+        // ignore
+    }
+    return undefined;
+}
+
+export function parseIsoDateString(dateAsIsoString?: string): Moment | undefined {
     try {
         if (isDefined(dateAsIsoString)) {
-            return new Date(Date.parse(dateAsIsoString!));
+            return moment(dateAsIsoString!, moment.ISO_8601);
         }
     } catch (e) {
         // ignore
@@ -48,7 +61,24 @@ export function formatTimeString(timeString?: string): string | undefined {
                 return undefined;
             }
 
-            return new Date(number).toLocaleDateString();
+            return moment(number).format('DD.MM.YYYY');
+        }
+    } catch (e) {
+        // ignore
+    }
+    return undefined;
+}
+
+export function formatIsoDateStringAsTimeAgo(dateAsIsoString?: string): string | undefined {
+    try {
+        if (isDefined(dateAsIsoString)) {
+            const date = parseIsoDateString(dateAsIsoString)!;
+            const now = moment().startOf('day');
+            if (date.isSame(now)) {
+                return i18n.t('TODAY');
+            }
+
+            return moment.duration(date.diff(now)).humanize(true);
         }
     } catch (e) {
         // ignore
@@ -59,7 +89,7 @@ export function formatTimeString(timeString?: string): string | undefined {
 export function formatIsoDateString(dateAsIsoString?: string): string | undefined {
     try {
         if (isDefined(dateAsIsoString)) {
-            return new Date(Date.parse(dateAsIsoString!)).toLocaleDateString();
+            return parseIsoDateString(dateAsIsoString)?.format('DD.MM.YYYY')
         }
     } catch (e) {
         // ignore

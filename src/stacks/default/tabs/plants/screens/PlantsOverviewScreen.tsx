@@ -9,7 +9,7 @@ import i18n from "../../../../../i18n";
 import PlantAvatar from "../../../../../common/components/PlantAvatar";
 import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
 import Badge from "../../../../../common/components/Badge";
-import {formatIsoDateString} from "../../../../../common/Utils";
+import {formatIsoDateStringAsTimeAgo} from "../../../../../common/Utils";
 import PlantService from "../../../../../services/PlantService";
 import DrawerAction from "../../../../../common/components/DrawerAction";
 import renderCreateAction from "../../../../../common/components/CreateAction";
@@ -47,17 +47,17 @@ export default () => {
                 <View {...props} style={[props.style, {flexDirection: "row", alignItems: "center", marginTop: 5}]}>
                     {item.lastTimeWatered &&
                     <Badge icon="droplet-outline"
-                           title={formatIsoDateString(item.lastTimeWatered)!}
+                           title={formatIsoDateStringAsTimeAgo(item.lastTimeWatered)!}
                            style={{marginRight: 5}}/>
                     }
                     {item.lastTimeFertilised &&
                     <Badge icon="flash-outline"
-                           title={formatIsoDateString(item.lastTimeFertilised)!}
+                           title={formatIsoDateStringAsTimeAgo(item.lastTimeFertilised)!}
                            style={{marginRight: 5}}/>
                     }
                     {item.lastTimeSprayed &&
                     <Badge icon="shield-outline"
-                           title={formatIsoDateString(item.lastTimeSprayed)!}/>
+                           title={formatIsoDateStringAsTimeAgo(item.lastTimeSprayed)!}/>
                     }
                 </View>
             )

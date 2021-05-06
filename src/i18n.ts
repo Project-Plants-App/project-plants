@@ -1,5 +1,7 @@
-import * as Localization from 'expo-localization';
 import i18n from 'i18n-js';
+import moment from "moment";
+import 'moment/locale/de-ch';
+import {MomentDateService} from "@ui-kitten/moment";
 
 i18n.translations = {
     de: {
@@ -15,6 +17,7 @@ i18n.translations = {
         SOURCES: 'Quellen',
         AMOUNT: 'Anzahl',
         PLANTED: 'Gepflanzt',
+        TODAY: 'Heute',
         ACTIVITIES: 'Aktivitäten',
         ACTIVITY_TYPE_WATERED: 'gegossen',
         ACTIVITY_TYPE_FERTILISED: 'gedüngt',
@@ -51,12 +54,13 @@ i18n.translations = {
     },
 };
 
-i18n.locale = Localization.locale;
-i18n.fallbacks = true;
-i18n.defaultLocale = 'de'
+i18n.locale = 'de';
+moment.locale('de-ch');
 
 export const translateEnumValue = (enumValue: any, enumType: any) => {
     return i18n.t(enumType[enumValue]);
 }
+
+export const dateService = new MomentDateService('de-ch');
 
 export default i18n;
