@@ -72,7 +72,7 @@ export function formatTimeString(timeString?: string): string | undefined {
 export function formatIsoDateStringAsTimeAgo(dateAsIsoString?: string): string | undefined {
     try {
         if (isDefined(dateAsIsoString)) {
-            const date = parseIsoDateString(dateAsIsoString)!;
+            const date = parseIsoDateString(dateAsIsoString)!.startOf('day');
             const now = moment().startOf('day');
             if (date.isSame(now)) {
                 return i18n.t('TODAY');
