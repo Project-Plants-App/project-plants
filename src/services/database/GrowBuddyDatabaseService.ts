@@ -36,7 +36,20 @@ const MIGRATIONS = [
         add column amount integer`,
     `delete
      from plants
-     where deleted = true`
+     where deleted = true`,
+    `create table activities
+     (
+         id   integer primary key not null,
+         activity_date date                not null,
+         activity_type integer             not null
+     );`,
+    `create table activities_plants
+     (
+         activity_id integer not null,
+         plant_id    integer not null,
+         CONSTRAINT fk_activities FOREIGN KEY (activity_id) REFERENCES activities (id) ON DELETE CASCADE
+     );`,
+
 ];
 
 class GrowBuddyDatabaseService {
