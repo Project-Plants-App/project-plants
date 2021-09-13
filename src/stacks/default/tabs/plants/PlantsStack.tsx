@@ -11,7 +11,7 @@ const Stack = createStackNavigator();
 export default () => {
 
     return (
-        <Stack.Navigator initialRouteName={PlantsStackRoute.PLANTS_OVERVIEW} headerMode="none">
+        <Stack.Navigator initialRouteName={PlantsStackRoute.PLANTS_OVERVIEW} screenOptions={{headerShown: false}}>
             <Stack.Screen name={PlantsStackRoute.PLANTS_OVERVIEW} component={PlantsOverviewScreen}/>
             <Stack.Screen name={PlantsStackRoute.PLANTS_DETAIL} component={PlantDetailScreen}/>
             <Stack.Screen name={PlantsStackRoute.PLANTS_EDIT} component={PlantEditScreen}/>

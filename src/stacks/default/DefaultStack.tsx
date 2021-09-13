@@ -28,7 +28,7 @@ export default () => {
     );
 
     return (
-        <Navigator drawerContent={props => <DrawerContent {...props}/>} screenOptions={{swipeEnabled: false}}>
+        <Navigator drawerContent={props => <DrawerContent {...props}/>} screenOptions={{swipeEnabled: false, headerShown: false}}>
             <Screen name={PlantsStackRoute.PLANTS} component={PlantsStack}/>
             <Screen name={ActivitiesStackRoute.ACTIVITIES} component={ActivitiesStack}/>
             <Screen name={BackupsStackRoute.BACKUPS} component={BackupsStack}/>

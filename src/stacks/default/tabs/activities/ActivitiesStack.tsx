@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 export default () => {
 
     return (
-        <Stack.Navigator initialRouteName={ActivitiesStackRoute.ACTIVITIES_OVERVIEW} headerMode="none">
+        <Stack.Navigator initialRouteName={ActivitiesStackRoute.ACTIVITIES_OVERVIEW} screenOptions={{headerShown: false}}>
             <Stack.Screen name={ActivitiesStackRoute.ACTIVITIES_OVERVIEW}
                           component={ActivitiesOverviewScreen}/>
             <Stack.Screen name={ActivitiesStackRoute.ACTIVITY_DATE_SELECTION}
