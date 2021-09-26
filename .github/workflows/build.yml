@@ -2,23 +2,16 @@ name: Build
 
 on:
   push:
-    branches: [ master ]
   workflow_dispatch:
 
 jobs:
-  publish:
-
+  build:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
-
-    - run: |
-        curl -L https://github.com/Project-Env/project-env-shell/releases/download/v2.1.0/project-env-shell-linux-amd64 -o project-env-cli
-        chmod +x ./project-env-cli
-        ./project-env-cli refresh --config-file=project-env.yml --output-template=github-actions.peb --output-file=github-actions-env.sh
-        ./github-actions-env.sh
-
+    - uses: Project-Env/project-env-github-action@v1.0.0
+      with:
+        cli-version: '3.2.0'
     - run: |
         npm ci
       env:
