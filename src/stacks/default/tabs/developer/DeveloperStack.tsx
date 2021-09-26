@@ -8,7 +8,7 @@ const Stack = createStackNavigator();
 export default () => {
 
     return (
-        <Stack.Navigator initialRouteName={DeveloperStackRoute.DEVELOPER_OVERVIEW} headerMode="none">
+        <Stack.Navigator initialRouteName={DeveloperStackRoute.DEVELOPER_OVERVIEW} screenOptions={{headerShown: false}}>
             <Stack.Screen name={DeveloperStackRoute.DEVELOPER_OVERVIEW} component={DeveloperOverviewScreen}/>
         </Stack.Navigator>
     );

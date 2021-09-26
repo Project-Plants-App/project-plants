@@ -9,7 +9,7 @@ const Stack = createStackNavigator();
 export default () => {
 
     return (
-        <Stack.Navigator initialRouteName={BackupsStackRoute.BACKUPS_OVERVIEW} headerMode="none">
+        <Stack.Navigator initialRouteName={BackupsStackRoute.BACKUPS_OVERVIEW} screenOptions={{headerShown: false}}>
             <Stack.Screen name={BackupsStackRoute.BACKUPS_OVERVIEW} component={BackupOverviewScreen}/>
             <Stack.Screen name={BackupsStackRoute.BACKUPS_DETAIL} component={BackupDetailScreen}/>
         </Stack.Navigator>

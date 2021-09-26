@@ -38,7 +38,7 @@ export default () => {
             if (result.isAvailable) {
                 Alert.alert(
                     'OTA Aktualisierung',
-                    `Version ${result.manifest.version} ist verfügbar`,
+                    `Version ${result.manifest!.runtimeVersion} ist verfügbar`,
                     [
                         {
                             text: 'Jetzt übernehmen',
@@ -50,7 +50,7 @@ export default () => {
             } else {
                 Alert.alert(
                     'OTA Aktualisierung',
-                    `Version ${Constants.manifest.version} ist die aktuellste Version`,
+                    `Version ${Constants.manifest2!.runtimeVersion} ist die aktuellste Version`,
                     [{text: 'OK'}]
                 );
             }
@@ -77,7 +77,7 @@ export default () => {
     const versions = [
         {
             key: 'App Version',
-            value: Constants.manifest.version
+            value: Constants.manifest!.version
         },
         {
             key: 'Native App Version',
