@@ -9,8 +9,12 @@ class PlantService {
         await PlantRepository.insertOrUpdatePlant(plant);
 
         if (isDefined(plant.avatar)) {
-            plant.avatar = await ImageRepository.storeImage(plant.id!, plant.avatar!);
-            await PlantRepository.insertOrUpdatePlant(plant);
+            try {
+                plant.avatar = await ImageRepository.storeImage(plant.id!, plant.avatar!);
+                await PlantRepository.insertOrUpdatePlant(plant);
+            } catch (e) {
+                console.warn(`failed to store avatar: ${e}`)
+            }
         }
     }
 
