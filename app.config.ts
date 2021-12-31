@@ -42,5 +42,8 @@ export default {
                 }
             }
         ]
-    }
+    },
+    "plugins": [
+        "sentry-expo"
+    ]
 }
