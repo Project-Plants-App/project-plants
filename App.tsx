@@ -5,9 +5,8 @@ import {EvaIconsPack} from '@ui-kitten/eva-icons';
 import {NavigationContainer} from "@react-navigation/native";
 import GrowBuddyDatabaseService from "./src/services/database/GrowBuddyDatabaseService";
 import AppLoading from "expo-app-loading";
-import {AppearanceProvider, useColorScheme} from "react-native-appearance";
 import DefaultStack from "./src/stacks/default/DefaultStack";
-import {SafeAreaView, StatusBar} from "react-native";
+import {Appearance, SafeAreaView, StatusBar} from "react-native";
 import * as Sentry from 'sentry-expo';
 
 Sentry.init({
@@ -17,15 +16,13 @@ Sentry.init({
 
 export default () => {
     return (
-        <AppearanceProvider>
-            <App/>
-        </AppearanceProvider>
+        <App/>
     );
 }
 
 const App = () => {
 
-    const colorScheme = useColorScheme();
+    const colorScheme = Appearance.getColorScheme();
     const themeStatusBarStyle = colorScheme === 'light' ? 'dark-content' : 'light-content';
 
     const [initialized, setInitialized] = useState(false);
