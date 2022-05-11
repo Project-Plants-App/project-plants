@@ -6,12 +6,14 @@ import {isDefined} from "../common/Utils";
 class PlantService {
 
     async savePlant(plant: Plant) {
+        const avatar = plant.avatar;
+        delete plant.avatar;
+
         await PlantRepository.insertOrUpdatePlant(plant);
 
-        if (isDefined(plant.avatar)) {
+        if (isDefined(avatar)) {
             try {
-                plant.avatar = await ImageRepository.storeImage(plant.id!, plant.avatar!);
-                await PlantRepository.insertOrUpdatePlant(plant);
+                await ImageRepository.storeImage(plant.id!, avatar!)
             } catch (e) {
                 console.warn(`failed to store avatar: ${e}`)
             }
@@ -19,11 +21,19 @@ class PlantService {
     }
 
     async getPlant(id: number): Promise<Plant> {
-        return PlantRepository.selectPlant(id);
+        const plant = await PlantRepository.selectPlant(id);
+        plant.avatar = await ImageRepository.resolveImage(plant.id!);
+
+        return plant;
     }
 
     async getAllPlants(): Promise<Plant[]> {
-        return PlantRepository.selectAllPlants();
+        const plants = await PlantRepository.selectAllPlants();
+        for (const plant of plants) {
+            plant.avatar = await ImageRepository.resolveImage(plant.id!);
+        }
+
+        return plants;
     }
 
     async deletePlant(plant: Plant): Promise<void> {

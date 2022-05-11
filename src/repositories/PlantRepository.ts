@@ -5,7 +5,6 @@ import GrowBuddyDatabaseService from "../services/database/GrowBuddyDatabaseServ
 const PLANT_INSERT_STATEMENT = `insert into plants (id,
                                                     name,
                                                     botanical_name,
-                                                    avatar,
                                                     preferred_location,
                                                     water_demand,
                                                     winter_proof,
@@ -16,13 +15,12 @@ const PLANT_INSERT_STATEMENT = `insert into plants (id,
                                                     last_time_watered,
                                                     last_time_fertilised,
                                                     last_time_sprayed)
-                                values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                                values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                                         ?, ?)`
 
 const PLANT_BASE_SELECT_STATEMENT = `select id,
                                             name,
                                             botanical_name,
-                                            avatar,
                                             preferred_location,
                                             water_demand,
                                             winter_proof,
@@ -42,7 +40,6 @@ const PLANT_SELECT_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} where id = ?`
 const PLANT_UPDATE_STATEMENT = `update plants
                                 set name                 = ?,
                                     botanical_name       = ?,
-                                    avatar               = ?,
                                     preferred_location   = ?,
                                     water_demand         = ?,
                                     winter_proof         = ?,
@@ -55,7 +52,8 @@ const PLANT_UPDATE_STATEMENT = `update plants
                                     last_time_sprayed    = ?
                                 where id = ?`
 
-const PLANT_DELETE_STATEMENT = `delete from plants
+const PLANT_DELETE_STATEMENT = `delete
+                                from plants
                                 where id = ?`
 
 class PlantRepository {
@@ -66,7 +64,6 @@ class PlantRepository {
         const args = [
             plant.name,
             plant.botanicalName,
-            plant.avatar,
             plant.preferredLocation,
             plant.waterDemand,
             plant.winterProof,
@@ -117,7 +114,6 @@ class PlantRepository {
             id: row.id,
             name: row.name,
             botanicalName: row.botanical_name,
-            avatar: row.avatar,
             preferredLocation: row.preferred_location,
             waterDemand: row.water_demand,
             winterProof: row.winter_proof,

@@ -49,7 +49,7 @@ const MIGRATIONS = [
          plant_id    integer not null,
          CONSTRAINT fk_activities FOREIGN KEY (activity_id) REFERENCES activities (id) ON DELETE CASCADE
      );`,
-
+    `alter table plants drop column avatar;`
 ];
 
 class GrowBuddyDatabaseService {
@@ -76,9 +76,11 @@ class GrowBuddyDatabaseService {
     }
 
     async closeDatabase() {
-        // close database
-        (this.database! as any)._db.close();
-        this.database = undefined;
+        if (this.database) {
+            // close database
+            (this.database! as any)._db.close();
+            this.database = undefined;
+        }
     }
 
 }

@@ -9,8 +9,14 @@ const DATA_URI = 'data:';
 class ImageRepository {
 
     async storeImage(id: number, uri: string) {
-        if (uri.startsWith(PLANT_AVATARS_DIRECTORY) || uri.startsWith(DATA_URI)) {
+        // legacy case 1: image has been stored as data - leave as it is
+        if (uri.startsWith(DATA_URI)) {
             return uri;
+        }
+
+        // legacy case 2: image has been saved as absolute path - return file name
+        if (uri.startsWith(PLANT_AVATARS_DIRECTORY)) {
+            return uri.replace(`${PLANT_AVATARS_DIRECTORY}/`, '');
         }
 
         await FileSystem.makeDirectoryAsync(PLANT_AVATARS_DIRECTORY, {intermediates: true});
@@ -23,15 +29,24 @@ class ImageRepository {
         await FileSystem.copyAsync({from: uri, to: destinationUri});
 
         await this.compressImage(destinationUri);
+    }
 
-        return destinationUri;
+    async resolveImage(id: number) {
+        return this.findAvatarForId(id);
     }
 
     async deleteImageIfExists(id: number) {
+        const existingImage = await this.findAvatarForId(id);
+        if (isDefined(existingImage)) {
+            await FileSystem.deleteAsync(existingImage!)
+        }
+    }
+
+    async findAvatarForId(id: number) {
         await FileSystem.makeDirectoryAsync(PLANT_AVATARS_DIRECTORY, {intermediates: true});
         const existingImage = (await FileSystem.readDirectoryAsync(PLANT_AVATARS_DIRECTORY)).find(entry => entry.startsWith(`${id}_`));
         if (isDefined(existingImage)) {
-            await FileSystem.deleteAsync(`${PLANT_AVATARS_DIRECTORY}/${existingImage}`)
+            return `${PLANT_AVATARS_DIRECTORY}/${existingImage}`;
         }
     }
 
