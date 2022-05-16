@@ -3,65 +3,41 @@ import {
     Button,
     Divider,
     Icon,
-    IndexPath,
     Input,
     Layout,
     List,
     ListItem,
-    Select,
-    SelectItem,
-    Text,
     TopNavigation,
     TopNavigationAction
 } from "@ui-kitten/components";
 import {ListRenderItemInfo, StyleSheet, View} from "react-native";
-import i18n, {translateEnumValue} from "../../../../../i18n";
+import i18n from "../../../../../i18n";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRoute, PlantsStackRouteProp} from "../PlantsStackRoute";
 import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
 import {Plant} from "../../../../../model/Plant";
-import GrowBuddyPlantsService, {PlantInfoSource} from "../../../../../services/GrowBuddyPlantsService";
+import GrowBuddyPlantsService from "../../../../../services/GrowBuddyPlantsService";
 import {isDefined} from "../../../../../common/Utils";
 import Badge from "../../../../../common/components/Badge";
+import {useDebounce} from "../../../../../common/hooks/Hooks";
 
 export default () => {
 
     const navigation = useNavigation<PlantsStackNavigationProp<PlantsStackRoute.PLANTS_PREFILL>>();
     const route = useRoute<PlantsStackRouteProp<PlantsStackRoute.PLANTS_PREFILL>>();
 
-    const generateSelectableSources = () => {
-        return Object.keys(PlantInfoSource).map((sourceAsString) => (PlantInfoSource as any)[sourceAsString] as PlantInfoSource);
-    }
-
-    const generateInitialSourceSelection = () => {
-        return selectableSources.map((source) => new IndexPath(selectableSources.indexOf(source)));
-    }
-
-    const generateSelectItems = () => {
-        return selectableSources.map((source) => (
-            <SelectItem title={translateEnumValue(source, PlantInfoSource)}
-                        key={selectableSources.indexOf(source)}/>
-        ));
-    }
-
-    const getSelectedSources: () => PlantInfoSource[] = () => {
-        return selectedSources.map((source) => selectableSources[source.row]);
-    }
-
     const [existingPlant] = useState(route.params.plant)
 
-    const [selectableSources] = useState(generateSelectableSources())
-
     const [query, setQuery] = useState(existingPlant?.name || '');
-    const [selectedSources, setSelectedSources] = useState<IndexPath[]>(generateInitialSourceSelection());
+    const debouncedQuery = useDebounce(query, 100);
 
     const [searchResults, setSearchResults] = useState<Plant[]>([]);
 
     useEffect(() => {
-        GrowBuddyPlantsService.searchForProducts(query, getSelectedSources()).then((searchResults) => {
+        GrowBuddyPlantsService.searchForProducts(query).then((searchResults) => {
             setSearchResults(searchResults);
         })
-    }, [query, selectedSources])
+    }, [debouncedQuery])
 
     const select = async (plant: Plant) => {
         const mergedPlant = Object.assign(existingPlant || {}, plant);
@@ -75,7 +51,7 @@ export default () => {
     }
 
     const skip = () => {
-        navigation.navigate({name: PlantsStackRoute.PLANTS_EDIT, params: {}});
+        navigation.navigate({name: PlantsStackRoute.PLANTS_EDIT, params: {plant: {name: debouncedQuery}}});
     }
 
     const cancel = () => {
@@ -100,12 +76,12 @@ export default () => {
                 <View {...props}
                       style={[props.style, {flexDirection: "column", alignItems: "flex-start", marginTop: 5}]}>
                     {entry.item.detailLinkName1 &&
-                    <Badge
-                        title={isDefined(entry.item.detailLinkName1) ? i18n.t(entry.item.detailLinkName1!) : 'UNKNOWN'}
-                        style={{marginBottom: 5}}/>
+                        <Badge
+                            title={isDefined(entry.item.detailLinkName1) ? i18n.t(entry.item.detailLinkName1!) : 'UNKNOWN'}
+                            style={{marginBottom: 5}}/>
                     }
                     {entry.item.botanicalName &&
-                    <Badge title={entry.item.botanicalName}/>
+                        <Badge title={entry.item.botanicalName}/>
                     }
                 </View>
             )
@@ -129,14 +105,6 @@ export default () => {
             <Layout style={styles.layout}>
                 <Input placeholder={i18n.t('SEARCH')} value={query}
                        onChangeText={(query) => setQuery(query)}/>
-                <Select
-                    style={styles.select}
-                    multiSelect={true}
-                    selectedIndex={selectedSources}
-                    value={() => <Text>{i18n.t('SOURCES')}</Text>}
-                    onSelect={(selectedSources) => setSelectedSources(selectedSources as IndexPath[])}>
-                    {generateSelectItems()}
-                </Select>
             </Layout>
             <Divider/>
             <Layout style={styles.listContainer}>
@@ -145,9 +113,9 @@ export default () => {
             </Layout>
             <Divider/>
             {!existingPlant &&
-            <Layout style={styles.layout}>
-                <Button onPress={skip} style={styles.button}>Nicht gefunden</Button>
-            </Layout>
+                <Layout style={styles.layout}>
+                    <Button onPress={skip} style={styles.button}>Nicht gefunden</Button>
+                </Layout>
             }
         </React.Fragment>
     )

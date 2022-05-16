@@ -3,38 +3,49 @@ import {WinterProof} from "../model/WinterProof";
 import {WaterDemand} from "../model/WaterDemand";
 import {PreferredLocation} from "../model/PreferredLocation";
 import {isDefined} from "../common/Utils";
+import * as FileSystem from "expo-file-system";
+import Fuse from 'fuse.js'
+import FuseResult = Fuse.FuseResult;
 
-const GROW_BUDDY_PLANT_API_BASE_URL = "http://jonasbamberger.synology.me:9090";
+const REMOTE_GROW_BUDDY_PLANTS_URI = "https://raw.githubusercontent.com/Grow-Buddy/grow-buddy-plants/main/database.json";
+const LOCAL_GROW_BUDDY_PLANTS_URI = `${FileSystem.documentDirectory}/plants-reference-database.json`
 
 class GrowBuddyPlantsService {
 
-    searchForProducts(query: string, sources: PlantInfoSource[]): Promise<Plant[]> {
-        const params = new URLSearchParams();
-        params.append("query", query);
-        sources.forEach((source) => {
-            params.append("sources", source);
+    referenceDatabase!: PlantInfo[];
+
+    constructor() {
+        this.initializeDatabase();
+    }
+
+    async initializeDatabase() {
+        await FileSystem.downloadAsync(REMOTE_GROW_BUDDY_PLANTS_URI, LOCAL_GROW_BUDDY_PLANTS_URI);
+        const rawReferenceDatabase = await FileSystem.readAsStringAsync(LOCAL_GROW_BUDDY_PLANTS_URI);
+        this.referenceDatabase = JSON.parse(rawReferenceDatabase);
+
+        FileSystem.deleteAsync(LOCAL_GROW_BUDDY_PLANTS_URI);
+    }
+
+    async searchForProducts(query: string): Promise<Plant[]> {
+        const fuse = new Fuse(this.referenceDatabase!, {keys: ['name', 'botanicalName']})
+        const result = fuse.search(query)
+
+        return result.slice(0, 20).map(({item}: FuseResult<PlantInfo>) => {
+            const plant = {
+                name: item.name,
+                botanicalName: item.botanicalName,
+                detailLink1: item.detailLink,
+                detailLinkName1: item.source as string,
+                waterDemand: this.mapWaterDemand(item),
+                preferredLocation: this.mapPreferredLocation(item),
+                winterProof: this.mapWinterProof(item)
+            } as any;
+
+            // remove undefined properties
+            Object.keys(plant).forEach(key => !isDefined(plant[key]) && delete plant[key])
+
+            return plant as Plant;
         });
-
-        return fetch(`${GROW_BUDDY_PLANT_API_BASE_URL}/api/plant-infos?${params.toString()}`)
-            .then((response) => (response.json()))
-            .then((searchResults: PlantInfo[]) => (
-                searchResults.map(searchResult => {
-                    const plant = {
-                        name: searchResult.name,
-                        botanicalName: searchResult.botanicalName,
-                        detailLink1: searchResult.detailLink,
-                        detailLinkName1: searchResult.source as string,
-                        waterDemand: this.mapWaterDemand(searchResult),
-                        preferredLocation: this.mapPreferredLocation(searchResult),
-                        winterProof: this.mapWinterProof(searchResult)
-                    } as any;
-
-                    // remove undefined properties
-                    Object.keys(plant).forEach(key => !isDefined(plant[key]) && delete plant[key])
-
-                    return plant as Plant;
-                })
-            ));
     }
 
     private mapWaterDemand(searchResult: PlantInfo) {
@@ -82,11 +93,11 @@ class GrowBuddyPlantsService {
     }
 
     private mapWinterProof(searchResult: PlantInfo) {
-        if (!isDefined(searchResult.winterProof)) {
+        if (!isDefined(searchResult.isWinterProof)) {
             return WinterProof.WINTER_PROOF_UNDEFINED;
         }
 
-        return searchResult.winterProof ? WinterProof.WINTER_PROOF_YES : WinterProof.WINTER_PROOF_NO;
+        return searchResult.isWinterProof ? WinterProof.WINTER_PROOF_YES : WinterProof.WINTER_PROOF_NO;
     }
 
 }
@@ -95,16 +106,10 @@ interface PlantInfo {
     name: string;
     botanicalName?: string;
     detailLink: string;
-    source: PlantInfoSource;
+    source: string;
     waterDemand?: PlantInfoWaterDemand;
     preferredLocation?: PlantInfoPreferredLocation;
-    winterProof?: boolean;
-}
-
-export enum PlantInfoSource {
-    BALDUR_GARTEN = "BALDUR_GARTEN",
-    MEIN_SCHOENER_GARTEN = "MEIN_SCHOENER_GARTEN",
-    PFLANZEN_FUER_UNSERE_GAERTEN = "PFLANZEN_FUER_UNSERE_GAERTEN"
+    isWinterProof?: boolean;
 }
 
 enum PlantInfoWaterDemand {
