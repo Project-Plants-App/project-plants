@@ -16,7 +16,7 @@ jobs:
         fetch-depth: 0
     - uses: Project-Env/project-env-github-action@v1.2.0
       with:
-        cli-version: '3.5.0'
+        cli-version: '3.7.1'
     - run: |
         npm ci
         npx expo-cli publish --non-interactive --release-channel production
