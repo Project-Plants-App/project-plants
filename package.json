@@ -63,7 +63,7 @@
     "@types/react": "17.0.45",
     "@types/react-native": "0.67.6",
     "eas-cli": "0.52.0",
-    "expo-cli": "5.4.3",
+    "expo-cli": "5.4.4",
     "jest": "28.1.0",
     "jest-expo": "45.0.1",
     "npm-check-updates": "12.5.11",
