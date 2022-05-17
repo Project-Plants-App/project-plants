@@ -22,6 +22,7 @@ jobs:
         npx expo-cli publish --non-interactive --release-channel production
       env:
         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        SENTRY_TOKEN: ${{ secrets.SENTRY_TOKEN }}
         GROW_BUDDY_VERSION: ${{ github.event.inputs.version }}
     - uses: actions/create-release@v1
       env:

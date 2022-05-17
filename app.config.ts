@@ -37,7 +37,7 @@ export default {
                 config: {
                     organization: "grow-buddy",
                     project: "grow-buddy",
-                    authToken: "e1f0ddbee5e34dcfa58eeab329b1b903f48dbcfff77340b19b69353752f48a58",
+                    authToken: process.env.SENTRY_TOKEN,
                     setCommits: true
                 }
             }
