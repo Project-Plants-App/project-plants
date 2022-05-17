@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": ">= 0.42.4"
+    "version": ">= 0.52.0"
   },
   "build": {
     "development": {
@@ -13,7 +13,7 @@
     "production": {
       "releaseChannel": "production",
       "env": {
-        "GROW_BUDDY_VERSION": "0.0.24"
+        "GROW_BUDDY_VERSION": "0.0.25"
       }
     }
   },
