@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: Project-Env/project-env-github-action@v1.2.0
       with:
         cli-version: '3.7.1'
