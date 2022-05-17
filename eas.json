@@ -13,7 +13,7 @@
     "production": {
       "releaseChannel": "production",
       "env": {
-        "GROW_BUDDY_VERSION": "0.0.23"
+        "GROW_BUDDY_VERSION": "0.0.24"
       }
     }
   },
