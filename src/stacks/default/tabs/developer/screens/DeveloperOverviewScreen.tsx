@@ -13,6 +13,8 @@ import * as Updates from 'expo-updates';
 import DrawerAction from "../../../../../common/components/DrawerAction";
 import ImageRepository from "../../../../../repositories/ImageRepository";
 import LoadingContainer from "../../../../../common/components/LoadingContainer";
+import * as Application from 'expo-application';
+import GrowBuddyPlantsService from "../../../../../services/GrowBuddyPlantsService";
 
 export default () => {
 
@@ -20,6 +22,7 @@ export default () => {
     const route = useRoute<DeveloperStackRouteProp<DeveloperStackRoute.DEVELOPER_OVERVIEW>>();
 
     const [waiting, setWaiting] = useState(false);
+    const [referenceDatabaseSize, setReferenceDatabaseSize] = useState(GrowBuddyPlantsService.getDatabaseSize());
 
     async function fetchAndApplyOTAUpdate() {
         try {
@@ -68,6 +71,16 @@ export default () => {
         }
     }
 
+    async function updateReferenceDatabase() {
+        try {
+            setWaiting(true);
+            await GrowBuddyPlantsService.updateAndLoadDatabase();
+            setReferenceDatabaseSize(GrowBuddyPlantsService.getDatabaseSize())
+        } finally {
+            setWaiting(false);
+        }
+    }
+
     function renderVersionItem({item}: ListRenderItemInfo<any>) {
         return (
             <ListItem title={item.value} description={item.key} disabled={true}/>
@@ -81,15 +94,23 @@ export default () => {
         },
         {
             key: 'Native App Version',
-            value: Constants.nativeAppVersion
+            value: Application.nativeApplicationVersion
         }
     ]
 
 
-    const Footer = (props: any) => (
+    const VersionsFooter = (props: any) => (
         <View {...props}>
             <Button onPress={checkForOTAUpdate}>
                 Auf OTA Aktualisierungen prüfen
+            </Button>
+        </View>
+    )
+
+    const ReferenceDatabaseFooter = (props: any) => (
+        <View {...props}>
+            <Button onPress={updateReferenceDatabase}>
+                Aktualisieren
             </Button>
         </View>
     )
@@ -101,10 +122,17 @@ export default () => {
                            accessoryLeft={DrawerAction}/>
             <Divider/>
             <Layout style={styles.layout} level="2">
-                <Card header={renderCardHeader('App Version')} style={styles.card} footer={Footer}>
+                <Card header={renderCardHeader('App Version')} style={styles.card} footer={VersionsFooter}>
                     <CardListContainer>
                         <List data={versions} renderItem={renderVersionItem}
                               ItemSeparatorComponent={Divider}/>
+                    </CardListContainer>
+                </Card>
+                <Card header={renderCardHeader('Referenz-Datenbank')} style={styles.card}
+                      footer={ReferenceDatabaseFooter}>
+                    <CardListContainer>
+                        <ListItem title={referenceDatabaseSize} description={'Einträge'}
+                                  disabled={true}/>
                     </CardListContainer>
                 </Card>
                 <Card header={renderCardHeader('Bilder')} style={styles.card}>

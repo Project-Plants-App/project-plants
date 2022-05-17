@@ -5,28 +5,39 @@ import {PreferredLocation} from "../model/PreferredLocation";
 import {isDefined} from "../common/Utils";
 import * as FileSystem from "expo-file-system";
 import Fuse from 'fuse.js'
+import * as Network from 'expo-network';
 import FuseResult = Fuse.FuseResult;
 
 const REMOTE_GROW_BUDDY_PLANTS_URI = "https://raw.githubusercontent.com/Grow-Buddy/grow-buddy-plants/main/database.json";
-const LOCAL_GROW_BUDDY_PLANTS_URI = `${FileSystem.documentDirectory}/plants-reference-database.json`
+const LOCAL_GROW_BUDDY_PLANTS_URI = `${FileSystem.documentDirectory}/plants-reference-database.json`;
 
 class GrowBuddyPlantsService {
 
-    referenceDatabase!: PlantInfo[];
+    private referenceDatabase: PlantInfo[] = [];
 
     constructor() {
-        this.initializeDatabase();
+        this.updateAndLoadDatabase();
     }
 
-    async initializeDatabase() {
-        await FileSystem.downloadAsync(REMOTE_GROW_BUDDY_PLANTS_URI, LOCAL_GROW_BUDDY_PLANTS_URI);
-        const rawReferenceDatabase = await FileSystem.readAsStringAsync(LOCAL_GROW_BUDDY_PLANTS_URI);
-        this.referenceDatabase = JSON.parse(rawReferenceDatabase);
+    async updateAndLoadDatabase() {
+        const networkState = await Network.getNetworkStateAsync();
+        if (networkState.isInternetReachable) {
+            await FileSystem.downloadAsync(REMOTE_GROW_BUDDY_PLANTS_URI, LOCAL_GROW_BUDDY_PLANTS_URI, {cache: false});
+        }
 
-        FileSystem.deleteAsync(LOCAL_GROW_BUDDY_PLANTS_URI);
+        const databaseFileInfo = await FileSystem.getInfoAsync(LOCAL_GROW_BUDDY_PLANTS_URI);
+        if (databaseFileInfo.exists) {
+            const rawReferenceDatabase = await FileSystem.readAsStringAsync(LOCAL_GROW_BUDDY_PLANTS_URI);
+            this.referenceDatabase = JSON.parse(rawReferenceDatabase);
+        }
     }
 
-    async searchForProducts(query: string): Promise<Plant[]> {
+    getDatabaseSize() {
+        return this.referenceDatabase.length;
+    }
+
+    async search(query: string):
+        Promise<Plant[]> {
         const fuse = new Fuse(this.referenceDatabase!, {keys: ['name', 'botanicalName']})
         const result = fuse.search(query)
 

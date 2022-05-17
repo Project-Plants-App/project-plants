@@ -34,7 +34,7 @@ export default () => {
     const [searchResults, setSearchResults] = useState<Plant[]>([]);
 
     useEffect(() => {
-        GrowBuddyPlantsService.searchForProducts(query).then((searchResults) => {
+        GrowBuddyPlantsService.search(query).then((searchResults) => {
             setSearchResults(searchResults);
         })
     }, [debouncedQuery])
