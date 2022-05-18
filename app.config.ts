@@ -1,6 +1,7 @@
 export default {
     name: "Project-Plants",
     slug: "project-plants",
+    owner: "project-plants",
     version: process.env.GROW_BUDDY_VERSION || 'dev',
     orientation: "portrait",
     icon: "./assets/icon.png",
