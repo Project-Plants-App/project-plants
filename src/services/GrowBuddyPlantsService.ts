@@ -8,7 +8,7 @@ import Fuse from 'fuse.js'
 import * as Network from 'expo-network';
 import FuseResult = Fuse.FuseResult;
 
-const REMOTE_GROW_BUDDY_PLANTS_URI = "https://raw.githubusercontent.com/Grow-Buddy/grow-buddy-plants/main/database.json";
+const REMOTE_GROW_BUDDY_PLANTS_URI = "https://raw.githubusercontent.com/Project-Plants-App/project-plants-database/main/database.json";
 const LOCAL_GROW_BUDDY_PLANTS_URI = `${FileSystem.documentDirectory}/plants-reference-database.json`;
 
 class GrowBuddyPlantsService {
