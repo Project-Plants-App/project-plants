@@ -11,7 +11,7 @@ import FuseResult = Fuse.FuseResult;
 const REMOTE_GROW_BUDDY_PLANTS_URI = "https://raw.githubusercontent.com/Project-Plants-App/project-plants-database/main/database.json";
 const LOCAL_GROW_BUDDY_PLANTS_URI = `${FileSystem.documentDirectory}/plants-reference-database.json`;
 
-class GrowBuddyPlantsService {
+class ReferencePlantsService {
 
     private referenceDatabase: PlantInfo[] = [];
 
@@ -140,4 +140,4 @@ enum PlantInfoPreferredLocation {
     SUNNY = "SUNNY"
 }
 
-export default new GrowBuddyPlantsService();
+export default new ReferencePlantsService();

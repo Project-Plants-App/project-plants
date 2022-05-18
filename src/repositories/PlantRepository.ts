@@ -1,6 +1,6 @@
 import {Plant} from "../model/Plant";
 import DatabaseHelper from "../services/database/DatabaseHelper";
-import GrowBuddyDatabaseService from "../services/database/GrowBuddyDatabaseService";
+import GrowBuddyDatabaseService from "../services/database/DatabaseService";
 
 const PLANT_INSERT_STATEMENT = `insert into plants (id,
                                                     name,

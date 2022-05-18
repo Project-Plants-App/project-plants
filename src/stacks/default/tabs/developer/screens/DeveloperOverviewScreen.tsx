@@ -8,13 +8,13 @@ import i18n from "../../../../../i18n";
 import renderCardHeader from "../../../../../common/components/CardHeader";
 import Constants from 'expo-constants';
 import CardListContainer from "../../../../../common/components/CardListContainer";
-import GrowBuddyDatabaseService from "../../../../../services/database/GrowBuddyDatabaseService";
+import GrowBuddyDatabaseService from "../../../../../services/database/DatabaseService";
 import * as Updates from 'expo-updates';
 import DrawerAction from "../../../../../common/components/DrawerAction";
 import ImageRepository from "../../../../../repositories/ImageRepository";
 import LoadingContainer from "../../../../../common/components/LoadingContainer";
 import * as Application from 'expo-application';
-import GrowBuddyPlantsService from "../../../../../services/GrowBuddyPlantsService";
+import GrowBuddyPlantsService from "../../../../../services/ReferencePlantsService";
 
 export default () => {
 

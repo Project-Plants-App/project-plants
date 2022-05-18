@@ -1,5 +1,5 @@
 import {Activity} from "../model/Activity";
-import GrowBuddyDatabaseService from "../services/database/GrowBuddyDatabaseService";
+import GrowBuddyDatabaseService from "../services/database/DatabaseService";
 import DatabaseHelper from "../services/database/DatabaseHelper";
 import {ActivityType} from "../model/ActivityType";
 

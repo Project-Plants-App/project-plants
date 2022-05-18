@@ -16,7 +16,7 @@ import {useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRoute, PlantsStackRouteProp} from "../PlantsStackRoute";
 import TopNavigationTitle from "../../../../../common/components/TopNavigationTitle";
 import {Plant} from "../../../../../model/Plant";
-import GrowBuddyPlantsService from "../../../../../services/GrowBuddyPlantsService";
+import GrowBuddyPlantsService from "../../../../../services/ReferencePlantsService";
 import {isDefined} from "../../../../../common/Utils";
 import Badge from "../../../../../common/components/Badge";
 import {useDebounce} from "../../../../../common/hooks/Hooks";

@@ -3,7 +3,7 @@ import * as eva from '@eva-design/eva';
 import {ApplicationProvider, IconRegistry, Layout} from '@ui-kitten/components';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
 import {NavigationContainer} from "@react-navigation/native";
-import GrowBuddyDatabaseService from "./src/services/database/GrowBuddyDatabaseService";
+import DatabaseService from "./src/services/database/DatabaseService";
 import DefaultStack from "./src/stacks/default/DefaultStack";
 import {Appearance, SafeAreaView, StatusBar} from "react-native";
 import * as Sentry from 'sentry-expo';
@@ -30,7 +30,7 @@ const App = () => {
     useEffect(() => {
         async function initialize() {
             await SplashScreen.preventAutoHideAsync();
-            await GrowBuddyDatabaseService.openDatabase();
+            await DatabaseService.openDatabase();
             setInitialized(true);
         }
 

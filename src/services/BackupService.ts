@@ -2,7 +2,7 @@ import * as FileSystem from 'expo-file-system';
 import {formatTimeString, isDefined, isMetaFile} from "../common/Utils";
 import JSZip from "jszip";
 import * as Updates from 'expo-updates';
-import GrowBuddyDatabaseService from "./database/GrowBuddyDatabaseService";
+import GrowBuddyDatabaseService from "./database/DatabaseService";
 
 const BACKUP_FOLDER = 'backups';
 const BACKUP_ROOT_PATH = `${FileSystem.documentDirectory}/${BACKUP_FOLDER}`

@@ -1,6 +1,6 @@
 export default {
-    name: "Grow-Buddy",
-    slug: "grow-buddy",
+    name: "Project-Plants",
+    slug: "project-plants",
     version: process.env.GROW_BUDDY_VERSION || 'dev',
     orientation: "portrait",
     icon: "./assets/icon.png",
@@ -35,8 +35,8 @@ export default {
             {
                 file: "sentry-expo/upload-sourcemaps",
                 config: {
-                    organization: "grow-buddy",
-                    project: "grow-buddy",
+                    organization: "project-plants",
+                    project: "project-plants",
                     authToken: process.env.SENTRY_TOKEN,
                     setCommits: true
                 }

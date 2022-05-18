@@ -3,7 +3,8 @@ import {WebSQLDatabase} from "expo-sqlite";
 import * as FileSystem from "expo-file-system";
 import DatabaseMigrationService from "./migration/DatabaseMigrationService";
 
-const DATABASE_NAME = "grow-buddy.db";
+const LEGACY_DATABASE_NAME = "grow-buddy.db";
+const DATABASE_NAME = "plants.db";
 
 const MIGRATIONS = [
     `create table plants
@@ -52,7 +53,7 @@ const MIGRATIONS = [
     `alter table plants drop column avatar;`
 ];
 
-class GrowBuddyDatabaseService {
+class DatabaseService {
 
     private database?: WebSQLDatabase;
 
@@ -71,6 +72,12 @@ class GrowBuddyDatabaseService {
     }
 
     async openDatabase() {
+        const legacyDatabasePath = `${FileSystem.documentDirectory}/SQLite/${LEGACY_DATABASE_NAME}`;
+        const databasePath = `${FileSystem.documentDirectory}/SQLite/${DATABASE_NAME}`;
+        if ((await FileSystem.getInfoAsync(legacyDatabasePath)).exists) {
+            await FileSystem.moveAsync({from: legacyDatabasePath, to: databasePath});
+        }
+
         this.database = SQLite.openDatabase(DATABASE_NAME);
         await this.migrateDatabase();
     }
@@ -85,4 +92,4 @@ class GrowBuddyDatabaseService {
 
 }
 
-export default new GrowBuddyDatabaseService();
+export default new DatabaseService();
