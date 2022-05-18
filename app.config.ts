@@ -19,7 +19,7 @@ export default {
     ios: {
         supportsTablet: true,
         bundleIdentifier: "app.growbuddy",
-        buildNumber: "0.0.6"
+        buildNumber: process.env.GROW_BUDDY_VERSION || '0.0.0'
     },
     android: {
         adaptiveIcon: {

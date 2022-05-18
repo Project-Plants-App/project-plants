@@ -1,0 +1,35 @@
+name: Publish OTA update
+
+on:
+  workflow_dispatch:
+    inputs:
+      major_minor_version:
+        description: 'The major-minor version for which the OTA update should be published (required format: X.X)'
+        required: true
+      patch_version:
+        description: 'The patch version of the OTA update (required format: X)'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - uses: Project-Env/project-env-github-action@v1.2.0
+      with:
+        cli-version: '3.7.1'
+    - run: |
+        npm ci
+        npx expo-cli publish --non-interactive --release-channel production-${{ github.event.inputs.major_minor_version }}
+      env:
+        EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        SENTRY_TOKEN: ${{ secrets.SENTRY_TOKEN }}
+        GROW_BUDDY_VERSION: ${{ github.event.inputs.major_minor_version }}${{ github.event.inputs.patch_version }}
+    - uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.event.inputs.major_minor_version }}${{ github.event.inputs.patch_version }}
+        release_name: OTA v${{ github.event.inputs.major_minor_version }}${{ github.event.inputs.patch_version }}

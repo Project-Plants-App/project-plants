@@ -1,0 +1,31 @@
+name: Release standalone app
+
+on:
+  workflow_dispatch:
+    inputs:
+      major_minor_version:
+        description: 'The major-minor version which should be released (required format: X.X)'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: Project-Env/project-env-github-action@v1.2.0
+        with:
+          cli-version: '3.7.1'
+      - run: |
+          npm ci
+          echo "{ \"cli\": { \"requireCommit\": true }, \"build\": { \"production\": { \"releaseChannel\": \"production-${{ github.event.inputs.major_minor_version }}\", \"env\": { \"GROW_BUDDY_VERSION\": \"${{ github.event.inputs.major_minor_version }}.0\", \"SENTRY_TOKEN\": \"${{ secrets.SENTRY_TOKEN }}\" } } }, \"submit\": { \"production\": { \"ios\": { \"appleId\": \"jonas.bamberger@protonmail.ch\", \"ascAppId\": \"1563761464\", \"appleTeamId\": \"TCJLVJY557\" } } }}" > eas.json
+          npx eas build --non-interactive --platform ios --auto-submit --no-wait
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      - uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.event.inputs.major_minor_version }}.0
+          release_name: Standalone v${{ github.event.inputs.major_minor_version }}.0
