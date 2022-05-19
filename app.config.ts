@@ -1,5 +1,5 @@
 export default {
-    name: "Project-Plants",
+    name: "Project Plants",
     slug: "project-plants",
     owner: "project-plants",
     version: process.env.GROW_BUDDY_VERSION || 'dev',
