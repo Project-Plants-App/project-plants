@@ -18,7 +18,7 @@ export default {
         "**/*"
     ],
     ios: {
-        supportsTablet: true,
+        supportsTablet: false,
         bundleIdentifier: "app.growbuddy",
         buildNumber: process.env.GROW_BUDDY_VERSION || '0.0.0'
     },
