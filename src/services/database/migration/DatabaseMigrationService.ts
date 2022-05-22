@@ -1,6 +1,7 @@
 import {Database} from "expo-sqlite";
 import DatabaseHelper from "../DatabaseHelper";
 import * as Crypto from 'expo-crypto';
+import {Platform} from "react-native";
 
 const SCHEMA_VERSION_TABLE_DDL = `create table schema_version
                                   (
@@ -64,7 +65,12 @@ class DatabaseMigrationService {
     }
 
     private async executeMigrationScript(database: Database, version: number, migrationScript: string, migrationScriptHash: string) {
-        await DatabaseHelper.executeSingleStatement(database, migrationScript);
+        if (migrationScript.match(/^.+drop column.+$/) && Platform.OS === 'android') {
+            console.warn('dropping columns is not supported on Android - migration will be skipped');
+        } else {
+            await DatabaseHelper.executeSingleStatement(database, migrationScript);
+        }
+
         await this.registerSuccessfulMigrationExecution(database, version, migrationScriptHash);
     }
 
