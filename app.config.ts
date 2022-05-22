@@ -20,7 +20,11 @@ export default {
     ios: {
         supportsTablet: false,
         bundleIdentifier: "app.growbuddy",
-        buildNumber: process.env.GROW_BUDDY_VERSION || '0.0.0'
+        buildNumber: process.env.GROW_BUDDY_VERSION || '0.0.0',
+        infoPlist: {
+            "NSCameraUsageDescription": "Erlaube den Zugriff auf die Kamera um ein Foto deiner Pflanze zu schiessen.",
+            "NSPhotoLibraryUsageDescription": "Erlaube den Zugriff auf deine Fotos um ein Foto deiner Pflanze zu wählen."
+        }
     },
     android: {
         adaptiveIcon: {
