@@ -51,6 +51,7 @@ class ImageRepository {
     }
 
     async compressAllImages() {
+        await FileSystem.makeDirectoryAsync(PLANT_AVATARS_DIRECTORY, {intermediates: true});
         for (const image of (await FileSystem.readDirectoryAsync(PLANT_AVATARS_DIRECTORY))) {
             const imageUri = `${PLANT_AVATARS_DIRECTORY}/${image}`;
 
