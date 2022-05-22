@@ -1,7 +1,6 @@
 import {
     Button,
     Card,
-    Datepicker,
     Divider,
     IndexPath,
     Input,
@@ -12,7 +11,7 @@ import {
     TopNavigation
 } from "@ui-kitten/components";
 import React, {useState} from "react";
-import {KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View} from "react-native";
+import {Alert, KeyboardAvoidingView, Linking, Platform, ScrollView, StyleSheet, View} from "react-native";
 import {StackActions, useNavigation, useRoute} from "@react-navigation/native";
 import {PlantsStackNavigationProp, PlantsStackRoute, PlantsStackRouteProp} from "../PlantsStackRoute";
 import {Plant} from "../../../../../model/Plant";
@@ -77,6 +76,11 @@ export default () => {
     async function chooseAvatarFromMediaLibrary() {
         let response = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!response.granted) {
+            askUserToChangeAppPermissions(
+                'Zugriff auf deine Fotos',
+                'Erlaube in den Einstellungen den Zugriff auf deine Fotos um ein Foto deiner Pflanze wählen zu können.'
+            );
+
             return;
         }
 
@@ -86,10 +90,26 @@ export default () => {
     async function createAvatarWithCamera() {
         let response = await ImagePicker.requestCameraPermissionsAsync();
         if (!response.granted) {
+            askUserToChangeAppPermissions(
+                'Zugriff auf deine Kamera',
+                'Erlaube in den Einstellungen den Zugriff auf die Kamera um ein Foto deiner Pflanze schiessen zu können.'
+            );
+
             return;
         }
 
         handleImagePickerResult(await ImagePicker.launchCameraAsync(IMAGE_PICKER_OPTIONS));
+    }
+
+    function askUserToChangeAppPermissions(title: string, message: string) {
+        Alert.alert(
+            title,
+            message,
+            [
+                {text: 'Einstellungen', onPress: () => Linking.openSettings()},
+                {text: 'Abbrechen'}
+            ]
+        );
     }
 
     function getUpdatedPlant() {
@@ -213,18 +233,18 @@ export default () => {
                             </Card>
 
                             {plant.id !== undefined &&
-                            <Card status="basic">
-                                <Button onPress={completePlant}
-                                        style={styles.firstButton}
-                                        appearance="outline">
-                                    Automatisch vervollständigen
-                                </Button>
-                                <Button onPress={deletePlant}
-                                        appearance="outline"
-                                        status="danger">
-                                    Löschen
-                                </Button>
-                            </Card>
+                                <Card status="basic">
+                                    <Button onPress={completePlant}
+                                            style={styles.firstButton}
+                                            appearance="outline">
+                                        Automatisch vervollständigen
+                                    </Button>
+                                    <Button onPress={deletePlant}
+                                            appearance="outline"
+                                            status="danger">
+                                        Löschen
+                                    </Button>
+                                </Card>
                             }
                         </View>
                     </ScrollView>
