@@ -18,5 +18,6 @@ export interface Plant {
     lastTimeWatered?: string;
     lastTimeFertilised?: string;
     lastTimeSprayed?: string;
+    automaticallyWatered?: boolean;
 
 }

@@ -72,7 +72,7 @@ export default () => {
 
     function renderActivities(entry: ListRenderItemInfo<any>) {
         const iconLeft = (props: any) => (
-            <Icon {...props} name={entry.item.icon}/>
+            <Icon {...props} name={entry.item.icon} pack={entry.item.iconPack || 'eva'}/>
         );
 
         const calendarIcon = (props: any) => (
@@ -87,9 +87,9 @@ export default () => {
             return (
                 <React.Fragment>
                     <Button {...props} accessoryRight={trashIcon} appearance="ghost" status="danger"
-                            onPress={entry.item.onTrashPress}/>
+                            onPress={entry.item.onTrashPress} disabled={entry.item.disabled}/>
                     <Button {...props} accessoryRight={calendarIcon} appearance="ghost"
-                            onPress={entry.item.onCalendarPress}/>
+                            onPress={entry.item.onCalendarPress} disabled={entry.item.disabled}/>
                 </React.Fragment>
             )
         };
@@ -121,10 +121,12 @@ export default () => {
     const plantActivities = [
         {
             label: i18n.t('LAST_TIME_WATERED'),
-            value: formatIsoDateStringAsTimeAgo(plant.lastTimeWatered),
-            icon: 'droplet-outline',
+            value: plant.automaticallyWatered ? i18n.t('AUTOMATICALLY_WATERED_SHORT') : formatIsoDateStringAsTimeAgo(plant.lastTimeWatered),
+            icon: plant.automaticallyWatered ? 'droplet-automatic-outline' : 'droplet-outline',
+            iconPack: plant.automaticallyWatered ? 'assets' : undefined,
             onTrashPress: () => updateLastTimeWatered(),
-            onCalendarPress: () => setLastTimeWateredDialogVisible(true)
+            onCalendarPress: () => setLastTimeWateredDialogVisible(true),
+            disabled: plant.automaticallyWatered
         },
         {
             label: i18n.t('LAST_TIME_FERTILISED'),
@@ -161,17 +163,17 @@ export default () => {
                                     <List data={plantAttributes} renderItem={renderPlantAttributes}
                                           ItemSeparatorComponent={Divider}/>
                                     {plant.detailLink1 &&
-                                    <Divider/>
+                                        <Divider/>
                                     }
                                 </React.Fragment>
                             </CardListContainer>
                             {plant.detailLink1 &&
-                            <Button accessoryLeft={LinkIcon}
-                                    appearance="outline"
-                                    style={styles.button}
-                                    onPress={() => Linking.openURL(plant.detailLink1!)}>
-                                {isDefined(plant.detailLinkName1) ? i18n.t(plant.detailLinkName1!) : 'UNKNOWN'}
-                            </Button>
+                                <Button accessoryLeft={LinkIcon}
+                                        appearance="outline"
+                                        style={styles.button}
+                                        onPress={() => Linking.openURL(plant.detailLink1!)}>
+                                    {isDefined(plant.detailLinkName1) ? i18n.t(plant.detailLinkName1!) : 'UNKNOWN'}
+                                </Button>
                             }
                         </Card>
                         <Card style={styles.card} header={renderCardHeader("Aktivitäten")} status="basic"

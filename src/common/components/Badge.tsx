@@ -6,21 +6,22 @@ import {ChildrenProp} from "@ui-kitten/components/devsupport";
 type BadgeProps = {
     title?: string,
     icon?: string,
+    iconPack?: string
     style?: StyleProp<ViewStyle>,
     children?: ChildrenProp
 }
 
-export default ({title, icon, style, children}: BadgeProps) => {
+export default ({title, icon, iconPack = 'eva', style, children}: BadgeProps) => {
 
     const theme = useTheme();
 
     return (
         <View style={[style, styles.view, {backgroundColor: theme['background-basic-color-3']}]}>
             {icon &&
-            <Icon style={styles.icon} name={icon} fill={theme['text-basic-color']}/>
+                <Icon style={styles.icon} name={icon} pack={iconPack} fill={theme['text-basic-color']}/>
             }
             {title &&
-            <Text style={styles.text}>{title}</Text>
+                <Text style={styles.text}>{title}</Text>
             }
             {children}
         </View>

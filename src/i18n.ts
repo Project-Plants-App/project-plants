@@ -25,6 +25,8 @@ i18n.translations = {
         LAST_TIME_WATERED: 'Letztes Mal gegossen',
         LAST_TIME_FERTILISED: 'Letztes Mal gedüngt',
         LAST_TIME_SPRAYED: 'Letztes Mal gespritzt',
+        AUTOMATICALLY_WATERED: 'Automatische Bewässerung',
+        AUTOMATICALLY_WATERED_SHORT: 'Auto. Bewässerung',
         // preferred location
         PREFERRED_LOCATION: 'Standort',
         PREFERRED_LOCATION_UNDEFINED: 'Undefiniert',

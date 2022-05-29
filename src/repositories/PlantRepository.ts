@@ -14,9 +14,10 @@ const PLANT_INSERT_STATEMENT = `insert into plants (id,
                                                     amount,
                                                     last_time_watered,
                                                     last_time_fertilised,
-                                                    last_time_sprayed)
+                                                    last_time_sprayed,
+                                                    automatically_watered)
                                 values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                                        ?, ?)`
+                                        ?, ?, ?)`
 
 const PLANT_BASE_SELECT_STATEMENT = `select id,
                                             name,
@@ -30,7 +31,8 @@ const PLANT_BASE_SELECT_STATEMENT = `select id,
                                             amount,
                                             last_time_watered,
                                             last_time_fertilised,
-                                            last_time_sprayed
+                                            last_time_sprayed,
+                                            automatically_watered
                                      from plants`
 
 const PLANT_SELECT_ALL_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} order by name`
@@ -38,18 +40,19 @@ const PLANT_SELECT_ALL_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} order by name
 const PLANT_SELECT_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} where id = ?`
 
 const PLANT_UPDATE_STATEMENT = `update plants
-                                set name                 = ?,
-                                    botanical_name       = ?,
-                                    preferred_location   = ?,
-                                    water_demand         = ?,
-                                    winter_proof         = ?,
-                                    detail_link_1        = ?,
-                                    detail_link_name_1   = ?,
-                                    planted              = ?,
-                                    amount               = ?,
-                                    last_time_watered    = ?,
-                                    last_time_fertilised = ?,
-                                    last_time_sprayed    = ?
+                                set name                  = ?,
+                                    botanical_name        = ?,
+                                    preferred_location    = ?,
+                                    water_demand          = ?,
+                                    winter_proof          = ?,
+                                    detail_link_1         = ?,
+                                    detail_link_name_1    = ?,
+                                    planted               = ?,
+                                    amount                = ?,
+                                    last_time_watered     = ?,
+                                    last_time_fertilised  = ?,
+                                    last_time_sprayed     = ?,
+                                    automatically_watered = ?
                                 where id = ?`
 
 const PLANT_DELETE_STATEMENT = `delete
@@ -74,6 +77,7 @@ class PlantRepository {
             plant.lastTimeWatered,
             plant.lastTimeFertilised,
             plant.lastTimeSprayed,
+            plant.automaticallyWatered
         ];
 
         if (plant.id === undefined) {
@@ -123,7 +127,8 @@ class PlantRepository {
             amount: row.amount,
             lastTimeWatered: row.last_time_watered,
             lastTimeFertilised: row.last_time_fertilised,
-            lastTimeSprayed: row.last_time_sprayed
+            lastTimeSprayed: row.last_time_sprayed,
+            automaticallyWatered: !!row.automatically_watered
         } as Plant
     }
 

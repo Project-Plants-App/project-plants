@@ -21,7 +21,7 @@ export default () => {
 
     useOnFocusOnceEffect(() => {
         PlantRepository.selectAllPlants().then((plants) => {
-            setPlants(plants);
+            setPlants(plants.filter(plant => !plant.automaticallyWatered));
         });
     });
 

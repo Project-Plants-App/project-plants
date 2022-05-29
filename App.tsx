@@ -8,6 +8,7 @@ import DefaultStack from "./src/stacks/default/DefaultStack";
 import {Appearance, SafeAreaView, StatusBar} from "react-native";
 import * as Sentry from 'sentry-expo';
 import * as SplashScreen from 'expo-splash-screen';
+import {AssetIconsPack} from "./src/common/AssetIcons";
 
 Sentry.init({
     dsn: 'https://87b522a85d234062b39f044f423848af@o566027.ingest.sentry.io/5708282',
@@ -50,7 +51,7 @@ const App = () => {
     return (
         <NavigationContainer>
             <StatusBar barStyle={themeStatusBarStyle}/>
-            <IconRegistry icons={EvaIconsPack}/>
+            <IconRegistry icons={[EvaIconsPack, AssetIconsPack]}/>
             <ApplicationProvider {...eva} theme={colorScheme === 'dark' ? eva.dark : eva.light}>
                 <Layout style={{flex: 1}} onLayout={onLayoutRootView}>
                     <SafeAreaView style={{flex: 1}}>

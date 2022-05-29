@@ -45,19 +45,25 @@ export default () => {
         const renderDescription = (props: any) => {
             return (
                 <View {...props} style={[props.style, {flexDirection: "row", alignItems: "center", marginTop: 5}]}>
-                    {item.lastTimeWatered &&
-                    <Badge icon="droplet-outline"
-                           title={formatIsoDateStringAsTimeAgo(item.lastTimeWatered)!}
-                           style={{marginRight: 5}}/>
+                    {!item.automaticallyWatered && item.lastTimeWatered &&
+                        <Badge icon="droplet-outline"
+                               title={formatIsoDateStringAsTimeAgo(item.lastTimeWatered)!}
+                               style={{marginRight: 5}}/>
+                    }
+                    {item.automaticallyWatered &&
+                        <Badge icon="droplet-automatic-outline"
+                               iconPack="assets"
+                               title={i18n.t('AUTOMATICALLY_WATERED_SHORT')}
+                               style={{marginRight: 5}}/>
                     }
                     {item.lastTimeFertilised &&
-                    <Badge icon="flash-outline"
-                           title={formatIsoDateStringAsTimeAgo(item.lastTimeFertilised)!}
-                           style={{marginRight: 5}}/>
+                        <Badge icon="flash-outline"
+                               title={formatIsoDateStringAsTimeAgo(item.lastTimeFertilised)!}
+                               style={{marginRight: 5}}/>
                     }
                     {item.lastTimeSprayed &&
-                    <Badge icon="shield-outline"
-                           title={formatIsoDateStringAsTimeAgo(item.lastTimeSprayed)!}/>
+                        <Badge icon="shield-outline"
+                               title={formatIsoDateStringAsTimeAgo(item.lastTimeSprayed)!}/>
                     }
                 </View>
             )
