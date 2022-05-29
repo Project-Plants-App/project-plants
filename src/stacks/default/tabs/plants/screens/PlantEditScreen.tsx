@@ -1,6 +1,7 @@
 import {
     Button,
     Card,
+    CheckBox,
     Divider,
     IndexPath,
     Input,
@@ -66,6 +67,7 @@ export default () => {
     const [waterDemand, setWaterDemand] = useState(createIndexPath(plant.waterDemand, WaterDemand.WATER_DEMAND_UNDEFINED));
     const [preferredLocation, setPreferredLocation] = useState(createIndexPath(plant.preferredLocation, PreferredLocation.PREFERRED_LOCATION_UNDEFINED));
     const [winterProof, setWinterProof] = useState(createIndexPath(plant.winterProof, WinterProof.WINTER_PROOF_UNDEFINED));
+    const [automaticallyWatered, setAutomaticallyWatered] = useState(plant.automaticallyWatered);
 
     function handleImagePickerResult(result: ImagePickerResult) {
         if (!result.cancelled) {
@@ -121,8 +123,9 @@ export default () => {
             preferredLocation: preferredLocation.row,
             winterProof: winterProof.row,
             planted: formatAsIsoString(planted),
-            amount: convertIndexPathToAmountValue(amount)
-        });
+            amount: convertIndexPathToAmountValue(amount),
+            automaticallyWatered
+        } as Plant);
     }
 
     async function save() {
@@ -208,7 +211,13 @@ export default () => {
                                         onSelect={index => setAmount(index as IndexPath)}>
                                     {renderAmountOptions()}
                                 </Select>
+                                <CheckBox checked={automaticallyWatered}
+                                          onChange={nextChecked => setAutomaticallyWatered(nextChecked)}
+                                          style={styles.input}>
+                                    {i18n.t('AUTOMATICALLY_WATERED')}
+                                </CheckBox>
                             </Card>
+
                             <Card style={styles.card} status="basic" disabled={true}>
                                 <Select label={i18n.t('WATER_DEMAND')}
                                         selectedIndex={waterDemand}
