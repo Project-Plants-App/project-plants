@@ -24,7 +24,7 @@ jobs:
       env:
         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         SENTRY_TOKEN: ${{ secrets.SENTRY_TOKEN }}
-        GROW_BUDDY_VERSION: ${{ github.event.inputs.major_minor_version }}${{ github.event.inputs.patch_version }}
+        PROJECT_PLANTS_VERSION: ${{ github.event.inputs.major_minor_version }}${{ github.event.inputs.patch_version }}
     - uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

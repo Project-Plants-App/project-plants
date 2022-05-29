@@ -2,7 +2,7 @@ import * as FileSystem from 'expo-file-system';
 import {formatTimeString, isDefined, isMetaFile} from "../common/Utils";
 import JSZip from "jszip";
 import * as Updates from 'expo-updates';
-import GrowBuddyDatabaseService from "./database/DatabaseService";
+import DatabaseService from "./database/DatabaseService";
 
 const BACKUP_FOLDER = 'backups';
 const BACKUP_ROOT_PATH = `${FileSystem.documentDirectory}/${BACKUP_FOLDER}`
@@ -28,7 +28,7 @@ class BackupService {
     }
 
     async applyBackup(backup: Backup) {
-        GrowBuddyDatabaseService.closeDatabase();
+        DatabaseService.closeDatabase();
 
         const backupContent = await FileSystem.readAsStringAsync(`${BACKUP_ROOT_PATH}/${backup.name}`, {encoding: 'base64'});
         const zip = await JSZip.loadAsync(backupContent, {base64: true});

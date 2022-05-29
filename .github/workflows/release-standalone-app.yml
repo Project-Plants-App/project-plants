@@ -17,7 +17,7 @@ jobs:
       - uses: Project-Env/project-env-github-action@v1.3.0
       - run: |
           npm ci
-          echo "{ \"cli\": { \"requireCommit\": true }, \"build\": { \"production\": { \"releaseChannel\": \"production-${{ github.event.inputs.major_minor_version }}\", \"env\": { \"GROW_BUDDY_VERSION\": \"${{ github.event.inputs.major_minor_version }}.0\", \"SENTRY_TOKEN\": \"${{ secrets.SENTRY_TOKEN }}\" } } }, \"submit\": { \"production\": { \"ios\": { \"appleId\": \"jonas.bamberger@protonmail.ch\", \"ascAppId\": \"1563761464\", \"appleTeamId\": \"TCJLVJY557\" } } }}" > eas.json
+          echo "{ \"cli\": { \"requireCommit\": true }, \"build\": { \"production\": { \"releaseChannel\": \"production-${{ github.event.inputs.major_minor_version }}\", \"env\": { \"PROJECT_PLANTS_VERSION\": \"${{ github.event.inputs.major_minor_version }}.0\", \"SENTRY_TOKEN\": \"${{ secrets.SENTRY_TOKEN }}\" } } }, \"submit\": { \"production\": { \"ios\": { \"appleId\": \"jonas.bamberger@protonmail.ch\", \"ascAppId\": \"1563761464\", \"appleTeamId\": \"TCJLVJY557\" } } }}" > eas.json
           npx eas build --non-interactive --platform ios --auto-submit --no-wait
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}

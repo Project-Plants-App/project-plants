@@ -2,7 +2,7 @@ export default {
     name: "Project Plants",
     slug: "project-plants",
     owner: "project-plants",
-    version: process.env.GROW_BUDDY_VERSION || 'dev',
+    version: process.env.PROJECT_PLANTS_VERSION || 'dev',
     orientation: "portrait",
     icon: "./assets/icon.png",
     splash: {
@@ -20,7 +20,7 @@ export default {
     ios: {
         supportsTablet: false,
         bundleIdentifier: "app.growbuddy",
-        buildNumber: process.env.GROW_BUDDY_VERSION || '0.0.0',
+        buildNumber: process.env.PROJECT_PLANTS_VERSION || '0.0.0',
         infoPlist: {
             "NSCameraUsageDescription": "Erlaube den Zugriff auf die Kamera um ein Foto deiner Pflanze zu schiessen.",
             "NSPhotoLibraryUsageDescription": "Erlaube den Zugriff auf deine Fotos um ein Foto deiner Pflanze zu wählen."

@@ -8,8 +8,8 @@ import Fuse from 'fuse.js'
 import * as Network from 'expo-network';
 import FuseResult = Fuse.FuseResult;
 
-const REMOTE_GROW_BUDDY_PLANTS_URI = "https://raw.githubusercontent.com/Project-Plants-App/project-plants-database/main/database.json";
-const LOCAL_GROW_BUDDY_PLANTS_URI = `${FileSystem.documentDirectory}/plants-reference-database.json`;
+const REMOTE_PROJECT_PLANTS_DATABASE_URI = "https://raw.githubusercontent.com/Project-Plants-App/project-plants-database/main/database.json";
+const LOCAL_PROJECT_PLANTS_DATABASE_URI = `${FileSystem.documentDirectory}/plants-reference-database.json`;
 
 class ReferencePlantsService {
 
@@ -22,12 +22,12 @@ class ReferencePlantsService {
     async updateAndLoadDatabase() {
         const networkState = await Network.getNetworkStateAsync();
         if (networkState.isInternetReachable) {
-            await FileSystem.downloadAsync(REMOTE_GROW_BUDDY_PLANTS_URI, LOCAL_GROW_BUDDY_PLANTS_URI, {cache: false});
+            await FileSystem.downloadAsync(REMOTE_PROJECT_PLANTS_DATABASE_URI, LOCAL_PROJECT_PLANTS_DATABASE_URI, {cache: false});
         }
 
-        const databaseFileInfo = await FileSystem.getInfoAsync(LOCAL_GROW_BUDDY_PLANTS_URI);
+        const databaseFileInfo = await FileSystem.getInfoAsync(LOCAL_PROJECT_PLANTS_DATABASE_URI);
         if (databaseFileInfo.exists) {
-            const rawReferenceDatabase = await FileSystem.readAsStringAsync(LOCAL_GROW_BUDDY_PLANTS_URI);
+            const rawReferenceDatabase = await FileSystem.readAsStringAsync(LOCAL_PROJECT_PLANTS_DATABASE_URI);
             this.referenceDatabase = JSON.parse(rawReferenceDatabase);
         }
     }

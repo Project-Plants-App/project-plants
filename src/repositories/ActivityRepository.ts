@@ -1,5 +1,5 @@
 import {Activity} from "../model/Activity";
-import GrowBuddyDatabaseService from "../services/database/DatabaseService";
+import DatabaseService from "../services/database/DatabaseService";
 import DatabaseHelper from "../services/database/DatabaseHelper";
 import {ActivityType} from "../model/ActivityType";
 
@@ -53,7 +53,7 @@ const ACTIVITY_DELETE_STATEMENT = `delete
 class ActivityRepository {
 
     async insertActivity(activity: Activity) {
-        const database = await GrowBuddyDatabaseService.getDatabase();
+        const database = await DatabaseService.getDatabase();
 
         const activityInsertArgs = [
             activity.date,
@@ -74,7 +74,7 @@ class ActivityRepository {
     }
 
     async selectActivity(id: number): Promise<Activity> {
-        const database = await GrowBuddyDatabaseService.getDatabase();
+        const database = await DatabaseService.getDatabase();
 
         return DatabaseHelper.executeSingleStatement(database, ACTIVITY_SELECT_STATEMENT, [id]).then((resultSet) => {
             return this.convertRowToActivity(resultSet.rows.item(0));
@@ -82,7 +82,7 @@ class ActivityRepository {
     }
 
     async selectLastActivityForPlant(plantId: number, type: ActivityType): Promise<Activity> {
-        const database = await GrowBuddyDatabaseService.getDatabase();
+        const database = await DatabaseService.getDatabase();
 
         return DatabaseHelper.executeSingleStatement(database, ACTIVITY_SELECT_LAST_STATEMENT, [type, plantId]).then((resultSet) => {
             return this.convertRowToActivity(resultSet.rows.item(0));
@@ -90,7 +90,7 @@ class ActivityRepository {
     }
 
     async selectAllActivities(): Promise<Activity[]> {
-        const database = await GrowBuddyDatabaseService.getDatabase();
+        const database = await DatabaseService.getDatabase();
 
         return DatabaseHelper.executeSingleStatement(database, ACTIVITY_SELECT_ALL_STATEMENT).then((resultSet) => {
             const result: Activity[] = [];
@@ -112,7 +112,7 @@ class ActivityRepository {
     }
 
     async deleteActivity(activity: Activity): Promise<void> {
-        const database = await GrowBuddyDatabaseService.getDatabase();
+        const database = await DatabaseService.getDatabase();
 
         await DatabaseHelper.executeSingleStatement(database, ACTIVITY_DELETE_STATEMENT, [activity.id]);
     }

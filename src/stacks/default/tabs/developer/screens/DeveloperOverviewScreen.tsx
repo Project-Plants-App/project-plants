@@ -8,13 +8,13 @@ import i18n from "../../../../../i18n";
 import renderCardHeader from "../../../../../common/components/CardHeader";
 import Constants from 'expo-constants';
 import CardListContainer from "../../../../../common/components/CardListContainer";
-import GrowBuddyDatabaseService from "../../../../../services/database/DatabaseService";
+import DatabaseService from "../../../../../services/database/DatabaseService";
 import * as Updates from 'expo-updates';
 import DrawerAction from "../../../../../common/components/DrawerAction";
 import ImageRepository from "../../../../../repositories/ImageRepository";
 import LoadingContainer from "../../../../../common/components/LoadingContainer";
 import * as Application from 'expo-application';
-import GrowBuddyPlantsService from "../../../../../services/ReferencePlantsService";
+import ReferencePlantsService from "../../../../../services/ReferencePlantsService";
 
 export default () => {
 
@@ -22,7 +22,7 @@ export default () => {
     const route = useRoute<DeveloperStackRouteProp<DeveloperStackRoute.DEVELOPER_OVERVIEW>>();
 
     const [waiting, setWaiting] = useState(false);
-    const [referenceDatabaseSize, setReferenceDatabaseSize] = useState(GrowBuddyPlantsService.getDatabaseSize());
+    const [referenceDatabaseSize, setReferenceDatabaseSize] = useState(ReferencePlantsService.getDatabaseSize());
 
     async function fetchAndApplyOTAUpdate() {
         try {
@@ -74,8 +74,8 @@ export default () => {
     async function updateReferenceDatabase() {
         try {
             setWaiting(true);
-            await GrowBuddyPlantsService.updateAndLoadDatabase();
-            setReferenceDatabaseSize(GrowBuddyPlantsService.getDatabaseSize())
+            await ReferencePlantsService.updateAndLoadDatabase();
+            setReferenceDatabaseSize(ReferencePlantsService.getDatabaseSize())
         } finally {
             setWaiting(false);
         }
@@ -141,7 +141,7 @@ export default () => {
                     </Button>
                 </Card>
                 <Card header={renderCardHeader('Danger zone')}>
-                    <Button onPress={() => GrowBuddyDatabaseService.resetDatabase()} status="danger">
+                    <Button onPress={() => DatabaseService.resetDatabase()} status="danger">
                         Datenbank zurücksetzen
                     </Button>
                 </Card>

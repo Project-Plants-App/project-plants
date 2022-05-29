@@ -1,6 +1,6 @@
 import {Plant} from "../model/Plant";
 import DatabaseHelper from "../services/database/DatabaseHelper";
-import GrowBuddyDatabaseService from "../services/database/DatabaseService";
+import DatabaseService from "../services/database/DatabaseService";
 
 const PLANT_INSERT_STATEMENT = `insert into plants (id,
                                                     name,
@@ -59,7 +59,7 @@ const PLANT_DELETE_STATEMENT = `delete
 class PlantRepository {
 
     async insertOrUpdatePlant(plant: Plant) {
-        const database = await GrowBuddyDatabaseService.getDatabase();
+        const database = await DatabaseService.getDatabase();
 
         const args = [
             plant.name,
@@ -89,7 +89,7 @@ class PlantRepository {
     }
 
     async selectPlant(id: number): Promise<Plant> {
-        const database = await GrowBuddyDatabaseService.getDatabase();
+        const database = await DatabaseService.getDatabase();
 
         return DatabaseHelper.executeSingleStatement(database, PLANT_SELECT_STATEMENT, [id]).then((resultSet) => {
             return this.convertRowToPlant(resultSet.rows.item(0));
@@ -97,7 +97,7 @@ class PlantRepository {
     }
 
     async selectAllPlants(): Promise<Plant[]> {
-        const database = await GrowBuddyDatabaseService.getDatabase();
+        const database = await DatabaseService.getDatabase();
 
         return DatabaseHelper.executeSingleStatement(database, PLANT_SELECT_ALL_STATEMENT).then((resultSet) => {
             const result: Plant[] = [];
@@ -128,7 +128,7 @@ class PlantRepository {
     }
 
     async deletePlant(plant: Plant): Promise<void> {
-        const database = await GrowBuddyDatabaseService.getDatabase();
+        const database = await DatabaseService.getDatabase();
 
         await DatabaseHelper.executeSingleStatement(database, PLANT_DELETE_STATEMENT, [plant.id]);
     }
