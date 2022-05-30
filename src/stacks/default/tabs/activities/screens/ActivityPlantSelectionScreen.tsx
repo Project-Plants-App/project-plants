@@ -21,7 +21,11 @@ export default () => {
 
     useOnFocusOnceEffect(() => {
         PlantRepository.selectAllPlants().then((plants) => {
-            setPlants(plants.filter(plant => !plant.automaticallyWatered));
+            if (route.params.activityType === ActivityType.ACTIVITY_TYPE_WATERED) {
+                plants = plants.filter(plant => !plant.automaticallyWatered)
+            }
+
+            setPlants(plants);
         });
     });
 
