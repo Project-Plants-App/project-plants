@@ -1,4 +1,4 @@
-import {Button, Card, Divider, Icon, Layout, List, ListItem, Modal, TopNavigation} from "@ui-kitten/components";
+import {Button, Card, Divider, Icon, Layout, List, ListItem, Modal, Text, TopNavigation} from "@ui-kitten/components";
 import React, {useState} from "react";
 import {Linking, ListRenderItemInfo, ScrollView, StyleSheet, View} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
@@ -183,6 +183,12 @@ export default () => {
                                       ItemSeparatorComponent={Divider}/>
                             </CardListContainer>
                         </Card>
+                        {plant.notes &&
+                            <Card style={styles.card} header={renderCardHeader("Notizen")} status="basic"
+                                  disabled={true}>
+                                <Text>{plant.notes}</Text>
+                            </Card>
+                        }
                     </View>
                 </ScrollView>
 

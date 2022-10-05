@@ -1,9 +1,9 @@
-import i18n from 'i18n-js';
 import moment from "moment";
 import 'moment/locale/de-ch';
 import {MomentDateService} from "@ui-kitten/moment";
+import {I18n} from "i18n-js";
 
-i18n.translations = {
+const i18n = new I18n({
     de: {
         NAME: 'Name',
         BOTANICAL_NAME: 'Botanischer Name',
@@ -27,6 +27,7 @@ i18n.translations = {
         LAST_TIME_SPRAYED: 'Letztes Mal gespritzt',
         AUTOMATICALLY_WATERED: 'Automatische Bewässerung',
         AUTOMATICALLY_WATERED_SHORT: 'Auto. Bewässerung',
+        NOTES: 'Notizen',
         // preferred location
         PREFERRED_LOCATION: 'Standort',
         PREFERRED_LOCATION_UNDEFINED: 'Undefiniert',
@@ -53,10 +54,11 @@ i18n.translations = {
         BALDUR_GARTEN: 'BALDUR-Garten',
         MEIN_SCHOENER_GARTEN: 'Mein schöner Garten',
         PFLANZEN_FUER_UNSERE_GAERTEN: 'Pflanzen für unsere Gärten'
-    },
-};
+    }
+}, {
+    locale: 'de'
+})
 
-i18n.locale = 'de';
 moment.locale('de-ch');
 
 export const translateEnumValue = (enumValue: any, enumType: any) => {

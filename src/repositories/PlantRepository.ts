@@ -15,9 +15,10 @@ const PLANT_INSERT_STATEMENT = `insert into plants (id,
                                                     last_time_watered,
                                                     last_time_fertilised,
                                                     last_time_sprayed,
-                                                    automatically_watered)
+                                                    automatically_watered,
+                                                    notes)
                                 values ((select coalesce(max(id), 0) + 1 from plants), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                                        ?, ?, ?)`
+                                        ?, ?, ?, ?)`
 
 const PLANT_BASE_SELECT_STATEMENT = `select id,
                                             name,
@@ -32,7 +33,8 @@ const PLANT_BASE_SELECT_STATEMENT = `select id,
                                             last_time_watered,
                                             last_time_fertilised,
                                             last_time_sprayed,
-                                            automatically_watered
+                                            automatically_watered,
+                                            notes
                                      from plants`
 
 const PLANT_SELECT_ALL_STATEMENT = `${PLANT_BASE_SELECT_STATEMENT} order by name`
@@ -52,7 +54,8 @@ const PLANT_UPDATE_STATEMENT = `update plants
                                     last_time_watered     = ?,
                                     last_time_fertilised  = ?,
                                     last_time_sprayed     = ?,
-                                    automatically_watered = ?
+                                    automatically_watered = ?,
+                                    notes                 = ?
                                 where id = ?`
 
 const PLANT_DELETE_STATEMENT = `delete
@@ -77,7 +80,8 @@ class PlantRepository {
             plant.lastTimeWatered,
             plant.lastTimeFertilised,
             plant.lastTimeSprayed,
-            plant.automaticallyWatered
+            plant.automaticallyWatered,
+            plant.notes
         ];
 
         if (plant.id === undefined) {
@@ -128,7 +132,8 @@ class PlantRepository {
             lastTimeWatered: row.last_time_watered,
             lastTimeFertilised: row.last_time_fertilised,
             lastTimeSprayed: row.last_time_sprayed,
-            automaticallyWatered: !!row.automatically_watered
+            automaticallyWatered: !!row.automatically_watered,
+            notes: row.notes
         } as Plant
     }
 

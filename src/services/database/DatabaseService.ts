@@ -51,7 +51,8 @@ const MIGRATIONS = [
          CONSTRAINT fk_activities FOREIGN KEY (activity_id) REFERENCES activities (id) ON DELETE CASCADE
      );`,
     `alter table plants drop column avatar;`,
-    `alter table plants add column automatically_watered integer;`
+    `alter table plants add column automatically_watered integer;`,
+    `alter table plants add column notes text;`,
 ];
 
 class DatabaseService {

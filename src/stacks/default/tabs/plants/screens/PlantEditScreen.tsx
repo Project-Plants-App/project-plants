@@ -68,6 +68,7 @@ export default () => {
     const [preferredLocation, setPreferredLocation] = useState(createIndexPath(plant.preferredLocation, PreferredLocation.PREFERRED_LOCATION_UNDEFINED));
     const [winterProof, setWinterProof] = useState(createIndexPath(plant.winterProof, WinterProof.WINTER_PROOF_UNDEFINED));
     const [automaticallyWatered, setAutomaticallyWatered] = useState(plant.automaticallyWatered);
+    const [notes, setNotes] = useState(plant.notes);
 
     function handleImagePickerResult(result: ImagePickerResult) {
         if (!result.cancelled) {
@@ -124,7 +125,8 @@ export default () => {
             winterProof: winterProof.row,
             planted: formatAsIsoString(planted),
             amount: convertIndexPathToAmountValue(amount),
-            automaticallyWatered
+            automaticallyWatered,
+            notes
         } as Plant);
     }
 
@@ -241,8 +243,13 @@ export default () => {
                                 </Select>
                             </Card>
 
+                            <Card style={styles.card} status="basic" disabled={true}>
+                                <Input label={i18n.t('NOTES')} style={styles.input} textStyle={styles.multilineInput} value={notes}
+                                       onChangeText={setNotes} multiline={true}/>
+                            </Card>
+
                             {plant.id !== undefined &&
-                                <Card status="basic">
+                                <Card status="basic" disabled={true}>
                                     <Button onPress={completePlant}
                                             style={styles.firstButton}
                                             appearance="outline">
@@ -286,6 +293,9 @@ const styles = StyleSheet.create({
     },
     input: {
         marginTop: 15
+    },
+    multilineInput: {
+        minHeight: 64
     },
     card: {
         marginBottom: 15
