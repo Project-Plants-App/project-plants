@@ -48,7 +48,12 @@ export default {
             }
         ]
     },
-    "plugins": [
+    plugins: [
         "sentry-expo"
-    ]
+    ],
+    extra: {
+        eas: {
+            projectId: "15b0de1d-5590-4800-af42-ff51aedc5852"
+        }
+    }
 }
