@@ -19,5 +19,6 @@ export interface Plant {
     lastTimeFertilised?: string;
     lastTimeSprayed?: string;
     automaticallyWatered?: boolean;
+    notes?: string;
 
 }
