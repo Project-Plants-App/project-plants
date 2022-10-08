@@ -6,6 +6,9 @@ on:
       major_minor_version:
         description: 'The major-minor version which should be released (required format: X.X)'
         required: true
+      patch_version:
+        description: 'The patch version which should be released (required format: X)'
+        required: true
 
 jobs:
   release:
@@ -17,7 +20,7 @@ jobs:
       - uses: Project-Env/project-env-github-action@v1.3.0
       - run: |
           npm ci
-          echo "{ \"cli\": { \"requireCommit\": true }, \"build\": { \"production\": { \"releaseChannel\": \"production-${{ github.event.inputs.major_minor_version }}\", \"env\": { \"PROJECT_PLANTS_VERSION\": \"${{ github.event.inputs.major_minor_version }}.0\", \"SENTRY_TOKEN\": \"${{ secrets.SENTRY_TOKEN }}\" } } }, \"submit\": { \"production\": { \"ios\": { \"appleId\": \"jonas.bamberger@protonmail.ch\", \"ascAppId\": \"1563761464\", \"appleTeamId\": \"TCJLVJY557\" } } }}" > eas.json
+          echo "{ \"cli\": { \"requireCommit\": true }, \"build\": { \"production\": { \"releaseChannel\": \"production-${{ github.event.inputs.major_minor_version }}\", \"env\": { \"PROJECT_PLANTS_VERSION\": \"${{ github.event.inputs.major_minor_version }}.${{ github.event.inputs.patch_version }}\", \"SENTRY_TOKEN\": \"${{ secrets.SENTRY_TOKEN }}\" } } }, \"submit\": { \"production\": { \"ios\": { \"appleId\": \"jonas.bamberger@protonmail.ch\", \"ascAppId\": \"1563761464\", \"appleTeamId\": \"TCJLVJY557\" } } }}" > eas.json
           npx eas build --non-interactive --platform ios --auto-submit --no-wait
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
@@ -25,5 +28,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ github.event.inputs.major_minor_version }}.0
-          release_name: Standalone v${{ github.event.inputs.major_minor_version }}.0
+          tag_name: v${{ github.event.inputs.major_minor_version }}.${{ github.event.inputs.patch_version }}
+          release_name: Standalone v${{ github.event.inputs.major_minor_version }}.${{ github.event.inputs.patch_version }}
