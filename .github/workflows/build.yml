@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: Project-Env/project-env-github-action@v1.3.0
+      - uses: Project-Env/project-env-github-action@v1.3.1
       - run: |
           npm ci
       - if: github.ref == 'refs/heads/main'
