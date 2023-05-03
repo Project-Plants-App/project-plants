@@ -59,7 +59,7 @@
     "react-native-svg": "13.4.0"
   },
   "devDependencies": {
-    "@babel/core": "7.21.4",
+    "@babel/core": "7.21.8",
     "@types/react": "18.0.35",
     "@types/react-native": "0.71.5",
     "eas-cli": "3.9.3",
