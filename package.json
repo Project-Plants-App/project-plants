@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.21.4",
-    "@types/react": "18.0.35",
+    "@types/react": "18.2.4",
     "@types/react-native": "0.71.5",
     "eas-cli": "3.9.3",
     "expo-cli": "6.3.6",
