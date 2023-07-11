@@ -62,7 +62,7 @@
     "@babel/core": "7.21.4",
     "@types/react": "18.0.35",
     "@types/react-native": "0.71.5",
-    "eas-cli": "3.9.3",
+    "eas-cli": "3.15.1",
     "expo-cli": "6.3.6",
     "jest": "29.5.0",
     "jest-expo": "48.0.2",
