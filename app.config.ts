@@ -49,7 +49,8 @@ export default {
         ]
     },
     plugins: [
-        "sentry-expo"
+        "sentry-expo",
+        "expo-font"
     ],
     extra: {
         eas: {
