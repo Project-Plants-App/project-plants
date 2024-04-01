@@ -12,7 +12,11 @@ export default {
     },
     userInterfaceStyle: "automatic",
     updates: {
-        fallbackToCacheTimeout: 0
+        fallbackToCacheTimeout: 0,
+        url: "https://u.expo.dev/15b0de1d-5590-4800-af42-ff51aedc5852"
+    },
+    runtimeVersion: {
+        policy: "appVersion"
     },
     assetBundlePatterns: [
         "**/*"
