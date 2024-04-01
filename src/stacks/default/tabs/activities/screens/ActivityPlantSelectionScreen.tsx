@@ -44,9 +44,20 @@ export default () => {
                 case ActivityType.ACTIVITY_TYPE_SPRAYED:
                     plant.lastTimeSprayed = activityDate;
                     break;
+                case ActivityType.ACTIVITY_TYPE_SWITCH_AUTO_WATERING:
+                    plant.automaticallyWatered = true;
+                    break;
             }
 
             await PlantService.savePlant(plant);
+        }
+
+        if (activityType === ActivityType.ACTIVITY_TYPE_SWITCH_AUTO_WATERING) {
+            const deselectedPlants = plants.filter(plant => !selectedPlants.find(selectedPlant => plant.id === selectedPlant.id));
+            for (const plant of deselectedPlants) {
+                plant.automaticallyWatered = false;
+                await PlantService.savePlant(plant);
+            }
         }
 
         navigation.dispatch(StackActions.popToTop());

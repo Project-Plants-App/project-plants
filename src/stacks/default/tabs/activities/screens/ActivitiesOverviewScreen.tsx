@@ -14,11 +14,22 @@ export default () => {
     const navigation = useNavigation<ActivitiesStackNavigationProp<ActivitiesStackRoute.ACTIVITIES_OVERVIEW>>();
     const route = useRoute<ActivitiesStackRouteProp<ActivitiesStackRoute.ACTIVITIES_OVERVIEW>>();
 
+    function needsDate(activityType: ActivityType) {
+        return activityType !== ActivityType.ACTIVITY_TYPE_SWITCH_AUTO_WATERING;
+    }
+
     function executeActivity(activityType: ActivityType) {
-        navigation.navigate({
-            name: ActivitiesStackRoute.ACTIVITY_DATE_SELECTION,
-            params: {activityType}
-        });
+        if (needsDate(activityType)) {
+            navigation.navigate({
+                name: ActivitiesStackRoute.ACTIVITY_DATE_SELECTION,
+                params: {activityType}
+            });
+        } else {
+            navigation.navigate({
+                name: ActivitiesStackRoute.ACTIVITY_PLANT_SELECTION,
+                params: {activityType}
+            });
+        }
     }
 
     const renderActivityButtons = enumValues<ActivityType>(ActivityType)

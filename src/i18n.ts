@@ -22,6 +22,7 @@ const i18n = new I18n({
         ACTIVITY_TYPE_WATERED: 'gegossen',
         ACTIVITY_TYPE_FERTILISED: 'gedüngt',
         ACTIVITY_TYPE_SPRAYED: 'gespritzt',
+        ACTIVITY_TYPE_SWITCH_AUTO_WATERING: 'Automatische Bewässerung aktualisieren',
         LAST_TIME_WATERED: 'Letztes Mal gegossen',
         LAST_TIME_FERTILISED: 'Letztes Mal gedüngt',
         LAST_TIME_SPRAYED: 'Letztes Mal gespritzt',

@@ -17,7 +17,7 @@ export type ActivitiesStackRouteParams = {
     }
     "activity-plant-selection": {
         activityType: ActivityType,
-        activityDate: string
+        activityDate?: string
     }
 }
 
