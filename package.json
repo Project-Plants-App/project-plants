@@ -68,7 +68,7 @@
     "jest-expo": "50.0.4",
     "npm-check-updates": "16.14.17",
     "react-test-renderer": "18.2.0",
-    "typescript": "5.4.3"
+    "typescript": "5.4.4"
   },
   "private": true
 }
